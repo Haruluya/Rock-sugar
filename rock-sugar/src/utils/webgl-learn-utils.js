@@ -32,7 +32,7 @@
       [2, 3, 1, 0], // back
     ];
 
-    const topWindow = this;
+    const topWindow = window;
 
     // 获取画布context和shader源。
     function getWebglAndShaderSource(canvasId,vertexId,fragmentId){
@@ -124,8 +124,8 @@
       if (!shaderScript) {
         throw ('*** Error: unknown script element' + scriptId);
       }
-      shaderSource = shaderScript.text;
-  
+      shaderSource = shaderScript.innerHTML;
+      console.log(shaderSource);
       if (!opt_shaderType) {
         if (shaderScript.type === 'x-shader/x-vertex') {
           shaderType = gl.VERTEX_SHADER;
@@ -1400,7 +1400,7 @@
       gl, shaderSources, opt_attribs, opt_locations, opt_errorCallback) {
     shaderSources = shaderSources.map(function(source) {
       const script = document.getElementById(source);
-      return script ? script.text : source;
+      return script ? script.innerHTML : source;
     });
     const program = createProgramFromSources(gl, shaderSources, opt_attribs, opt_locations, opt_errorCallback);
     if (!program) {
