@@ -37,8 +37,8 @@
     // 获取画布context和shader源。
     function getWebglAndShaderSource(canvasId,vertexId,fragmentId){
         let canvas = document.getElementById(canvasId);
-        let vertexShaderSource = document.getElementById(vertexId).innerHTML;
-        let fragmentShaderSource = document.getElementById(fragmentId).innerHTML;
+        let vertexShaderSource = document.getElementById(vertexId).innerText;
+        let fragmentShaderSource = document.getElementById(fragmentId).innerText;
         let gl = canvas.getContext("webgl");
         if (!gl){
             console.log("Webgl Not Found!")
@@ -124,7 +124,7 @@
       if (!shaderScript) {
         throw ('*** Error: unknown script element' + scriptId);
       }
-      shaderSource = shaderScript.innerHTML;
+      shaderSource = shaderScript.innerText;
       console.log(shaderSource);
       if (!opt_shaderType) {
         if (shaderScript.type === 'x-shader/x-vertex') {
@@ -1400,7 +1400,7 @@
       gl, shaderSources, opt_attribs, opt_locations, opt_errorCallback) {
     shaderSources = shaderSources.map(function(source) {
       const script = document.getElementById(source);
-      return script ? script.innerHTML : source;
+      return script ? script.innerText : source;
     });
     const program = createProgramFromSources(gl, shaderSources, opt_attribs, opt_locations, opt_errorCallback);
     if (!program) {

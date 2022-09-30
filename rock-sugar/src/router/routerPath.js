@@ -65,8 +65,8 @@ export const routes = [
     },
     {
         path: '/webgl_demo/DirectionalLight',
-        name: 'ImageProcess',
-        component: () => import('_pages/WebglDemo/ImageProcess'),
+        name: 'DirectionalLight',
+        component: () => import('_pages/WebglDemo/DirectionalLight'),
     },
     {
         path: '/webgl_demo/CameraPosition',
