@@ -1,7 +1,7 @@
 <template lang="html">
     <body>
-            <div class="title">
-        1_Triangle
+        <div class="title">
+        Triangle
     </div>
     <canvas id="triangle_content">
         <div id="vertex-shader">
@@ -36,7 +36,6 @@
 <script>
 const Render =  function(){
     "use strict";
-
     //设置几何体。 
     function setGeometry(gl) {
         gl.bufferData(
@@ -129,6 +128,7 @@ const Render =  function(){
         };
     }
 
+    //ui.
     haruluya_webgl_utils.setupSlider("x", {value: translation[0], slide: updatePosition(0), max: gl.canvas.width });
     haruluya_webgl_utils.setupSlider("y", {value: translation[1], slide: updatePosition(1), max: gl.canvas.height});
     haruluya_webgl_utils.setupSlider("angle", {slide: updateAngle, max: 360});

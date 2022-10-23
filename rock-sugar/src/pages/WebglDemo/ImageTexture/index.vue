@@ -29,6 +29,8 @@
     </pre>
 </template>
 <script>
+import haruluyaImg from "../../../assets/images/haruluya.jpg"
+
 export default {
     name:'ImageTexture',
     mounted() {
@@ -36,7 +38,8 @@ export default {
     },
     methods: {
         Render(){
-                 function setGeometry(gl) {
+            //position.
+        function setGeometry(gl) {
             var positions = new Float32Array(
                 [
                 -0.5, -0.5,  -0.5,
@@ -85,7 +88,7 @@ export default {
             gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
         }
 
-
+            // texcoord.
         function setTexcoords(gl) {
             gl.bufferData(
                 gl.ARRAY_BUFFER,
@@ -173,19 +176,15 @@ export default {
                         new Uint8Array([0, 0, 255, 255]));
 
 
+        // Set image.
         var image = new Image();
-        image.src = "noodles.jpg";
+        image.src = haruluyaImg;
         image.addEventListener('load', function() {
-            // Now that the image has loaded make copy it to the texture.
             gl.bindTexture(gl.TEXTURE_2D, texture);
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA,gl.UNSIGNED_BYTE, image);
-
-            // Check if the image is a power of 2 in both dimensions.
             if (isPowerOf2(image.width) && isPowerOf2(image.height)) {
-            // Yes, it's a power of 2. Generate mips.
-            gl.generateMipmap(gl.TEXTURE_2D);
+                gl.generateMipmap(gl.TEXTURE_2D);
             } else {
-            // No, it's not a power of 2. Turn of mips and set wrapping to clamp to edge
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
@@ -221,7 +220,6 @@ export default {
 
             // Clear the canvas AND the depth buffer.
             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
             // Tell it to use our program (pair of shaders)
             gl.useProgram(program);
 

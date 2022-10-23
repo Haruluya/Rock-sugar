@@ -84,7 +84,7 @@ export default {
     },
     methods: {
         Render(){
-// transform。
+        // transform。
         var cameraAngleRadians = haruluya_webgl_utils.degToRad(0);
         var fieldOfViewRadians = haruluya_webgl_utils.degToRad(60);
         var cameraHeight = 50;

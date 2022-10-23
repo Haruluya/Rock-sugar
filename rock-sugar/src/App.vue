@@ -1,4 +1,5 @@
 <template>
+  <!-- <iframe src="https://webglfundamentals.org/webgl/background.html" id='globalBackground'></iframe> -->
   <div>
     <router-view>
 
@@ -19,9 +20,29 @@ export default {
 </script>
 
 <style lang="css">
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+/* for background. */
+#globalBackground {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    left: 0;
+    top: 0;
+    z-index: -1;
+    border: none;
+    pointer-events: none;
+}
+/* for shaders. */
 pre{
     display: none;
 }
+
+
 
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;

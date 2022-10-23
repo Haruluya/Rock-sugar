@@ -20,7 +20,8 @@ module.exports = defineConfig({
         '_utils':'@/utils',
         '_mock':'@/mock',
         '_api':'@/api',
-        '_plugins':'@/plugins'
+        '_plugins':'@/plugins',
+        '_packages':'@/packages'
       }
     }
   }

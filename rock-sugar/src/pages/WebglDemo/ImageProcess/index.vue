@@ -48,19 +48,25 @@
       </div>
 </template>
 <script>
+import haruluyaImg from "../../../assets/images/haruluya.jpg"
+
 export default {
     name:'ImageProcess',
     mounted() {
-        // this.Render();
+        this.Render();
     },
     methods: {
         Render(){
              // 绘制几何体。
-        function setGeometry(gl, x, y, width, height) {
-            let x1 = x;
-            let x2 = x + width;
-            let y1 = y;
-            let y2 = y + height;
+        function setGeometry(gl,canvas, width, height) {
+            width = width > 300 ? 300 : width;
+            height = height > 300 ? 300 : height;
+            const beginX = canvas.getBoundingClientRect().width/2 - width/2;
+            const beginY =  canvas.getBoundingClientRect().height/2 - height/2;
+            let x1 = beginX;
+            let x2 = beginX + width;
+            let y1 = beginY;
+            let y2 = beginY + height;
             gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
                 x1, y1,
                 x2, y1,
@@ -70,9 +76,10 @@ export default {
                 x2, y2,
             ]), gl.STATIC_DRAW);
         }
-
+        
+        //create image.
         const image = new Image();
-        image.src = "../../../assets/logo.png";  
+        image.src = haruluyaImg;
         image.onload = function() {
             render(image);
         };
@@ -94,7 +101,7 @@ export default {
             var positionBuffer = gl.createBuffer();
             gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 
-            setGeometry( gl, 50, 0, image.width, image.height);
+            setGeometry( gl,canvas, image.width, image.height);
 
             var texcoordBuffer = gl.createBuffer();
             gl.bindBuffer(gl.ARRAY_BUFFER, texcoordBuffer);

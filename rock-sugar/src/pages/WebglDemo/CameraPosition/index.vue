@@ -35,7 +35,7 @@ export default {
     },
     methods: {
         Render(){
-            function setGeometry(gl) {
+        function setGeometry(gl) {
             var positions = new Float32Array(HeadData.positions);
             var matrix = haruluya_webgl_utils.multiply3d(haruluya_webgl_utils.scaling3d(6, 6, 6), haruluya_webgl_utils.yRotation(Math.PI));
             for (var ii = 0; ii < positions.length; ii += 3) {
