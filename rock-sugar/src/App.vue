@@ -1,6 +1,6 @@
 <template>
   <!-- <iframe src="https://webglfundamentals.org/webgl/background.html" id='globalBackground'></iframe> -->
-  <div>
+  <div class="app">
     <router-view>
 
 
@@ -25,6 +25,12 @@ export default {
     margin: 0;
     padding: 0;
   }
+
+.app{
+    background-color: #f6f6f6;
+}
+
+
 
 /* for background. */
 #globalBackground {

@@ -1,8 +1,22 @@
 <template>
-    <div class="PageContainer">
-        <nano_menu></nano_menu>
-        <div class="Slider">
+    <div class="pageContainer">
+        <div class="header">
+            <nano_menu></nano_menu>
+        </div>
+        <div class="slider">
             <nano_slider></nano_slider>
+        </div>
+        <div class="webglLinks">
+
+        </div>
+        <div class="games">
+        </div>
+        <div class="projects">
+            
+        </div>
+        <div class="footer">
+        </div>
+        <div class="blank">
         </div>
     </div>
 </template>
