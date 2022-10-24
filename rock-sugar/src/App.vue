@@ -1,20 +1,23 @@
 <template>
   <!-- <iframe src="https://webglfundamentals.org/webgl/background.html" id='globalBackground'></iframe> -->
   <div class="app">
-    <router-view>
+    <div><nano_menu></nano_menu></div>
+    <div class="content">
+        <router-view>
 
 
-    </router-view>
+        </router-view>
+    </div>
   </div>
 </template>
 
 <script>
-
+import nano_menu from '_packages/nano_menu/index.js'
 
 export default {
   name: 'App',
   components: {
-
+    nano_menu
   }
 }
 </script>
@@ -26,45 +29,28 @@ export default {
     padding: 0;
   }
 
-.app{
-    background-color: #f6f6f6;
+.content{
+    margin-top: 80px;
 }
-
-
-
-/* for background. */
-#globalBackground {
-    position: fixed;
-    width: 100vw;
-    height: 100vh;
-    left: 0;
-    top: 0;
-    z-index: -1;
-    border: none;
-    pointer-events: none;
+a {
+	text-decoration: none; 
+	outline: none;	
+	color: #000;	
 }
-/* for shaders. */
-pre{
-    display: none;
-}
-
-
-
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
 }
+
+/*create runtime*/
 
 input[type=range] {
     -webkit-appearance: none;
     border-radius: 10px; 
     background: -webkit-linear-gradient(gold, gold) no-repeat;
     background-size: 0% 100%;
-
 }
 input[type=range]::-webkit-slider-thumb {
     -webkit-appearance: none;
@@ -87,8 +73,6 @@ input[type=range]::-webkit-slider-thumb {
     border: solid 0.125em rgba(232, 229, 62, 0.5); 
     box-shadow: 0 .125em .125em #3b4547; 
 }
-
-
 .title{
     margin: 20px 0px;
     text-align: center;
@@ -100,13 +84,8 @@ input[type=range]::-webkit-slider-thumb {
 body{
     margin: 0;
 }
-canvas{
-    width:500px;
-    height: 400px;
-    display: block;
-    border: solid 2px;
-    margin: 0 auto;
-}
+
+
 #uiContainer{
     position: absolute;
     top: 100px;
@@ -121,7 +100,6 @@ canvas{
     font-size: 16px;
     color: #3ba9ed;
     font-weight: bold;
-
 }
 .webgl-slider-value{
     margin-left: 20px;
@@ -130,7 +108,6 @@ canvas{
     font-weight: bold;
 }
 .webgl-slider-slider{
-
 }
 .webgl-dropdownbox{
     font-size: 16px;
@@ -158,7 +135,6 @@ canvas{
 .webgl-Input-colorlabel{
     margin-right: 20px;
 }
-
 
 
 </style>

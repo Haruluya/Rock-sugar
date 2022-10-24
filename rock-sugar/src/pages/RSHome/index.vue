@@ -1,8 +1,5 @@
 <template>
     <div class="pageContainer">
-        <div class="header">
-            <nano_menu></nano_menu>
-        </div>
         <div class="slider">
             <nano_slider></nano_slider>
         </div>

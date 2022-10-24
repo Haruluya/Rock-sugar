@@ -1,0 +1,102 @@
+
+span{
+    font-family: "Arial Rounded MT Bold", "Helvetica Rounded", Arial, sans-serif;;
+    text-transform: uppercase;
+    display: block;
+    color: white;
+    font-weight: bold;
+}
+
+body{
+    margin: 0;
+    height: 1000px;
+    background-image: url("https://images.contentstack.io/v3/assets/blt731acb42bb3d1659/bltf930a7a2b83fff60/5e17887df980a27e5b76ac2f/teamfighttactics.jpg");
+}
+canvas{
+    width: 100%;
+    height: 100%;
+    display: block;
+    border-radius: 0.05vw;
+    z-index: 1;
+}
+.canvesContainer{
+    position: relative;
+    width:40vw;
+    height: 30vw;
+    margin: 4vw auto;
+    &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right:0;
+        bottom:0;
+        border-image-source: radial-gradient(60% 60%, transparent 0px, transparent 100%, cyan 100%);
+        border-image-slice: 1;
+        border-width: 3px;
+        border-style: solid;
+        border-image-outset: 0.5cm;
+    }
+}
+
+.webglContainer{
+    overflow: hidden;
+    z-index: 1;
+}
+
+
+
+#uiContainer{
+    position: absolute;
+    top: 10vw;
+    right: 4vw;
+    padding: 3vw;
+    border: rgba(255, 255, 255, 0.4) solid 2px;
+    clip-path: inset(0 round 0 50%);
+}
+
+
+/* for shaders. */
+pre{
+    display: none;
+    
+}
+
+
+.desContainer{
+    width: 80vw;
+    height: 20vw;
+    margin: 0 auto;
+    border-radius: 2px;
+    border: rgba(255, 255, 255, 0.4) solid 2px;
+    clip-path: inset(0 round 0 8%);
+    transform: translateY(-12vh);
+
+    padding: 10px 25px;
+    display: flex;
+    .conclusion,.des{
+        width: 33%;
+        height: 100%;
+        margin: 0;
+        padding: 3vw;
+    }
+    z-index: -1;
+    
+}
+
+.title{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    #conTitle,#category{
+        font-size: calc(1.5vw);
+    }
+    #name{
+        font-size: 2.5vw;
+    }
+
+}
+.content{
+    font-size: 1.0vw;
+}

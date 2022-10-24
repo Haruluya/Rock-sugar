@@ -1,37 +1,53 @@
 <template lang="html">
     <body>
-        <div class="title">
-        Triangle
-    </div>
-    <canvas id="triangle_content">
-        <div id="vertex-shader">
-            attribute vec2 a_position;
-            uniform mat3 u_matrix;
-            varying vec4 v_color;    
-            void main() {
-              gl_Position = vec4((u_matrix * vec3(a_position, 1)).xy, 0, 1);
-              v_color = gl_Position * 0.5 + 0.5;
-            }
+        <div class="webglContainer">
+            <div class="canvesContainer">
+                <canvas id="triangle_content">
+                    <div id="vertex-shader">
+                        attribute vec2 a_position;
+                        uniform mat3 u_matrix;
+                        varying vec4 v_color;    
+                        void main() {
+                          gl_Position = vec4((u_matrix * vec3(a_position, 1)).xy, 0, 1);
+                          v_color = gl_Position * 0.5 + 0.5;
+                        }
+                    </div>
+                    <div id="frament-shader">
+                        precision mediump float;
+                        varying vec4 v_color;
+                        void main() {
+                          gl_FragColor = v_color;
+                        }
+                    </div>
+                </canvas>
+            </div>
+            <div id="uiContainer">
+                <div id="ui">
+                  <div id="x"></div>
+                  <div id="y"></div>
+                  <div id="angle"></div>
+                  <div id="scaleX"></div>
+                  <div id="scaleY"></div>
+                </div>
+            </div>
         </div>
-        <div id="frament-shader">
-            precision mediump float;
-            varying vec4 v_color;
-            void main() {
-              gl_FragColor = v_color;
-            }
+        
+        <div class="desContainer">
+            <div class="des">
+                <div class="title">
+                    <span id="category">webgl</span>
+                    <span id="name">Triangle</span>
+                </div>
+                <div class="codeLink">
+                    <nano_button @handleClick="handleClick"></nano_button>
+                </div>
+            </div>
+            <div class="conclusion">
+                <span class="title"><span id="conTitle">三角</span></span>
+                <span class="content">Say "Hello World!" to the CG world.</span>
+            </div>
         </div>
-    </canvas>
-    <div id="uiContainer">
-        <div id="ui">
-          <div id="x"></div>
-          <div id="y"></div>
-          <div id="angle"></div>
-          <div id="scaleX"></div>
-          <div id="scaleY"></div>
-        </div>
-    </div>
     </body>
-    
 </template>
 <script>
 const Render =  function(){
@@ -51,7 +67,10 @@ const Render =  function(){
     function drawScene() {
         haruluya_webgl_utils.resizeCanvasToDisplaySize(gl.canvas);
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+        gl.clearColor(0,0,0,1);
         gl.clear(gl.COLOR_BUFFER_BIT);
+
+
         gl.useProgram(program);
 
         gl.enableVertexAttribArray(positionAttributeLocation);
@@ -136,8 +155,18 @@ const Render =  function(){
     haruluya_webgl_utils.setupSlider("scaleY", {value: scale[1], slide: updateScale(1), min: -5, max: 5, step: 0.01, precision: 2});
 
 }
+
+import nano_button from "_packages/nano_button/index.js"
 export default {
     name:'Triangle',
+    components:{
+        nano_button
+    },  
+    methods:{
+        handleClick(){
+            window.location.href = 'https://github.com/haruluya/Rock-Sugar';
+        }
+    },
     mounted() {
         Render();
     }
@@ -147,6 +176,6 @@ export default {
 
 
 </script>
-<style lang="css">
-    
+<style lang="less" scoped>
+@import "../index.less";
 </style>
