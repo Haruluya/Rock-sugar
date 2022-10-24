@@ -1,5 +1,7 @@
 <template lang="html">
     <body>
+
+
         <div class="webglContainer">
             <div class="canvesContainer">
                 <canvas id="triangle_content">
@@ -46,6 +48,9 @@
                 <span class="title"><span id="conTitle">三角</span></span>
                 <span class="content">Say "Hello World!" to the CG world.</span>
             </div>
+            <div class="menu">
+                <nano_items_menu></nano_items_menu>
+            </div>
         </div>
     </body>
 </template>
@@ -67,7 +72,7 @@ const Render =  function(){
     function drawScene() {
         haruluya_webgl_utils.resizeCanvasToDisplaySize(gl.canvas);
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-        gl.clearColor(0,0,0,1);
+
         gl.clear(gl.COLOR_BUFFER_BIT);
 
 
@@ -157,10 +162,12 @@ const Render =  function(){
 }
 
 import nano_button from "_packages/nano_button/index.js"
+import nano_items_menu from "_packages/nano_items_menu/index.js"
 export default {
     name:'Triangle',
     components:{
-        nano_button
+        nano_button,
+        nano_items_menu
     },  
     methods:{
         handleClick(){

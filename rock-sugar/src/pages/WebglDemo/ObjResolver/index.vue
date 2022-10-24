@@ -1,9 +1,27 @@
 <template lang="html">
-    <div class="title">
-        12_ObjResolver
-    </div>
-    <canvas id="canvas">
-    </canvas>
+    <body>
+        <div class="webglContainer">
+            <div class="canvesContainer">
+                <canvas id="canvas">
+                </canvas>
+            </div>
+        </div>
+        <div class="desContainer">
+            <div class="des">
+                <div class="title">
+                    <span id="category">webgl</span>
+                    <span id="name">ObjResolver</span>
+                </div>
+                <div class="codeLink">
+                    <nano_button @handleClick="handleClick"></nano_button>
+                </div>
+            </div>
+            <div class="conclusion">
+                <span class="title"><span id="conTitle">模型渲染</span></span>
+                <span class="content">I can't build a model of the future, let alone render it.</span>
+            </div>
+        </div>
+    </body>
 </template>
 <script>
 export default {
@@ -372,6 +390,6 @@ export default {
     },
 }
 </script>
-<style lang="">
-    
+<style lang="less" scoped>
+@import "../index.less";
 </style>

@@ -1,51 +1,71 @@
 <template lang="html">
-    <div class="title">
-        2_ImageProcess
-    </div>
-    <canvas id="imageProcess_content">
-        <pre id="vertex-shader" type="notjs">
-            attribute vec2 a_position;
-            attribute vec2 a_texCoord;
-            uniform vec2 u_resolution;
-            varying vec2 v_texCoord;
-
-            void main() {
-               vec2 zeroToOne = a_position / u_resolution;
-               vec2 zeroToTwo = zeroToOne * 2.0;
-               vec2 clipSpace = zeroToTwo - 1.0;
-               gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);
-               v_texCoord = a_texCoord;
-            }
-        </pre>
-        <pre id="frament-shader" type="notjs">
-            precision mediump float;
-
-            uniform sampler2D u_image;
-            uniform vec2 u_textureSize;
-            uniform float u_kernel[9];
-            uniform float u_kernelWeight;
+    <body>
+        <div class="webglContainer">
+            <div class="canvesContainer">
+                <canvas id="imageProcess_content">
+                    <pre id="vertex-shader" type="notjs">
+                        attribute vec2 a_position;
+                        attribute vec2 a_texCoord;
+                        uniform vec2 u_resolution;
+                        varying vec2 v_texCoord;
             
-            varying vec2 v_texCoord;
+                        void main() {
+                           vec2 zeroToOne = a_position / u_resolution;
+                           vec2 zeroToTwo = zeroToOne * 2.0;
+                           vec2 clipSpace = zeroToTwo - 1.0;
+                           gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);
+                           v_texCoord = a_texCoord;
+                        }
+                    </pre>
+                    <pre id="frament-shader" type="notjs">
+                        precision mediump float;
             
-            void main() {
-               vec2 onePixel = vec2(1.0, 1.0) / u_textureSize;
-               vec4 colorSum =
-                   texture2D(u_image, v_texCoord + onePixel * vec2(-1, -1)) * u_kernel[0] +
-                   texture2D(u_image, v_texCoord + onePixel * vec2( 0, -1)) * u_kernel[1] +
-                   texture2D(u_image, v_texCoord + onePixel * vec2( 1, -1)) * u_kernel[2] +
-                   texture2D(u_image, v_texCoord + onePixel * vec2(-1,  0)) * u_kernel[3] +
-                   texture2D(u_image, v_texCoord + onePixel * vec2( 0,  0)) * u_kernel[4] +
-                   texture2D(u_image, v_texCoord + onePixel * vec2( 1,  0)) * u_kernel[5] +
-                   texture2D(u_image, v_texCoord + onePixel * vec2(-1,  1)) * u_kernel[6] +
-                   texture2D(u_image, v_texCoord + onePixel * vec2( 0,  1)) * u_kernel[7] +
-                   texture2D(u_image, v_texCoord + onePixel * vec2( 1,  1)) * u_kernel[8] ;
-               gl_FragColor = vec4((colorSum / u_kernelWeight).rgb, 1);
-            }
-        </pre>
-    </canvas>
-    <div id="uiContainer">
-        <div id="ui"></div>
-      </div>
+                        uniform sampler2D u_image;
+                        uniform vec2 u_textureSize;
+                        uniform float u_kernel[9];
+                        uniform float u_kernelWeight;
+                        
+                        varying vec2 v_texCoord;
+                        
+                        void main() {
+                           vec2 onePixel = vec2(1.0, 1.0) / u_textureSize;
+                           vec4 colorSum =
+                               texture2D(u_image, v_texCoord + onePixel * vec2(-1, -1)) * u_kernel[0] +
+                               texture2D(u_image, v_texCoord + onePixel * vec2( 0, -1)) * u_kernel[1] +
+                               texture2D(u_image, v_texCoord + onePixel * vec2( 1, -1)) * u_kernel[2] +
+                               texture2D(u_image, v_texCoord + onePixel * vec2(-1,  0)) * u_kernel[3] +
+                               texture2D(u_image, v_texCoord + onePixel * vec2( 0,  0)) * u_kernel[4] +
+                               texture2D(u_image, v_texCoord + onePixel * vec2( 1,  0)) * u_kernel[5] +
+                               texture2D(u_image, v_texCoord + onePixel * vec2(-1,  1)) * u_kernel[6] +
+                               texture2D(u_image, v_texCoord + onePixel * vec2( 0,  1)) * u_kernel[7] +
+                               texture2D(u_image, v_texCoord + onePixel * vec2( 1,  1)) * u_kernel[8] ;
+                           gl_FragColor = vec4((colorSum / u_kernelWeight).rgb, 1);
+                        }
+                    </pre>
+                </canvas>
+            </div>
+            <div id="uiContainer">
+                <div id="ui"></div>
+              </div>
+        </div>
+        <div class="desContainer">
+            <div class="des">
+                <div class="title">
+                    <span id="category">webgl</span>
+                    <span id="name">ImageProcess</span>
+                </div>
+                <div class="codeLink">
+                    <nano_button @handleClick="handleClick"></nano_button>
+                </div>
+            </div>
+            <div class="conclusion">
+                <span class="title"><span id="conTitle">图像处理</span></span>
+                <span class="content">Image process can make me look happier.</span>
+            </div>
+        </div>
+    </body>
+
+
 </template>
 <script>
 import haruluyaImg from "../../../assets/images/haruluya.jpg"
@@ -294,6 +314,6 @@ export default {
     },
 }
 </script>
-<style lang="">
-    
+<style lang="less" scoped>
+@import "../index.less";
 </style>

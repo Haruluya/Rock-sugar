@@ -1,47 +1,69 @@
 <template lang="html">
-    <div class="title">
-        6_DirectionalLight
-    </div>
-    <canvas id="canvas"></canvas>
-    <pre  id="vertex-shader" type="x-shader/x-vertex">
-        attribute vec4 a_position;
-        attribute vec4 a_color;
-        attribute vec3 a_normal;
-        uniform mat4 u_worldViewProjection;
-        uniform mat4 u_worldInverseTranspose;
-        varying vec3 v_normal;
-        varying vec4 v_color;
-        void main() {
-          gl_Position = u_worldViewProjection * a_position;
-          v_normal = mat3(u_worldInverseTranspose) * a_normal;
-          v_color = a_color;
-        }
-    </pre>
-    <pre  id="fragment-shader" type="x-shader/x-fragment">
-        precision mediump float;
-        varying vec3 v_normal;
-        uniform vec3 u_reverseLightDirection;
-        varying vec4 v_color;
-        void main() {
-          vec3 normal = normalize(v_normal);
-          float light = dot(normal, u_reverseLightDirection);
-          gl_FragColor = v_color;
-          gl_FragColor.rgb *= light;
-        }
-    </pre>
-    <div id="uiContainer">
-        <div id="ui">
-            <div id="x"></div>
-            <div id="y"></div>
-            <div id="z"></div>
-            <div id="angleX"></div>
-            <div id="angleY"></div>
-            <div id="angleZ"></div>
-            <div id="scaleX"></div>
-            <div id="scaleY"></div>
-            <div id="scaleZ"></div>
+    <body>
+        <div class="webglContainer">
+            <div class="canvesContainer">
+                <canvas id="canvas">
+                    <pre  id="vertex-shader" type="x-shader/x-vertex">
+                        attribute vec4 a_position;
+                        attribute vec4 a_color;
+                        attribute vec3 a_normal;
+                        uniform mat4 u_worldViewProjection;
+                        uniform mat4 u_worldInverseTranspose;
+                        varying vec3 v_normal;
+                        varying vec4 v_color;
+                        void main() {
+                          gl_Position = u_worldViewProjection * a_position;
+                          v_normal = mat3(u_worldInverseTranspose) * a_normal;
+                          v_color = a_color;
+                        }
+                    </pre>
+                    <pre  id="fragment-shader" type="x-shader/x-fragment">
+                        precision mediump float;
+                        varying vec3 v_normal;
+                        uniform vec3 u_reverseLightDirection;
+                        varying vec4 v_color;
+                        void main() {
+                          vec3 normal = normalize(v_normal);
+                          float light = dot(normal, u_reverseLightDirection);
+                          gl_FragColor = v_color;
+                          gl_FragColor.rgb *= light;
+                        }
+                    </pre>
+                </canvas>
+            </div>
+            <div id="uiContainer">
+                <div id="ui">
+                    <div id="x"></div>
+                    <div id="y"></div>
+                    <div id="z"></div>
+                    <div id="angleX"></div>
+                    <div id="angleY"></div>
+                    <div id="angleZ"></div>
+                    <div id="scaleX"></div>
+                    <div id="scaleY"></div>
+                    <div id="scaleZ"></div>
+                </div>
+            </div>
         </div>
-    </div>
+        <div class="desContainer">
+            <div class="des">
+                <div class="title">
+                    <span id="category">webgl</span>
+                    <span id="name">DirectionalLight</span>
+                </div>
+                <div class="codeLink">
+                    <nano_button @handleClick="handleClick"></nano_button>
+                </div>
+            </div>
+            <div class="conclusion">
+                <span class="title"><span id="conTitle">方向光</span></span>
+                <span class="content">Is the direction of light the direction of hope?</span>
+            </div>
+        </div>
+    </body>
+
+
+
 </template>
 <script>
 export default {
@@ -383,6 +405,6 @@ export default {
     },
 }
 </script>
-<style lang="">
-    
+<style lang="less" scoped>
+@import "../index.less";
 </style>

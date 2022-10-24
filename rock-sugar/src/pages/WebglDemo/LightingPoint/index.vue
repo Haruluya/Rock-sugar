@@ -1,74 +1,96 @@
 <template lang="html">
-<div class="title">
-        7_LightingPoint
-    </div>
-    <canvas id="canvas"></canvas>
-    <pre  id="vertex-shader" type="x-shader/x-vertex">
-        attribute vec4 a_position;
-        attribute vec3 a_normal;
-        attribute vec4 a_color;
-        //点光源位置。
-        uniform vec3 u_lightWorldPosition;
-        //
-        uniform vec3 u_viewWorldPosition;
-        //变换矩阵.
-        uniform mat4 u_world;
-        uniform mat4 u_worldViewProjection;
-        uniform mat4 u_worldInverseTranspose;
-        varying vec3 v_normal;
-        varying vec3 v_surfaceToLight;
-        varying vec3 v_surfaceToView;
-        varying vec4 v_color;
-        void main() {
-          gl_Position = u_worldViewProjection * a_position;
-          v_normal = mat3(u_worldInverseTranspose) * a_normal;
-          vec3 surfaceWorldPosition = (u_world * a_position).xyz;
-          v_surfaceToLight = u_lightWorldPosition - surfaceWorldPosition;
-          v_surfaceToView = normalize(u_viewWorldPosition - surfaceWorldPosition);
-          v_color = a_color;
-        }
-    </pre>
-    <pre  id="fragment-shader" type="x-shader/x-fragment">
-        precision mediump float;
-        varying vec3 v_normal;
-        varying vec3 v_surfaceToLight;
-        varying vec3 v_surfaceToView;
-        varying vec4 v_color;
-        uniform float u_shininess;
-        uniform vec3 u_lightColor;
-        uniform vec3 u_specularColor;
-        
-        void main() {
-          vec3 normal = normalize(v_normal);
-          vec3 surfaceToLightDirection = normalize(v_surfaceToLight);
-          vec3 surfaceToViewDirection = normalize(v_surfaceToView);
-          vec3 halfVector = normalize(surfaceToLightDirection + surfaceToViewDirection);
-          float light = dot(normal, surfaceToLightDirection);
-          float specular = 0.0;
-          //高光.
-          if (light > 0.0) {
-            specular = pow(dot(normal, halfVector), u_shininess);
-          }
-          gl_FragColor = v_color;
-          gl_FragColor.rgb *= light * u_lightColor;
-          gl_FragColor.rgb += specular * u_specularColor;
-        }
-    </pre>
-    <div id="uiContainer">
-        <div id="ui">
-            <div id="x"></div>
-            <div id="y"></div>
-            <div id="z"></div>
-            <div id="angleX"></div>
-            <div id="angleY"></div>
-            <div id="angleZ"></div>
-            <div id="scaleX"></div>
-            <div id="scaleY"></div>
-            <div id="scaleZ"></div>
-            <div id="shininess"></div>
-            <div id="lightColor"></div>
+    <body>
+        <div class="webglContainer">
+            <div class="canvesContainer">
+                <canvas id="canvas">
+                    <pre  id="vertex-shader" type="x-shader/x-vertex">
+                        attribute vec4 a_position;
+                        attribute vec3 a_normal;
+                        attribute vec4 a_color;
+                        //点光源位置。
+                        uniform vec3 u_lightWorldPosition;
+                        //
+                        uniform vec3 u_viewWorldPosition;
+                        //变换矩阵.
+                        uniform mat4 u_world;
+                        uniform mat4 u_worldViewProjection;
+                        uniform mat4 u_worldInverseTranspose;
+                        varying vec3 v_normal;
+                        varying vec3 v_surfaceToLight;
+                        varying vec3 v_surfaceToView;
+                        varying vec4 v_color;
+                        void main() {
+                          gl_Position = u_worldViewProjection * a_position;
+                          v_normal = mat3(u_worldInverseTranspose) * a_normal;
+                          vec3 surfaceWorldPosition = (u_world * a_position).xyz;
+                          v_surfaceToLight = u_lightWorldPosition - surfaceWorldPosition;
+                          v_surfaceToView = normalize(u_viewWorldPosition - surfaceWorldPosition);
+                          v_color = a_color;
+                        }
+                    </pre>
+                    <pre  id="fragment-shader" type="x-shader/x-fragment">
+                        precision mediump float;
+                        varying vec3 v_normal;
+                        varying vec3 v_surfaceToLight;
+                        varying vec3 v_surfaceToView;
+                        varying vec4 v_color;
+                        uniform float u_shininess;
+                        uniform vec3 u_lightColor;
+                        uniform vec3 u_specularColor;
+                        
+                        void main() {
+                          vec3 normal = normalize(v_normal);
+                          vec3 surfaceToLightDirection = normalize(v_surfaceToLight);
+                          vec3 surfaceToViewDirection = normalize(v_surfaceToView);
+                          vec3 halfVector = normalize(surfaceToLightDirection + surfaceToViewDirection);
+                          float light = dot(normal, surfaceToLightDirection);
+                          float specular = 0.0;
+                          //高光.
+                          if (light > 0.0) {
+                            specular = pow(dot(normal, halfVector), u_shininess);
+                          }
+                          gl_FragColor = v_color;
+                          gl_FragColor.rgb *= light * u_lightColor;
+                          gl_FragColor.rgb += specular * u_specularColor;
+                        }
+                    </pre>
+                </canvas>
+            </div>
+            <div id="uiContainer">
+                <div id="ui">
+                    <div id="x"></div>
+                    <div id="y"></div>
+                    <div id="z"></div>
+                    <div id="angleX"></div>
+                    <div id="angleY"></div>
+                    <div id="angleZ"></div>
+                    <div id="scaleX"></div>
+                    <div id="scaleY"></div>
+                    <div id="scaleZ"></div>
+                    <div id="shininess"></div>
+                    <div id="lightColor"></div>
+                </div>
+            </div>
         </div>
-    </div>
+        <div class="desContainer">
+            <div class="des">
+                <div class="title">
+                    <span id="category">webgl</span>
+                    <span id="name">LightingPoint</span>
+                </div>
+                <div class="codeLink">
+                    <nano_button @handleClick="handleClick"></nano_button>
+                </div>
+            </div>
+            <div class="conclusion">
+                <span class="title"><span id="conTitle">点光源</span></span>
+                <span class="content">Point light is like a ray of hope, destined not to shine on the whole world</span>
+            </div>
+        </div>
+    </body>
+
+    
+
 </template>
 <script>
 export default {
@@ -438,6 +460,6 @@ export default {
     },
 }
 </script>
-<style lang="">
-    
-</style>
+<style lang="less" scoped>
+@import "../index.less";
+</style>    
