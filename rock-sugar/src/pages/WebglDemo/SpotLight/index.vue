@@ -88,7 +88,11 @@
                 <span class="title"><span id="conTitle">聚光灯</span></span>
                 <span class="content">Spotlight will never be on me.</span>
             </div>
+            <div class="menu">
+                <nano_items_menu></nano_items_menu>
+            </div>
         </div>
+
     </body>
 
 </template>
@@ -510,12 +514,9 @@ const Render = function(){
 
 
 
-import nano_button from "_packages/nano_button/index.js"
+
 export default {
     name:'SpotLight',
-    components:{
-        nano_button
-    },  
     methods:{
         handleClick(){
             window.location.href = 'https://github.com/haruluya/Rock-Sugar';

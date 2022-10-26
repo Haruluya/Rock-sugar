@@ -43,6 +43,9 @@
                 <span class="title"><span id="conTitle">相机</span></span>
                 <span class="content">I suddenly realized I'd never taken a selfie before.</span>
             </div>
+            <div class="menu">
+                <nano_items_menu></nano_items_menu>
+            </div>
         </div>
     </body>
 

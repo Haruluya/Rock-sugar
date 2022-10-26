@@ -7,10 +7,14 @@ import {nano_install} from '_packages/index.js'
 
 const app = createApp(App);
 
+// install must befor use!!!
+nano_install(app);
+
+
 app.use(router);
 app.mount('#app');
 
-nano_install(app);
+
 
 
 

@@ -49,16 +49,22 @@
                 <span class="title"><span id="conTitle">太阳系</span></span>
                 <span class="content">Will I ever see humans fly out of the solar system?</span>
             </div>
+            <div class="menu">
+                <nano_items_menu></nano_items_menu>
+            </div>
         </div>
     </body>
 </template>
 <script>
 
 import nano_button from "_packages/nano_button/index.js"
+import nano_items_menu from "_packages/nano_items_menu/index.js"
+
 export default {
     name:'SolarSystem',
     components:{
-        nano_button
+        nano_button,
+        nano_items_menu
     },  
     methods:{
         handleClick(){

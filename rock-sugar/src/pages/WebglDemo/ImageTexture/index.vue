@@ -44,6 +44,9 @@
                 <span class="title"><span id="conTitle">材质</span></span>
                 <span class="content">Maybe putting my picture here is the only way I can make a record</span>
             </div>
+            <div class="menu">
+                <nano_items_menu></nano_items_menu>
+            </div>
         </div>
     </body>
 

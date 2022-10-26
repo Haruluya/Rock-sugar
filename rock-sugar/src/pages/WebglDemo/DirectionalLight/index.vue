@@ -59,6 +59,9 @@
                 <span class="title"><span id="conTitle">方向光</span></span>
                 <span class="content">Is the direction of light the direction of hope?</span>
             </div>
+            <div class="menu">
+                <nano_items_menu></nano_items_menu>
+            </div>
         </div>
     </body>
 

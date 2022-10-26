@@ -1,39 +1,59 @@
 <template lang="html">
- <div class="title">
-        14_DataTexture
+    <div class="webglContainer">
+        <div class="canvesContainer">
+            <canvas id="canvas">
+                <pre  id="vertex-shader" type="x-shader/x-vertex">
+                    attribute vec4 a_position;
+                    attribute vec2 a_texcoord;
+                    
+                    uniform mat4 u_matrix;
+                    
+                    varying vec2 v_texcoord;
+                    
+                    void main() {
+                      // Multiply the position by the matrix.
+                      gl_Position = u_matrix * a_position;
+                    
+                      // Pass the texcoord to the fragment shader.
+                      v_texcoord = a_texcoord;
+                    }
+                </pre>
+            
+                <pre  id="fragment-shader" type="x-shader/x-fragment">
+                    precision mediump float;
+            
+                    // Passed in from the vertex shader.
+                    varying vec2 v_texcoord;
+                    
+                    // The texture.
+                    uniform sampler2D u_texture;
+                    
+                    void main() {
+                       gl_FragColor = texture2D(u_texture, v_texcoord);
+                    }
+                </pre>
+            </canvas>
+        </div>
     </div>
-    <canvas id="canvas">
-    </canvas>
-    <pre  id="vertex-shader" type="x-shader/x-vertex">
-        attribute vec4 a_position;
-        attribute vec2 a_texcoord;
-        
-        uniform mat4 u_matrix;
-        
-        varying vec2 v_texcoord;
-        
-        void main() {
-          // Multiply the position by the matrix.
-          gl_Position = u_matrix * a_position;
-        
-          // Pass the texcoord to the fragment shader.
-          v_texcoord = a_texcoord;
-        }
-    </pre>
+    <div class="desContainer">
+        <div class="des">
+            <div class="title">
+                <span id="category">webgl</span>
+                <span id="name">DataTexture</span>
+            </div>
+            <div class="codeLink">
+                <nano_button @handleClick="handleClick"></nano_button>
+            </div>
+        </div>
+        <div class="conclusion">
+            <span class="title"><span id="conTitle">程序纹理</span></span>
+            <span class="content">The next is DataHuman.</span>
+        </div>
+        <div class="menu">
+            <nano_items_menu></nano_items_menu>
+        </div>
+    </div>
 
-    <pre  id="fragment-shader" type="x-shader/x-fragment">
-        precision mediump float;
-
-        // Passed in from the vertex shader.
-        varying vec2 v_texcoord;
-        
-        // The texture.
-        uniform sampler2D u_texture;
-        
-        void main() {
-           gl_FragColor = texture2D(u_texture, v_texcoord);
-        }
-    </pre>
 </template>
 <script>
 export default {
@@ -307,6 +327,6 @@ export default {
     }
 }
 </script>
-<style lang="">
-    
+<style lang="less" scoped>
+@import "../index.less";
 </style>

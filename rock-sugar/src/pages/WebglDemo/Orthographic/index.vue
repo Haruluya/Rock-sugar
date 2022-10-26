@@ -50,6 +50,9 @@
                 <span class="title"><span id="conTitle">正交投影</span></span>
                 <span class="content">Orthogonal is more like irrelevant.</span>
             </div>
+            <div class="menu">
+                <nano_items_menu></nano_items_menu>
+            </div>
         </div>
     </body>
 

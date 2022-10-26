@@ -1,24 +1,26 @@
 <template>
-  <!-- <iframe src="https://webglfundamentals.org/webgl/background.html" id='globalBackground'></iframe> -->
+
   <div class="app">
-    <div><nano_menu></nano_menu></div>
+    <div class="menu"><nano_menu></nano_menu></div>
     <div class="content">
         <router-view>
 
-
         </router-view>
+    </div>
+    <div class="footer">
+        <nano_footer></nano_footer>
     </div>
   </div>
 </template>
 
 <script>
-import nano_menu from '_packages/nano_menu/index.js'
+import { nano_footer } from './packages';
+
+
 
 export default {
-  name: 'App',
-  components: {
-    nano_menu
-  }
+    name: "App",
+    components: { nano_footer }
 }
 </script>
 
@@ -29,9 +31,19 @@ export default {
     padding: 0;
   }
 
+.menu{
+
+}
+
 .content{
     margin-top: 80px;
 }
+.footer{
+    height: 20vw;
+}
+
+
+
 a {
 	text-decoration: none; 
 	outline: none;	
@@ -43,6 +55,17 @@ a {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
 }
+
+
+
+/*Text animation.*/
+span{
+    font-family: "Arial Rounded MT Bold", "Helvetica Rounded", Arial, sans-serif;;
+    mask: radial-gradient(circle at 0 50%, #000, transparent 10%, transparent 0);
+    mask-size: 10000%;
+    animation: textShow 3s;
+}
+
 
 /*create runtime*/
 
@@ -73,14 +96,7 @@ input[type=range]::-webkit-slider-thumb {
     border: solid 0.125em rgba(232, 229, 62, 0.5); 
     box-shadow: 0 .125em .125em #3b4547; 
 }
-.title{
-    margin: 20px 0px;
-    text-align: center;
-    font-size: 25px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color:#016bff;
-    font-weight: bold;
-}
+
 body{
     margin: 0;
 }
@@ -135,6 +151,6 @@ body{
 .webgl-Input-colorlabel{
     margin-right: 20px;
 }
-
+@import "./styles/webglAnimationKey.less";
 
 </style>

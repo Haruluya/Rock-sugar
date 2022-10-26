@@ -86,6 +86,9 @@
                 <span class="title"><span id="conTitle">点光源</span></span>
                 <span class="content">Point light is like a ray of hope, destined not to shine on the whole world</span>
             </div>
+            <div class="menu">
+                <nano_items_menu></nano_items_menu>
+            </div>
         </div>
     </body>
 

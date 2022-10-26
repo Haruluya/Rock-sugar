@@ -52,6 +52,9 @@
             <span class="title"><span id="conTitle">透视投影</span></span>
             <span class="content">Failure is like perspective, throughout a person's life</span>
         </div>
+        <div class="menu">
+            <nano_items_menu></nano_items_menu>
+        </div>
     </div>
     </body>
 
@@ -59,6 +62,7 @@
     
 </template>
 <script>
+
 export default {
     name:"Perspective",
     mounted() {

@@ -1,7 +1,5 @@
 <template lang="html">
     <body>
-
-
         <div class="webglContainer">
             <div class="canvesContainer">
                 <canvas id="triangle_content">
@@ -41,7 +39,7 @@
                     <span id="name">Triangle</span>
                 </div>
                 <div class="codeLink">
-                    <nano_button @handleClick="handleClick"></nano_button>
+                    <nano_button @handleClick="handleClick" prop_content="查看源码"></nano_button>
                 </div>
             </div>
             <div class="conclusion">
@@ -161,14 +159,9 @@ const Render =  function(){
 
 }
 
-import nano_button from "_packages/nano_button/index.js"
-import nano_items_menu from "_packages/nano_items_menu/index.js"
+
 export default {
-    name:'Triangle',
-    components:{
-        nano_button,
-        nano_items_menu
-    },  
+    name:'Triangle', 
     methods:{
         handleClick(){
             window.location.href = 'https://github.com/haruluya/Rock-Sugar';

@@ -3,13 +3,461 @@
 }
 
 
+
 .slider{
-    height: 50vw;
+    height: 53vw;
     z-index: 1;
+    position: relative;
+    #githubButton{
+     position: absolute;
+     top: 70%;
+     left: 50%;
+     transform: translate(-50%,-50%); 
+     z-index: 2;  
+    }
+    #githubButton:hover{
+
+    }
 }
+
+.projects{
+    display: flex;
+    justify-content: space-between;
+    padding: 3.5vw;
+    position: relative;
+    flex-flow: row wrap;
+    margin-top: 7vw;
+
+
+    .mask{
+        position: absolute;
+        top: -7vw;
+        bottom: -2vw;
+        left: 0;
+        right: 0;
+        background-size: cover;
+        background-position: -1vw -4.5vw;
+        opacity: 0.3;
+    }
+    &::before{
+        content: '';
+        position: absolute;
+        top: 0.5vw;
+        bottom: 1vw;
+        left: 1vw;
+        right: 1vw;
+        clip-path: inset(0 round 18% 0%);
+        border: #c39133 solid 3px;
+        opacity: 0.5;
+        animation: desClipBorderShow 1s 1;
+    }
+
+
+    .title{
+        color: white;
+        font-size: 2vw;
+        font-weight: bold;
+        position: absolute;
+        top: -0.5vw;
+        left: 1.5vw;
+        
+    }
+    .linkItem{
+        margin-top: 2vw;
+    }
+}
+
+.webglLink{
+    background-color: white;
+    margin-top: 8vw;
+    height: 70vw;
+    overflow: hidden;
+    font-family: Georgia, serif;
+    font-style: italic;
+    .desContainer{
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        
+        margin-top: 10vw;
+    }
+    .desContainer .des{
+        font-size: 1.6vw;
+        font-weight: bold;
+    }
+    .desContainer .title{
+        font-size: 6vw;
+        font-weight: bold;
+    }
+    .desContainer .content{
+        font-family: "Arial Rounded MT Bold", "Helvetica Rounded", Arial, sans-serif;;
+        font-size: 1vw;
+        font-weight: bold;
+        margin-top: 0;
+        margin-bottom: 2vw;
+        color: #d1cccd;
+    }
+    .desContainer .link{
+        
+    }
+    .contentContainer{
+        display: flex;
+        padding: 5vw;
+        height: 40vw;
+        position: relative;
+    }
+    .contentContainer .show{
+        position: absolute;
+        right: 5%;
+        height: 90%;
+        width: 40%;
+        top: 0%;
+        border-radius: 50%;
+        border: rgba(197, 197, 197, 0.7) solid 0.1vw;
+        animation: opacityShow 2s 1;
+        &::before {
+            content: "";
+            position: absolute;
+            top: -0.1vw;
+            left: -0.1vw;
+            right:-0.1vw;
+            bottom:-0.1vw;
+            border-radius: 50%;
+            border: #0bc6e3 solid 0.25vw;
+            clip-path: polygon( 0 70%,  100% 70%,  100% 30%, 0 30%);
+            animation: webglLinkBorderRotateBefore 4s infinite;
+        }
+        &::after{
+            content: "";
+            position: absolute;
+            top: -0.1vw;
+            left: -0.1vw;
+            right:-0.1vw;
+            bottom:-0.1vw;
+            border-radius: 50%;
+            border: #0bc6e3 solid 0.25vw;
+            clip-path: polygon(70% -100%, 70% 200%, 30% 200%, 30% -100%);
+            animation: webglLinkBorderRotateAfter 4s infinite;
+        }
+    }
+}
+
+.gameEngine{
+    background-color: white;
+    height: 70vw;
+    overflow: hidden;
+    font-family: Georgia, serif;
+    font-style: italic;
+    padding-top: 10vw;
+    display: flex;
+    justify-content: center;
+    .videoContainer{
+        width: 55%;
+        height: 80%;
+        margin-right: 5%;
+        margin-left: 5%;
+        animation: opacityShow 2s 1;
+
+        position: relative;
+        z-index: 1;
+    }
+
+    .videoContainer .videoContent{
+        height: 100%;
+        width: 100%;
+        background-color: white;
+        clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+    }
+
+    .videoContainer .videoBorder{
+        position: absolute;
+        top: -0.1vw;
+        left: -0.1vw;
+        right:-0.1vw;
+        bottom:-0.1vw;
+        background-color: rgba(197, 197, 197, 0.7) ;
+        clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+        border: rgba(197, 197, 197, 0.7) solid 0.1vw;
+        z-index: -1;
+    }
+    .videoContainer .videoBorder::before{
+        content: '';
+        position: absolute;
+        top: -0.3vw;
+        left: -0.3vw;
+        right:-0.3vw;
+        bottom:-0.3vw;
+        background-color: #0bc6e3;
+        clip-path: polygon(70% -100%, 70% 200%, 30% 200%, 30% -100%);
+        animation: webglLinkBorderRotateAfter 4s infinite;
+    }
+
+
+    .desContainer{
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        margin-bottom: 10vw;
+        
+    }
+    .desContainer .des{
+        font-size: 1.2vw;
+        font-weight: bold;
+    }
+    .desContainer .title{
+        font-size: 3vw;
+        font-weight: bold;
+    }
+    .desContainer .content{
+        font-family: "Arial Rounded MT Bold", "Helvetica Rounded", Arial, sans-serif;;
+        font-size: 0.5vw;
+        font-weight: bold;
+        margin-top: 0;
+        margin-bottom: 2vw;
+        color: #d1cccd;
+    }
+}
+
+.nanoCore{
+    background-color: white;
+    height: 70vw;
+    overflow: hidden;
+    font-family: Georgia, serif;
+    font-style: italic;
+    display: flex;
+
+    .desContainer{
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 10vw;
+        margin-left: 14vw;
+    }
+    .desContainer .des{
+        font-size: 1.5vw;
+        font-weight: bold;
+    }
+    .desContainer .title{
+        font-size: 4vw;
+        font-weight: bold;
+    }
+    .desContainer .content{
+        font-family: "Arial Rounded MT Bold", "Helvetica Rounded", Arial, sans-serif;;
+        font-size:1vw;
+        font-weight: bold;
+        margin-top: 0;
+        margin-bottom: 2vw;
+        color: #d1cccd;
+    }
+
+
+
+    .charContainer{
+        width: 70%;
+        height: 60%;
+        margin-left: 15vw;
+        margin-right: 5vw;
+        margin-top: 10vw;
+        position: relative;
+    }
+    .charContainer .charName{
+
+        height: 15%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 3vw;
+        font-style: italic;
+        font-weight: bold;
+        transform: translateY(8vw) translateX(-12vw);
+        position: relative;
+        z-index: 2;
+
+    }
+
+    .charContainer .charImgContainer{
+        height: 70%;
+        width: 100%;
+        position: relative;
+        z-index: 1;
+    }
+
+    .charImgContainer .charImgBg{
+        position: relative;
+        width: 100%;
+        height: 100%;
+        background-color: white;
+        clip-path: polygon(50% 0, 100% 100%, 0 100%);
+        z-index: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+
+    }
+    .charImgContainer .charImg{
+        position: absolute;
+        top: -5vw;
+        bottom: -5vw;
+        left: -5vw;
+        right: -5vw;
+        img{
+            height: 60%;
+            transform: translateY(40%);
+        }
+    }
+
+    .charImgContainer .charBorder{
+        content: '';
+        position: absolute;
+        top: -0.1vw;
+        left: -0.1vw;
+        right:-0.1vw;
+        bottom:-0.1vw;
+        background-color: rgba(197, 197, 197, 0.7) ;
+        clip-path: polygon(50% 0, 100% 100%, 0 100%);
+        border: rgba(197, 197, 197, 0.7) solid 0.1vw;
+        z-index: -1;
+    }
+    .charImgContainer .charBorder::before{
+        content: '';
+        position: absolute;
+        top: -0.3vw;
+        left: -0.3vw;
+        right:-0.3vw;
+        bottom:-0.3vw;
+        background-color: #0bc6e3;
+        clip-path: polygon(70% -100%, 70% 200%, 30% 200%, 30% -100%);
+        animation: webglLinkBorderRotateAfter 4s infinite;
+    }
+    .charContainer .arrow{
+        position: absolute;
+        top: 90%;
+        cursor: pointer;
+        width: 100%;
+        height: 10%;
+        
+     
+        background-size: contain;
+        z-index: 1;
+        display: flex;
+
+    }
+
+    .charContainer .des{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        font-size: 2vw;
+        padding: 2%;
+        font-weight: bold;
+        transform: translateX(-50%) translateY(-50%);
+        z-index: 3;
+    }
+
+    .charContainer .left-arrow {
+        width: 10%;
+        height: 100%;
+        margin-left: 20%;
+        transition: all 1s ease;
+        background-image: url("../../assets/images/arrow.png");
+        background-position: 5%;
+        background-size: contain;
+        &:hover{
+          transform: scale(1.05);
+          animation: arrowRotateLeft linear  1.5s  infinite;
+          
+        }
+      }
+      
+    
+    .charContainer  .right-arrow {
+        width: 10%;
+        height: 100%;
+        margin-left: 38%;
+        transition: all 1s ease;
+        background-image: url("../../assets/images/arrow.png");
+        background-position: 5%;
+        background-size: contain;
+        transform: rotateY(180deg);
+        &:hover{
+          transform:  rotateY(180deg) scale(1.05);
+          animation: arrowRotateRight linear 1.5s  infinite;
+        }
+      }
+
+}
+
+
+@keyframes webglLinkBorderRotateBefore {
+    0% {
+        clip-path: polygon( -100% 70%,  200% 70%,  200% 30%, -100% 30%);
+    }
+    50%{
+        clip-path: polygon(70% -100%, 70% 200%, 30% 200%, 30% -100%);
+    }
+    100%{
+        clip-path: polygon( -100% 70%,  200% 70%,  200% 30%, -100% 30%);
+
+    }
+}
+@keyframes webglLinkBorderRotateAfter {
+    0% {
+        clip-path: polygon(70% -100%, 70% 200%, 30% 200%, 30% -100%);
+    }
+    50%{
+        clip-path: polygon( -100% 70%,  200% 70%,  200% 30%, -100% 30%);
+    }
+    100%{
+        clip-path: polygon(70% -100%, 70% 200%, 30% 200%, 30% -100%);
+    }
+}
+
+
+
+
+@keyframes arrowRotateLeft {
+    from{
+      transform:  scale(1.05) rotateX(0deg);
+    }
+    to{
+      transform: scale(1.05) rotateX(360deg);
+    }
+  }
+  
+  
+  @keyframes arrowRotateRight {
+    from{
+      transform:  rotateY(180deg) scale(1.05) rotateX(0deg);
+    }
+    to{
+      transform:  rotateY(180deg) scale(1.05) rotateX(360deg);
+    }
+  }
+
 
 .blank{
     height: 1000px;
     width: 100%;
     z-index: 1;
+}
+
+
+@keyframes desClipBorderShow {
+    0% {
+        clip-path: inset(0 0 98% 0);
+    }
+    25% {
+        clip-path: inset(0 98% 0 0);
+    }
+    50% {
+        clip-path: inset(98% 0 0 0);
+    }
+    75% {
+        clip-path: inset(0 0 0 98%);
+    }
+    100%{
+        clip-path: inset(0 round 0 8%);
+    }
 }

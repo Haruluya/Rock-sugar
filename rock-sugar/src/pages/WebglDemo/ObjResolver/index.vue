@@ -20,6 +20,9 @@
                 <span class="title"><span id="conTitle">模型渲染</span></span>
                 <span class="content">I can't build a model of the future, let alone render it.</span>
             </div>
+            <div class="menu">
+                <nano_items_menu></nano_items_menu>
+            </div>
         </div>
     </body>
 </template>

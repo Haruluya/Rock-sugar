@@ -62,6 +62,9 @@
                 <span class="title"><span id="conTitle">图像处理</span></span>
                 <span class="content">Image process can make me look happier.</span>
             </div>
+            <div class="menu">
+                <nano_items_menu></nano_items_menu>
+            </div>
         </div>
     </body>
 

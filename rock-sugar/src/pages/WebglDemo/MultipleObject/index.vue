@@ -89,6 +89,9 @@
                 <span class="title"><span id="conTitle">多物体渲染</span></span>
                 <span class="content">I want to render a lot of money.</span>
             </div>
+            <div class="menu">
+                <nano_items_menu></nano_items_menu>
+            </div>
         </div>
     </body>
 
