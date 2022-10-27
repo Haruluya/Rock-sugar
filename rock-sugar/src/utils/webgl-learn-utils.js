@@ -151,7 +151,6 @@
         throw ('*** Error: unknown script element' + scriptId);
       }
       shaderSource = shaderScript.innerText;
-      console.log(shaderSource);
       if (!opt_shaderType) {
         if (shaderScript.type === 'x-shader/x-vertex') {
           shaderType = gl.VERTEX_SHADER;
@@ -981,6 +980,7 @@
       Object.keys(attribs).forEach(function(name) {
         const setter = setters[name];
         if (setter) {
+
           setter(attribs[name]);
         }
       });
@@ -989,8 +989,10 @@
     function setUniforms(setters, ...values) {
       setters = setters.uniformSetters || setters;
       for (const uniforms of values) {
+
         Object.keys(uniforms).forEach(function(name) {
           const setter = setters[name];
+          console.log(uniforms,setter);
           if (setter) {
             setter(uniforms[name]);
           }
@@ -1106,7 +1108,8 @@
       if (name.indexOf('coord') >= 0) {
         numComponents = 2;
       } else if (name.indexOf('color') >= 0) {
-        numComponents = 4;
+        // numComponents = 4;??
+        numComponents = 3;
       } else {
         numComponents = 3;  // position, normals, indices ...
       }
@@ -1125,18 +1128,22 @@
       Object.keys(mapping).forEach(function(attribName) {
         const bufferName = mapping[attribName];
         const origArray = arrays[bufferName];
+
+
         if (origArray.value) {
           attribs[attribName] = {
             value: origArray.value,
           };
         } else {
           const array = makeTypedArray(origArray, bufferName);
+          console.log(array);
           attribs[attribName] = {
             buffer:        createBufferFromTypedArray(gl, array),
             numComponents: origArray.numComponents || array.numComponents || guessNumComponentsFromName(bufferName),
             type:          getGLTypeForTypedArray(gl, array),
             normalize:     getNormalizationForTypedArray(array),
           };
+          console.log(attribs[attribName]);
         }
       });
       return attribs;
@@ -1186,6 +1193,7 @@
       };
       let indices = arrays.indices;
       if (indices) {
+
         indices = makeTypedArray(indices, 'indices');
         bufferInfo.indices = createBufferFromTypedArray(gl, indices, gl.ELEMENT_ARRAY_BUFFER);
         bufferInfo.numElements = indices.length;
@@ -1810,7 +1818,17 @@
     }
   }
 
+//--------------------------------------
+function getTransformMatrix(matrix, transfrom){
+ 
+  matrix = translate3d(matrix, transfrom.translation[0],transfrom. translation[1], transfrom.translation[2]);
+  matrix = xRotate(matrix, transfrom.rotation[0]);
+  matrix = yRotate(matrix, transfrom.rotation[1]);
+  matrix = zRotate(matrix, transfrom.rotation[2]);
+  matrix = scale3d(matrix,transfrom.scale[0], transfrom.scale[1], transfrom.scale[2]);
+  return matrix;
 
+}
 
 
   return{
@@ -1867,7 +1885,10 @@
       drawBufferInfo:drawBufferInfo,
       createSphereWithVertexColorsBufferInfo: createFlattenedFunc(createSphereVertices),
       createCubeWithVertexColorsBufferInfo: createFlattenedFunc(createCubeVertices),
-  }
+      createUniformSetters:createUniformSetters,
+      createAttributeSetters:createAttributeSetters,
+      getTransformMatrix:getTransformMatrix,
+    }
 
 
   })

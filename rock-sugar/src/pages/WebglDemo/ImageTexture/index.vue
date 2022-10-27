@@ -7,11 +7,6 @@
             />
             <div id="uiContainer">
                 <div id="ui">
-                  <ui id="x"></ui>
-                  <ui id="y"></ui>
-                  <ui id="angle"></ui>
-                  <ui id="scaleX"></ui>
-                  <ui id="scaleY"></ui>
                 </div>
             </div>
         </div>
@@ -22,267 +17,187 @@
             :prop_button_content="desData.buttonContent"
             :prop_title="desData.title"
             :prop_content="desData.content"
+            @handleClick="handleClick"
             />
 
     </div>
+
+    
 </template>
 <script>
 import haruluyaImg from "../../../assets/images/haruluya.jpg"
 
+const desData = {
+    category:"Webgl",
+    name:"ImageTexture",
+    buttonContent:"查看源码",
+    title:"材质",
+    content:"Maybe putting my picture here is the only way I can make a record."
+}
+
+
+const vertexShaderSource = `
+    attribute vec4 a_position;
+    attribute vec2 a_texcoord;
+
+    uniform mat4 u_matrix;
+
+    varying vec2 v_texcoord;
+
+    void main() {
+        gl_Position = u_matrix * a_position;
+        v_texcoord = a_texcoord;
+    }
+`
+
+const fragmentShaderSource = `
+    precision mediump float;
+    varying vec2 v_texcoord;
+    uniform sampler2D u_texture;
+
+    void main() {
+        gl_FragColor = texture2D(u_texture, v_texcoord);
+    }
+`
+
+const position = [
+    -0.5, -0.5,  -0.5,
+    -0.5,  0.5,  -0.5,
+    0.5, -0.5,  -0.5,
+    -0.5,  0.5,  -0.5,
+    0.5,  0.5,  -0.5,
+    0.5, -0.5,  -0.5,
+
+    -0.5, -0.5,   0.5,
+    0.5, -0.5,   0.5,
+    -0.5,  0.5,   0.5,
+    -0.5,  0.5,   0.5,
+    0.5, -0.5,   0.5,
+    0.5,  0.5,   0.5,
+
+    -0.5,   0.5, -0.5,
+    -0.5,   0.5,  0.5,
+    0.5,   0.5, -0.5,
+    -0.5,   0.5,  0.5,
+    0.5,   0.5,  0.5,
+    0.5,   0.5, -0.5,
+
+    -0.5,  -0.5, -0.5,
+    0.5,  -0.5, -0.5,
+    -0.5,  -0.5,  0.5,
+    -0.5,  -0.5,  0.5,
+    0.5,  -0.5, -0.5,
+    0.5,  -0.5,  0.5,
+
+    -0.5,  -0.5, -0.5,
+    -0.5,  -0.5,  0.5,
+    -0.5,   0.5, -0.5,
+    -0.5,  -0.5,  0.5,
+    -0.5,   0.5,  0.5,
+    -0.5,   0.5, -0.5,
+
+    0.5,  -0.5, -0.5,
+    0.5,   0.5, -0.5,
+    0.5,  -0.5,  0.5,
+    0.5,  -0.5,  0.5,
+    0.5,   0.5, -0.5,
+    0.5,   0.5,  0.5,
+
+]
+const texcord =  [
+    // select the top left image
+    0   , 0  ,
+    0   , 0.5,
+    0.25, 0  ,
+    0   , 0.5,
+    0.25, 0.5,
+    0.25, 0  ,
+    // select the top middle image
+    0.25, 0  ,
+    0.5 , 0  ,
+    0.25, 0.5,
+    0.25, 0.5,
+    0.5 , 0  ,
+    0.5 , 0.5,
+    // select to top right image
+    0.5 , 0  ,
+    0.5 , 0.5,
+    0.75, 0  ,
+    0.5 , 0.5,
+    0.75, 0.5,
+    0.75, 0  ,
+    // select the bottom left image
+    0   , 0.5,
+    0.25, 0.5,
+    0   , 1  ,
+    0   , 1  ,
+    0.25, 0.5,
+    0.25, 1  ,
+    // select the bottom middle image
+    0.25, 0.5,
+    0.25, 1  ,
+    0.5 , 0.5,
+    0.25, 1  ,
+    0.5 , 1  ,
+    0.5 , 0.5,
+    // select the bottom right image
+    0.5 , 0.5,
+    0.75, 0.5,
+    0.5 , 1  ,
+    0.5 , 1  ,
+    0.75, 0.5,
+    0.75, 1  ,
+]
+
 export default {
     name:'ImageTexture',
+    data() {
+        return {
+            gl: null,
+            canvas: null,
+            program: null,
+            vertexShaderSource,
+            fragmentShaderSource,
+            desData,
+            position,
+            texcord,
+            transfrom:{
+                fieldOfViewRadians: haruluya_webgl_utils.degToRad(60),
+                modelXRotationRadians: haruluya_webgl_utils.degToRad(0),
+                modelYRotationRadians: haruluya_webgl_utils.degToRad(0),
+
+            }
+        }
+    },
     mounted() {
-        this.Render();
+        this.Init();
+        this.SetUI();
+
     },
     methods: {
+        Init(){
+            const { gl, canvas } = haruluya_webgl_utils.initWebglContext("canvas");
+            this.gl = gl;
+            this.canvas = canvas;
+            this.program = haruluya_webgl_utils.createProgramFromScripts(gl, ["vertex-shader", "fragment-shader"]);
+            
+        },
         Render(){
-            //position.
-        function setGeometry(gl) {
-            var positions = new Float32Array(
-                [
-                -0.5, -0.5,  -0.5,
-                -0.5,  0.5,  -0.5,
-                0.5, -0.5,  -0.5,
-                -0.5,  0.5,  -0.5,
-                0.5,  0.5,  -0.5,
-                0.5, -0.5,  -0.5,
 
-                -0.5, -0.5,   0.5,
-                0.5, -0.5,   0.5,
-                -0.5,  0.5,   0.5,
-                -0.5,  0.5,   0.5,
-                0.5, -0.5,   0.5,
-                0.5,  0.5,   0.5,
+        },
+        SetUI(){
 
-                -0.5,   0.5, -0.5,
-                -0.5,   0.5,  0.5,
-                0.5,   0.5, -0.5,
-                -0.5,   0.5,  0.5,
-                0.5,   0.5,  0.5,
-                0.5,   0.5, -0.5,
+        },
+        Destory(){
 
-                -0.5,  -0.5, -0.5,
-                0.5,  -0.5, -0.5,
-                -0.5,  -0.5,  0.5,
-                -0.5,  -0.5,  0.5,
-                0.5,  -0.5, -0.5,
-                0.5,  -0.5,  0.5,
+        },
+        handleClick() {
+            window.location.href = "https://github.com/Haruluya/Rock-sugar/blob/master/rock-sugar/src/pages/WebglDemo/ImageTexture/index.vue";
+        },
 
-                -0.5,  -0.5, -0.5,
-                -0.5,  -0.5,  0.5,
-                -0.5,   0.5, -0.5,
-                -0.5,  -0.5,  0.5,
-                -0.5,   0.5,  0.5,
-                -0.5,   0.5, -0.5,
-
-                0.5,  -0.5, -0.5,
-                0.5,   0.5, -0.5,
-                0.5,  -0.5,  0.5,
-                0.5,  -0.5,  0.5,
-                0.5,   0.5, -0.5,
-                0.5,   0.5,  0.5,
-
-                ]);
-            gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
-        }
-
-            // texcoord.
-        function setTexcoords(gl) {
-            gl.bufferData(
-                gl.ARRAY_BUFFER,
-                new Float32Array(
-                    [
-                    // select the top left image
-                    0   , 0  ,
-                    0   , 0.5,
-                    0.25, 0  ,
-                    0   , 0.5,
-                    0.25, 0.5,
-                    0.25, 0  ,
-                    // select the top middle image
-                    0.25, 0  ,
-                    0.5 , 0  ,
-                    0.25, 0.5,
-                    0.25, 0.5,
-                    0.5 , 0  ,
-                    0.5 , 0.5,
-                    // select to top right image
-                    0.5 , 0  ,
-                    0.5 , 0.5,
-                    0.75, 0  ,
-                    0.5 , 0.5,
-                    0.75, 0.5,
-                    0.75, 0  ,
-                    // select the bottom left image
-                    0   , 0.5,
-                    0.25, 0.5,
-                    0   , 1  ,
-                    0   , 1  ,
-                    0.25, 0.5,
-                    0.25, 1  ,
-                    // select the bottom middle image
-                    0.25, 0.5,
-                    0.25, 1  ,
-                    0.5 , 0.5,
-                    0.25, 1  ,
-                    0.5 , 1  ,
-                    0.5 , 0.5,
-                    // select the bottom right image
-                    0.5 , 0.5,
-                    0.75, 0.5,
-                    0.5 , 1  ,
-                    0.5 , 1  ,
-                    0.75, 0.5,
-                    0.75, 1  ,
-
-                ]),
-                gl.STATIC_DRAW);
-            }
-        
-        
-        var fieldOfViewRadians = haruluya_webgl_utils.degToRad(60);
-        var modelXRotationRadians = haruluya_webgl_utils.degToRad(0);
-        var modelYRotationRadians = haruluya_webgl_utils.degToRad(0);
-
-        var then = 0;
-
-        var canvas = document.querySelector("#canvas");
-        var gl = canvas.getContext("webgl");
-        if (!gl) {
-            return;
-        }
-
-        var program = haruluya_webgl_utils.createProgramFromScripts(gl, ["vertex-shader", "fragment-shader"]);
-        var positionLocation = gl.getAttribLocation(program, "a_position");
-        var texcoordLocation = gl.getAttribLocation(program, "a_texcoord");
-
-        var matrixLocation = gl.getUniformLocation(program, "u_matrix");
-        var textureLocation = gl.getUniformLocation(program, "u_texture");
-
-        var positionBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-        setGeometry(gl);
-
-        var texcoordBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, texcoordBuffer);
-
-        setTexcoords(gl);
-
-        var texture = gl.createTexture();
-        gl.bindTexture(gl.TEXTURE_2D, texture);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
-                        new Uint8Array([0, 0, 255, 255]));
-
-
-        // Set image.
-        var image = new Image();
-        image.src = haruluyaImg;
-        image.addEventListener('load', function() {
-            gl.bindTexture(gl.TEXTURE_2D, texture);
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA,gl.UNSIGNED_BYTE, image);
-            if (isPowerOf2(image.width) && isPowerOf2(image.height)) {
-                gl.generateMipmap(gl.TEXTURE_2D);
-            } else {
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-            }
-        });
-
-        
-        function isPowerOf2(value) {
-            return (value & (value - 1)) === 0;
-        }
-
-        requestAnimationFrame(drawScene);
-
-        function drawScene(time) {
-            // convert to seconds
-            time *= 0.001;
-            // Subtract the previous time from the current time
-            var deltaTime = time - then;
-            // Remember the current time for the next frame.
-            then = time;
-
-            haruluya_webgl_utils.resizeCanvasToDisplaySize(gl.canvas);
-
-            // Tell WebGL how to convert from clip space to pixels
-            gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-
-            gl.enable(gl.CULL_FACE);
-            gl.enable(gl.DEPTH_TEST);
-
-            // Animate the rotation
-            modelYRotationRadians += -0.7 * deltaTime;
-            modelXRotationRadians += -0.4 * deltaTime;
-
-            // Clear the canvas AND the depth buffer.
-            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-            // Tell it to use our program (pair of shaders)
-            gl.useProgram(program);
-
-            // Turn on the position attribute
-            gl.enableVertexAttribArray(positionLocation);
-
-            // Bind the position buffer.
-            gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-
-            // Tell the position attribute how to get data out of positionBuffer (ARRAY_BUFFER)
-            var size = 3;          // 3 components per iteration
-            var type = gl.FLOAT;   // the data is 32bit floats
-            var normalize = false; // don't normalize the data
-            var stride = 0;        // 0 = move forward size * sizeof(type) each iteration to get the next position
-            var offset = 0;        // start at the beginning of the buffer
-            gl.vertexAttribPointer(
-                positionLocation, size, type, normalize, stride, offset);
-
-            // Turn on the texcoord attribute
-            gl.enableVertexAttribArray(texcoordLocation);
-
-            // bind the texcoord buffer.
-            gl.bindBuffer(gl.ARRAY_BUFFER, texcoordBuffer);
-
-            // Tell the texcoord attribute how to get data out of texcoordBuffer (ARRAY_BUFFER)
-            var size = 2;          // 2 components per iteration
-            var type = gl.FLOAT;   // the data is 32bit floats
-            var normalize = false; // don't normalize the data
-            var stride = 0;        // 0 = move forward size * sizeof(type) each iteration to get the next position
-            var offset = 0;        // start at the beginning of the buffer
-            gl.vertexAttribPointer(
-                texcoordLocation, size, type, normalize, stride, offset);
-
-            // Compute the projection matrix
-            var aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
-            var projectionMatrix =
-                haruluya_webgl_utils.perspective(fieldOfViewRadians, aspect, 1, 2000);
-
-            var cameraPosition = [0, 0, 2];
-            var up = [0, 1, 0];
-            var target = [0, 0, 0];
-
-            // Compute the camera's matrix using look at.
-            var cameraMatrix = haruluya_webgl_utils.lookAt(cameraPosition, target, up);
-
-            // Make a view matrix from the camera matrix.
-            var viewMatrix = haruluya_webgl_utils.inverse(cameraMatrix);
-
-            var viewProjectionMatrix = haruluya_webgl_utils.multiply3d(projectionMatrix, viewMatrix);
-
-            var matrix = haruluya_webgl_utils.xRotate(viewProjectionMatrix, modelXRotationRadians);
-            matrix = haruluya_webgl_utils.yRotate(matrix, modelYRotationRadians);
-
-            // Set the matrix.
-            gl.uniformMatrix4fv(matrixLocation, false, matrix);
-
-            // Tell the shader to use texture unit 0 for u_texture
-            gl.uniform1i(textureLocation, 0);
-
-            // Draw the geometry.
-            gl.drawArrays(gl.TRIANGLES, 0, 6 * 6);
-
-            requestAnimationFrame(drawScene);
-        }
-        }
+    },
+    beforeDestory() {
+        this.Destory();
     },
 }
 </script>

@@ -1,160 +1,93 @@
 <template lang="html">
-    <body>
+    <div class="pageContainer">
         <div class="webglContainer">
-            <div class="canvesContainer">
-                <canvas id="imageProcess_content">
-                    <pre id="vertex-shader" type="notjs">
-                        attribute vec2 a_position;
-                        attribute vec2 a_texCoord;
-                        uniform vec2 u_resolution;
-                        varying vec2 v_texCoord;
-            
-                        void main() {
-                           vec2 zeroToOne = a_position / u_resolution;
-                           vec2 zeroToTwo = zeroToOne * 2.0;
-                           vec2 clipSpace = zeroToTwo - 1.0;
-                           gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);
-                           v_texCoord = a_texCoord;
-                        }
-                    </pre>
-                    <pre id="frament-shader" type="notjs">
-                        precision mediump float;
-            
-                        uniform sampler2D u_image;
-                        uniform vec2 u_textureSize;
-                        uniform float u_kernel[9];
-                        uniform float u_kernelWeight;
-                        
-                        varying vec2 v_texCoord;
-                        
-                        void main() {
-                           vec2 onePixel = vec2(1.0, 1.0) / u_textureSize;
-                           vec4 colorSum =
-                               texture2D(u_image, v_texCoord + onePixel * vec2(-1, -1)) * u_kernel[0] +
-                               texture2D(u_image, v_texCoord + onePixel * vec2( 0, -1)) * u_kernel[1] +
-                               texture2D(u_image, v_texCoord + onePixel * vec2( 1, -1)) * u_kernel[2] +
-                               texture2D(u_image, v_texCoord + onePixel * vec2(-1,  0)) * u_kernel[3] +
-                               texture2D(u_image, v_texCoord + onePixel * vec2( 0,  0)) * u_kernel[4] +
-                               texture2D(u_image, v_texCoord + onePixel * vec2( 1,  0)) * u_kernel[5] +
-                               texture2D(u_image, v_texCoord + onePixel * vec2(-1,  1)) * u_kernel[6] +
-                               texture2D(u_image, v_texCoord + onePixel * vec2( 0,  1)) * u_kernel[7] +
-                               texture2D(u_image, v_texCoord + onePixel * vec2( 1,  1)) * u_kernel[8] ;
-                           gl_FragColor = vec4((colorSum / u_kernelWeight).rgb, 1);
-                        }
-                    </pre>
-                </canvas>
-            </div>
+            <nano_canvas
+             :prop_vertex_shader_source="vertexShaderSource"
+             :prop_fragment_shader_source="fragmentShaderSource"
+            />
             <div id="uiContainer">
-                <div id="ui"></div>
-              </div>
-        </div>
-        <div class="desContainer">
-            <div class="des">
-                <div class="title">
-                    <span id="category">webgl</span>
-                    <span id="name">ImageProcess</span>
-                </div>
-                <div class="codeLink">
-                    <nano_button @handleClick="handleClick"></nano_button>
+                <div id="ui">
+
                 </div>
             </div>
-            <div class="conclusion">
-                <span class="title"><span id="conTitle">图像处理</span></span>
-                <span class="content">Image process can make me look happier.</span>
-            </div>
-            <div class="menu">
-                <nano_items_menu></nano_items_menu>
-            </div>
         </div>
-    </body>
+        
+        <nano_webgl_des_panel
+            :prop_category="desData.category"
+            :prop_name="desData.name"
+            :prop_button_content="desData.buttonContent"
+            :prop_title="desData.title"
+            :prop_content="desData.content"
+            @handleClick="handleClick"
+            />
 
+    </div>
 
+    
 </template>
 <script>
 import haruluyaImg from "../../../assets/images/haruluya.jpg"
 
-export default {
-    name:'ImageProcess',
-    mounted() {
-        this.Render();
-    },
-    methods: {
-        Render(){
-             // 绘制几何体。
-        function setGeometry(gl,canvas, width, height) {
-            width = width > 300 ? 300 : width;
-            height = height > 300 ? 300 : height;
-            const beginX = canvas.getBoundingClientRect().width/2 - width/2;
-            const beginY =  canvas.getBoundingClientRect().height/2 - height/2;
-            let x1 = beginX;
-            let x2 = beginX + width;
-            let y1 = beginY;
-            let y2 = beginY + height;
-            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-                x1, y1,
-                x2, y1,
-                x1, y2,
-                x1, y2,
-                x2, y1,
-                x2, y2,
-            ]), gl.STATIC_DRAW);
-        }
-        
-        //create image.
-        const image = new Image();
-        image.src = haruluyaImg;
-        image.onload = function() {
-            render(image);
-        };
-        
-        function render(image) {
+const desData = {
+    category:"Webgl",
+    name:"ImageProcess",
+    buttonContent:"查看源码",
+    title:"图像处理",
+    content:"Image processing can change people's appearance and judge people's life and death."
+}
 
-            var canvas = document.getElementById("imageProcess_content");
-            var gl = canvas.getContext("webgl");
-            if (!gl) {
-                return;
-            }
 
-            var program = haruluya_webgl_utils.createProgramFromScripts(gl, ["vertex-shader", "frament-shader"]);
+const vertexShaderSource = `
+    attribute vec2 a_position;
+    attribute vec2 a_texCoord;
+    uniform vec2 u_resolution;
+    varying vec2 v_texCoord;
 
-            // a_positon:顶点着色器绘制位置。
-            var positionLocation = gl.getAttribLocation(program, "a_position");
-            // a_texCoord:v_texCoord。
-            var texcoordLocation = gl.getAttribLocation(program, "a_texCoord");
-            var positionBuffer = gl.createBuffer();
-            gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+    void main() {
+        vec2 zeroToOne = a_position / u_resolution;
+        vec2 zeroToTwo = zeroToOne * 2.0;
+        vec2 clipSpace = zeroToTwo - 1.0;
+        gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);
+        v_texCoord = a_texCoord;
+    }
+`
 
-            setGeometry( gl,canvas, image.width, image.height);
+const fragmentShaderSource = `
+    precision mediump float;
+                
+    uniform sampler2D u_image;
+    uniform vec2 u_textureSize;
+    uniform float u_kernel[9];
+    uniform float u_kernelWeight;
 
-            var texcoordBuffer = gl.createBuffer();
-            gl.bindBuffer(gl.ARRAY_BUFFER, texcoordBuffer);
-            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+    varying vec2 v_texCoord;
+
+    void main() {
+        vec2 onePixel = vec2(1.0, 1.0) / u_textureSize;
+        vec4 colorSum =
+            texture2D(u_image, v_texCoord + onePixel * vec2(-1, -1)) * u_kernel[0] +
+            texture2D(u_image, v_texCoord + onePixel * vec2( 0, -1)) * u_kernel[1] +
+            texture2D(u_image, v_texCoord + onePixel * vec2( 1, -1)) * u_kernel[2] +
+            texture2D(u_image, v_texCoord + onePixel * vec2(-1,  0)) * u_kernel[3] +
+            texture2D(u_image, v_texCoord + onePixel * vec2( 0,  0)) * u_kernel[4] +
+            texture2D(u_image, v_texCoord + onePixel * vec2( 1,  0)) * u_kernel[5] +
+            texture2D(u_image, v_texCoord + onePixel * vec2(-1,  1)) * u_kernel[6] +
+            texture2D(u_image, v_texCoord + onePixel * vec2( 0,  1)) * u_kernel[7] +
+            texture2D(u_image, v_texCoord + onePixel * vec2( 1,  1)) * u_kernel[8] ;
+        gl_FragColor = vec4((colorSum / u_kernelWeight).rgb, 1);
+    }
+`
+
+const texcoord = [
                 0.0,  0.0,
                 1.0,  0.0,
                 0.0,  1.0,
                 0.0,  1.0,
                 1.0,  0.0,
                 1.0,  1.0,
-            ]), gl.STATIC_DRAW);
+            ]
 
-            // 创建纹理。
-            var texture = gl.createTexture();
-            gl.bindTexture(gl.TEXTURE_2D, texture);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-
-            // 图片作为纹理。
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-
-            var resolutionLocation = gl.getUniformLocation(program, "u_resolution");
-            var textureSizeLocation = gl.getUniformLocation(program, "u_textureSize");
-            var kernelLocation = gl.getUniformLocation(program, "u_kernel[0]");
-            var kernelWeightLocation = gl.getUniformLocation(program, "u_kernelWeight");
-
-            // 定义卷积核。
-            var kernels = {
+var kernels = {
                 normal: [
                 0, 0, 0,
                 0, 1, 0,
@@ -256,64 +189,149 @@ export default {
                     0,  1,  2
                 ]
             };
-            var initialSelection = 'edgeDetect2';
 
-            haruluya_webgl_utils.setDropDownBox(kernels,"ui",function(event) {
-                drawWithKernel(this.options[this.selectedIndex].value);
+
+/*
+    @author:haruluya
+    @des: Simple image processing.
+*/
+
+
+export default {
+    name:'ImageProcess',
+    data() {
+        return {
+            gl: null,
+            canvas: null,
+            program: null,
+            vertexShaderSource,
+            fragmentShaderSource,
+            desData,
+            bufferData:{
+                position:{numComponents:2,data:[]},
+                texCoord:{numComponents:2,data:texcoord},
+            },
+            uniformsData:{
+                // u_image:null,
+                u_textureSize:null,
+                u_kernel:[],
+                u_kernelWeight:null,
+                u_resolution:null,
+            },
+
+            bufferInfo:null,
+            uniformSetters:null,
+            attribSetters:null,
+
+            img:null,
+            texture:null,
+            kernels,
+            selection:"normal"
+        }   
+    },
+    mounted() {
+        this.LoadImg();
+        this.SetUI();
+    },
+    methods: {
+        LoadImg(){
+            const image = new Image();
+            image.src = haruluyaImg;
+            this.img = image;
+            image.onload = ()=>{
+                this.position = this.getImgPosition(canvas, this.img.width, this.img.height);
+                this.Init();
+            }
+        },
+        Init(){
+            const { gl, canvas } = haruluya_webgl_utils.initWebglContext("canvas");
+            this.gl = gl;
+            this.canvas = canvas;
+            this.program = haruluya_webgl_utils.createProgramFromScripts(gl, ["vertex-shader", "fragment-shader"]);
+
+           
+
+            this.bufferData.position.data = this.position;
+
+            this.bufferInfo = haruluya_webgl_utils.createBufferInfoFromArrays(gl, this.bufferData);
+            this.uniformSetters = haruluya_webgl_utils.createUniformSetters(gl, this.program);
+            this.attribSetters  = haruluya_webgl_utils.createAttributeSetters(gl, this.program);
+                
+            this.texture =  gl.createTexture();
+
+            gl.bindTexture(gl.TEXTURE_2D, this.texture);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this.img);
+            
+
+            this.Render(this.selection);
+
+        },
+        Render(selection){
+            const gl = this.gl;
+            haruluya_webgl_utils.resizeCanvasToDisplaySize(gl.canvas);
+            gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+            gl.clear(gl.COLOR_BUFFER_BIT);
+            gl.useProgram(this.program);
+
+            this.uniformsData.u_resolution = [gl.canvas.width, gl.canvas.height];
+            this.uniformsData.u_textureSize = [this.img.width, this.img.height];
+            this.uniformsData.u_kernel = this.kernels[selection];
+            this.uniformsData.u_kernelWeight = this.computeKernelWeight(this.kernels[selection]);
+
+            haruluya_webgl_utils.setBuffersAndAttributes(gl, this.attribSetters, this.bufferInfo);
+            haruluya_webgl_utils.setUniforms(this.uniformSetters, this.uniformsData);
+           
+
+            gl.drawArrays(gl.TRIANGLES, 0, 6);
+
+        },
+        SetUI(){
+            const Render = this.Render;
+            haruluya_webgl_utils.setDropDownBox(this.kernels,"ui",function(event) {
+                Render(this.options[this.selectedIndex].value);
             })
 
-            drawWithKernel(initialSelection);
+        },
+        Destory(){
 
-            function computeKernelWeight(kernel) {
-                var weight = kernel.reduce(function(prev, curr) {
+        },
+        handleClick() {
+            window.location.href = "https://github.com/Haruluya/Rock-sugar/blob/master/rock-sugar/src/pages/WebglDemo/ImageProcess/index.vue";
+        },
+
+        computeKernelWeight(kernel){
+            let weight = kernel.reduce(function(prev, curr) {
                     return prev + curr;
                 });
                 return weight <= 0 ? 1 : weight;
-            }
+        },
 
-            function drawWithKernel(name) {
-                haruluya_webgl_utils.resizeCanvasToDisplaySize(gl.canvas);
-                gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-                gl.clearColor(0, 0, 0, 0);
-                gl.clear(gl.COLOR_BUFFER_BIT);
-
-                gl.useProgram(program);
-
-                // 设置位置。
-                gl.enableVertexAttribArray(positionLocation);
-                gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-                var size = 2;         
-                var type = gl.FLOAT;  
-                var normalize = false; 
-                var stride = 0;       
-                var offset = 0;       
-                gl.vertexAttribPointer(
-                    positionLocation, size, type, normalize, stride, offset);
-
-                // 设置纹理。
-                gl.enableVertexAttribArray(texcoordLocation);
-                gl.bindBuffer(gl.ARRAY_BUFFER, texcoordBuffer);
-                var size = 2;          
-                var type = gl.FLOAT;   
-                var normalize = false; 
-                var stride = 0;        
-                var offset = 0;       
-                gl.vertexAttribPointer(
-                    texcoordLocation, size, type, normalize, stride, offset);
-
-                gl.uniform2f(resolutionLocation, gl.canvas.width, gl.canvas.height);
-                gl.uniform2f(textureSizeLocation, image.width, image.height);
-                gl.uniform1fv(kernelLocation, kernels[name]);
-                gl.uniform1f(kernelWeightLocation, computeKernelWeight(kernels[name]));
-
-                // 绘制。
-                var primitiveType = gl.TRIANGLES;
-                var offset = 0;
-                var count = 6;
-                gl.drawArrays(primitiveType, offset, count);
-            }
+        getImgPosition(canvas, width, height){
+            width = width > 300 ? 300 : width;
+            height = height > 300 ? 300 : height;
+            const beginX = canvas.getBoundingClientRect().width/2 - width/2;
+            const beginY =  canvas.getBoundingClientRect().height/2 - height/2;
+            let x1 = beginX;
+            let x2 = beginX + width;
+            let y1 = beginY;
+            let y2 = beginY + height;
+            return new Float32Array([
+                x1, y1,
+                x2, y1,
+                x1, y2,
+                x1, y2,
+                x2, y1,
+                x2, y2,
+            ]);
         }
-        }
+    },
+    beforeDestory() {
+        this.Destory();
     },
 }
 </script>

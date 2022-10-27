@@ -22,6 +22,7 @@
             :prop_button_content="desData.buttonContent"
             :prop_title="desData.title"
             :prop_content="desData.content"
+            @handleClick="handleClick"
             />
 
     </div>
@@ -56,6 +57,13 @@ const fragmentShaderSource = `
 
 `;
 
+const position =  new Float32Array([0, -100, 150, 125, -175, 100]);
+
+/*
+    @author:haruluya
+    @des: Hello World!.
+*/
+
 export default {
     name: "Triangle",
     data() {
@@ -63,13 +71,20 @@ export default {
             gl: null,
             canvas: null,
             program: null,
-            positionAttributeLocation: null,
-            positionBuffer: null,
-            transfrom: {
-                translation: [300, 200],
-                angleInRadians: 0,
-                scale: [1, 1]
+            bufferData:{
+                position:{numComponents:2,data:position}
             },
+            uniformsData:{
+                u_matrix: null,
+            },
+            bufferInfo:null,
+            attribSetters:null,
+            transfrom: {
+                translation: [300, 200,0],
+                rotation:[haruluya_webgl_utils.degToRad(0), haruluya_webgl_utils.degToRad(0), haruluya_webgl_utils.degToRad(0)],
+                scale: [1, 1,1]
+            },
+            angleInRadians:0,
             vertexShaderSource,
             fragmentShaderSource,
             desData
@@ -81,12 +96,9 @@ export default {
             this.gl = gl;
             this.canvas = canvas;
             this.program = haruluya_webgl_utils.createProgramFromScripts(gl, ["vertex-shader", "fragment-shader"]);
-            
-            // set position.
-            this.positionAttributeLocation = gl.getAttribLocation(this.program, "a_position");
-            this.positionBuffer = gl.createBuffer();
-            gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
-            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0, -100, 150, 125, -175, 100]), gl.STATIC_DRAW);
+            // attributes.
+            this.bufferInfo = haruluya_webgl_utils.createBufferInfoFromArrays(gl, this.bufferData);
+            this.attribSetters  = haruluya_webgl_utils.createAttributeSetters(gl, this.program);
             this.Render();
         },
         Render() {
@@ -95,17 +107,17 @@ export default {
             gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
             gl.clear(gl.COLOR_BUFFER_BIT);
             gl.useProgram(this.program);
-            gl.enableVertexAttribArray(this.positionAttributeLocation);
-            gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
-            gl.vertexAttribPointer(this.positionAttributeLocation, 2, gl.FLOAT, false, 0, 0);
-            
+
             // set matix.
             const matrixLocation = gl.getUniformLocation(this.program, "u_matrix");
             let matrix = haruluya_webgl_utils.projection2d(gl.canvas.clientWidth, gl.canvas.clientHeight);
             matrix = haruluya_webgl_utils.translate2d(matrix, this.transfrom.translation[0], this.transfrom.translation[1]);
-            matrix = haruluya_webgl_utils.rotate2d(matrix, this.transfrom.angleInRadians);
+            matrix = haruluya_webgl_utils.rotate2d(matrix, this.angleInRadians);
             matrix = haruluya_webgl_utils.scale2d(matrix, this.transfrom.scale[0], this.transfrom.scale[1]);
             gl.uniformMatrix3fv(matrixLocation, false, matrix);
+
+            haruluya_webgl_utils.setBuffersAndAttributes(gl, this.attribSetters, this.bufferInfo);
+
             gl.drawArrays(gl.TRIANGLES, 0, 3);
         },
         SetUI() {
@@ -117,8 +129,10 @@ export default {
             haruluya_webgl_utils.setupSlider("angle", { slide: updateAngle, max: 360 });
             haruluya_webgl_utils.setupSlider("scaleX", { value: this.transfrom.scale[0], slide: updateScale(0), min: -5, max: 5, step: 0.01, precision: 2 });
             haruluya_webgl_utils.setupSlider("scaleY", { value: this.transfrom.scale[1], slide: updateScale(1), min: -5, max: 5, step: 0.01, precision: 2 });
+            
             let transfrom = this.transfrom;
             let Render = this.Render;
+            let angleInRadians = this.angleInRadians;
             // position callback.
             function updatePosition(index) {
                 return function (event, ui) {
@@ -129,7 +143,7 @@ export default {
             // rotation callback.
             function updateAngle(event, ui) {
                 var angleInDegrees = 360 - ui.value;
-                transfrom.angleInRadians = angleInDegrees * Math.PI / 180;
+                angleInRadians = angleInDegrees * Math.PI / 180;
                 Render();
             }
             // scale callback.
