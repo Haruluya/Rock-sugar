@@ -1,30 +1,11 @@
 
-span{
-    font-family: "Arial Rounded MT Bold", "Helvetica Rounded", Arial, sans-serif;;
-    text-transform: uppercase;
-    display: block;
-    color: white;
-    font-weight: bold;
-    &:hover{
-        color: gold;
-    }
-    mask: radial-gradient(circle at 0 50%, #000, transparent 10%, transparent 0);
-    mask-size: 10000%;
-    animation: textShow 3s;
-}
 
-body{
+
+.pageContainer{
+    height: 70vw;
     margin: 0;
-    height: 1000px;
     background-image: url("https://images.contentstack.io/v3/assets/blt731acb42bb3d1659/bltf930a7a2b83fff60/5e17887df980a27e5b76ac2f/teamfighttactics.jpg");
-}
-canvas{
-    width: 100%;
-    height: 100%;
-    display: block;
-    border-radius: 0.05vw;
-    z-index: 1;
-
+    background-position: -1vw;
 }
 
 
@@ -36,27 +17,7 @@ canvas{
 }
 
 
-.canvesContainer{
-    position: relative;
-    width:40vw;
-    height: 30vw;
-    margin: 4vw auto;
-    &::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right:0;
-        bottom:0;
-        border-image-source: radial-gradient(70% 60%, transparent 0px, transparent 100%,#66e0ff 100%);
-        border-image-slice: 1;
-        border-width: 3px;
-        border-style: solid;
-        border-image-outset: 0.5cm;
-        animation: canvasBorderShow 1s;
-    }
-    animation: canvasClipShow 2s;
-}
+
 
 .webglContainer{
     overflow: hidden;
@@ -83,60 +44,6 @@ pre{
 }
 
 
-.desContainer{
-
-    width: 80vw;
-    height: 20vw;
-    margin: 0 auto;
-    border-radius: 2px;
-
-
-    transform: translateY(-12vh);
-
-    padding: 10px 25px;
-    display: flex;
-    &::before{
-        content: '';
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        clip-path: inset(0 round 0 8%);
-        border: rgba(255, 255, 255, 0.4) solid 2px;
-        animation: desClipBorderShow 1s 1;
-    }
-
-
-    .conclusion,.des,.menu{
-        width: 33%;
-        height: 100%;
-        margin: 0;
-        padding: 3vw;
-    }
-    z-index: -1;
-
-    .des .codeLink{
-        margin-top: 3vw;
-    }
-}
-
-.title{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    #conTitle,#category{
-        font-size: calc(1.5vw);
-    }
-    #name{
-        font-size: 2.5vw;
-    }
-
-}
-.content{
-    font-size: 1.0vw;
-}
 
 
 
@@ -166,29 +73,5 @@ pre{
         clip-path: inset(0 round 0 50%);
     }
 }
-@keyframes desClipBorderShow {
-    0% {
-        clip-path: inset(0 0 98% 0);
-    }
-    25% {
-        clip-path: inset(0 98% 0 0);
-    }
-    50% {
-        clip-path: inset(98% 0 0 0);
-    }
-    75% {
-        clip-path: inset(0 0 0 98%);
-    }
-    100%{
-        clip-path: inset(0 round 0 8%);
-    }
-}
 
-@keyframes textShow {
-    from{
-        mask-size: 100%;
-    }
-    to{
-        mask-size: 10000%;
-    }
-}
+

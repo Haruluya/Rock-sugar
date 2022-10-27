@@ -111,8 +111,8 @@
                 <div class="charImgContainer">
                     <div class="charImgBg">
                     </div>
-                    <div class="charImg">
-                        <img :src="mechaShowDatas[charCurrentIndex].mechaImg"/>
+                    <div class="charImg" v-for="(item,index) in mechaShowDatas" :key="index">
+                        <img :src="item.mechaImg" v-if="index === charCurrentIndex" />
                     </div>
                     <div class="charBorder"></div>
                 </div>
@@ -178,7 +178,7 @@ const proLinkDatas = [
     {
         prop_des: "project" ,
         prop_title: "MIYA",
-        prop_content: "Rendering demos and some Complex technology implementations based on OpenGL.",
+        prop_content: "Rendering demos based on OpenGL.",
         prop_img: ImgResource.miyaProjImg,
         link:"https://github.com/Haruluya/miya"
     },
@@ -240,6 +240,9 @@ export default {
             charCurrentIndex:0,
         };
     },
+    mounted() {
+
+    },
     methods: {
         linkJump(item) {
             window.location.href = item.link;
@@ -250,14 +253,16 @@ export default {
         leftClick(){
             this.charCurrentIndex--;
             if (this.charCurrentIndex < 0) {
-            this.charCurrentIndex = 0
+                this.charCurrentIndex = 3
             }
+
         },
         rightClick(){
             this.charCurrentIndex++;
             if (this.charCurrentIndex > 3) {
-            this.charCurrentIndex = 0
+                this.charCurrentIndex = 0
             }
+
         }
     },
     components: { nano_footer }

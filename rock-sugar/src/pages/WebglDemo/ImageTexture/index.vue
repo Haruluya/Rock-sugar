@@ -1,56 +1,30 @@
 <template lang="html">
-    <body>
+    <div class="pageContainer">
         <div class="webglContainer">
-            <div class="canvesContainer">
-                <canvas id="canvas">
-                    <pre  id="vertex-shader" type="x-shader/x-vertex">
-                        attribute vec4 a_position;
-                        attribute vec2 a_texcoord;
-                        
-                        uniform mat4 u_matrix;
-                        
-                        varying vec2 v_texcoord;
-                        
-                        void main() {
-                          gl_Position = u_matrix * a_position;
-                          v_texcoord = a_texcoord;
-                        }
-                    </pre>
-                
-                    <pre  id="fragment-shader" type="x-shader/x-fragment">
-                        precision mediump float;
-                        varying vec2 v_texcoord;
-                        uniform sampler2D u_texture;
-                        
-                        void main() {
-                           gl_FragColor = texture2D(u_texture, v_texcoord);
-                        }
-                    </pre>
-                </canvas>
+            <nano_canvas
+             :prop_vertex_shader_source="vertexShaderSource"
+             :prop_fragment_shader_source="fragmentShaderSource"
+            />
+            <div id="uiContainer">
+                <div id="ui">
+                  <ui id="x"></ui>
+                  <ui id="y"></ui>
+                  <ui id="angle"></ui>
+                  <ui id="scaleX"></ui>
+                  <ui id="scaleY"></ui>
+                </div>
             </div>
         </div>
         
-        <div class="desContainer">
-            <div class="des">
-                <div class="title">
-                    <span id="category">webgl</span>
-                    <span id="name">ImageTexture</span>
-                </div>
-                <div class="codeLink">
-                    <nano_button @handleClick="handleClick"></nano_button>
-                </div>
-            </div>
-            <div class="conclusion">
-                <span class="title"><span id="conTitle">材质</span></span>
-                <span class="content">Maybe putting my picture here is the only way I can make a record</span>
-            </div>
-            <div class="menu">
-                <nano_items_menu></nano_items_menu>
-            </div>
-        </div>
-    </body>
+        <nano_webgl_des_panel
+            :prop_category="desData.category"
+            :prop_name="desData.name"
+            :prop_button_content="desData.buttonContent"
+            :prop_title="desData.title"
+            :prop_content="desData.content"
+            />
 
-    
+    </div>
 </template>
 <script>
 import haruluyaImg from "../../../assets/images/haruluya.jpg"

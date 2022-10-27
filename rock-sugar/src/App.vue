@@ -36,7 +36,7 @@ export default {
 }
 
 .content{
-    margin-top: 80px;
+    margin-top: 6.4vw;
 }
 .footer{
     height: 20vw;

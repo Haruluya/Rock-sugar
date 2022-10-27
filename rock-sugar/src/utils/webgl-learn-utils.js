@@ -1,6 +1,7 @@
 /*
-  @des: Webgl untils.
+  @des: Webgl utils.
   @author: haruluya.
+  @2021 copyright all.
 */
 
 (function(root, factory) {  
@@ -51,6 +52,10 @@
         return {gl,vertexShaderSource,fragmentShaderSource};
     }
 
+
+
+
+
     // log error.
     function error(msg) {
         if (topWindow.console) {
@@ -60,6 +65,20 @@
             topWindow.console.log(msg);
           }
         }
+    }
+
+
+
+    // 获取webgl上下文。
+    function initWebglContext(canvasId){
+      var canvas = document.querySelector("#"+canvasId);
+      var gl = canvas.getContext("webgl");
+      if (!gl) {
+          console.log("GET WBEGL CONTEXT FAILD!!!");
+          return;
+      }
+      return {gl, canvas};
+
     }
 
 
@@ -1795,6 +1814,7 @@
 
 
   return{
+     initWebglContext:initWebglContext,
       getWebglAndShaderSource:getWebglAndShaderSource,
       loadShader:loadShader,
       createProgram:createProgram,
