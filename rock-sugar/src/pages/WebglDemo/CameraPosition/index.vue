@@ -1,217 +1,221 @@
 <template lang="html">
-    <body>
+    <div class="pageContainer">
         <div class="webglContainer">
-            <div class="canvesContainer">
-                <canvas id="canvas">
-                    <pre  id="vertex-shader" type="x-shader/x-vertex">
-                        attribute vec4 a_position;
-                        attribute vec4 a_color;
-                        uniform mat4 u_matrix;
-                        varying vec4 v_color;
-                        void main() {
-                          gl_Position = u_matrix * a_position;
-                          v_color = a_color;
-                        }
-                    </pre>
-                    <pre  id="fragment-shader" type="x-shader/x-fragment">
-                        precision mediump float;
-                        varying vec4 v_color; 
-                        void main() {
-                           gl_FragColor = v_color;
-                        }
-                    </pre>
-                </canvas>
-            </div>
+            <nano_canvas
+             :prop_vertex_shader_source="vertexShaderSource"
+             :prop_fragment_shader_source="fragmentShaderSource"
+            />
             <div id="uiContainer">
                 <div id="ui">
-                  <div id="targetAngle"></div>
-                  <div id="targetHeight"></div>
+                    <div id="targetAngle"></div>
+                    <div id="targetHeight"></div>
                 </div>
-              </div>
-        </div>
-        <div class="desContainer">
-            <div class="des">
-                <div class="title">
-                    <span id="category">webgl</span>
-                    <span id="name">CameraPosition</span>
-                </div>
-                <div class="codeLink">
-                    <nano_button @handleClick="handleClick"></nano_button>
-                </div>
-            </div>
-            <div class="conclusion">
-                <span class="title"><span id="conTitle">相机</span></span>
-                <span class="content">I suddenly realized I'd never taken a selfie before.</span>
-            </div>
-            <div class="menu">
-                <nano_items_menu></nano_items_menu>
             </div>
         </div>
-    </body>
+        
+        <nano_webgl_des_panel
+            :prop_category="desData.category"
+            :prop_name="desData.name"
+            :prop_button_content="desData.buttonContent"
+            :prop_title="desData.title"
+            :prop_content="desData.content"
+            @handleClick="handleClick"
+            />
 
+    </div>
 
-
+    
 </template>
 <script>
+
+import vertexShaderSource from './resource/vertex-shader.js'
+import fragmentShaderSource from './resource/fragment-shader.js'
+import data from './resource/data'
+
+const desData = {
+    category:"Webgl",
+    name:"CameraPosition",
+    buttonContent:"查看源码",
+    title:"相机",
+    content:"I suddenly realized I'd never taken a selfie before."
+}
+
+
+
+import modelData from '_utils/outData/HeadData.js'
+
 export default {
     name:'CameraPosition',
+    data() {
+        return {
+            gl: null,
+            canvas: null,
+            program: null,
+            vertexShaderSource,
+            fragmentShaderSource,
+            desData,
+            bufferData:{
+                position:{data:[]},
+                color:{data:[]},
+            },
+            uniformsData:{
+                u_matrix: null,
+            },
+            bufferInfo:null,
+            uniformSetters:null,
+            attribSetters:null,
+            transfrom:{
+                translation:[0, 0, 0],
+                rotation:[haruluya_webgl_utils.degToRad(0), haruluya_webgl_utils.degToRad(0), haruluya_webgl_utils.degToRad(0)],
+                scale : [1, 1, 1]
+
+            },
+            perspective:{
+                aspect:0,
+                fieldOfViewRadians:  haruluya_webgl_utils.degToRad(60),
+                zNear: 1,
+                zFar: 3000,
+            },
+            camera:{
+                cameraTarget:[0,-100,0],
+                cameraPosition:[500,300,500],
+                up:[0,1,0]
+            },
+            sectionParams:{
+                target:[0, 200, 300],
+                targetAngleRadians: 0,
+                targetRadius: 300,
+                numFs:5,
+                radius:600,
+                deep:5,
+                across:5,
+            },
+            numElements:0,
+
+        }
+    },
     mounted() {
-        this.Render();
+        this.Init();
+        this.SetUI();
+
     },
     methods: {
+        Init(){
+            const { gl, canvas } = haruluya_webgl_utils.initWebglContext("canvas");
+            this.gl = gl;
+            this.canvas = canvas;
+            this.program = haruluya_webgl_utils.createProgramFromScripts(gl, ["vertex-shader", "fragment-shader"]);
+            //Get bufferinfo and setters.
+            this.numElements = this.setPosition();
+            this.setColor();
+            this.perspective.aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
+
+            this.bufferInfo = haruluya_webgl_utils.createBufferInfoFromArrays(gl, this.bufferData);
+            this.uniformSetters = haruluya_webgl_utils.createUniformSetters(gl, this.program);
+            this.attribSetters  = haruluya_webgl_utils.createAttributeSetters(gl, this.program);
+            this.Render();
+        },
         Render(){
-        function setGeometry(gl) {
-            var positions = new Float32Array(HeadData.positions);
-            var matrix = haruluya_webgl_utils.multiply3d(haruluya_webgl_utils.scaling3d(6, 6, 6), haruluya_webgl_utils.yRotation(Math.PI));
-            for (var ii = 0; ii < positions.length; ii += 3) {
-                var vector = haruluya_webgl_utils.vectorMultiply([positions[ii + 0], positions[ii + 1], positions[ii + 2], 1], matrix);
-                positions[ii + 0] = vector[0];
-                positions[ii + 1] = vector[1];
-                positions[ii + 2] = vector[2];
-            }
-
-            gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
-            return positions.length / 3;
-        }
-        function setColors(gl, numElements) {
-            var normals = HeadData.normals;
-            var colors = new Uint8Array(normals.length);
-            var offset = 0;
-            for (var ii = 0; ii < colors.length; ii += 3) {
-                for (var jj = 0; jj < 3; ++jj) {
-                colors[offset] = (normals[offset] * 0.5 + 0.5) * 255;
-                ++offset;
-                }
-            }
-            gl.bufferData(
-                gl.ARRAY_BUFFER, colors, gl.STATIC_DRAW);
-        }
-
-
-        // transform.
-        const target = [0, 200, 300];
-        const targetAngleRadians = 0;
-        const targetRadius = 300;
-        const fieldOfViewRadians = haruluya_webgl_utils.degToRad(60);
-        // callback.
-        function updateTargetAngle(event, ui) {
-            targetAngleRadians = haruluya_webgl_utils.degToRad(ui.value);
-            target[0] = Math.sin(targetAngleRadians) * targetRadius;
-            target[2] = Math.cos(targetAngleRadians) * targetRadius;
-            drawScene();
-        }
-        function updateTargetHeight(event, ui) {
-            target[1] = ui.value;
-            drawScene();
-        }
-
-
-        const canvas = document.querySelector("#canvas");
-        const gl = canvas.getContext("webgl");
-        if (!gl) {
-            return;
-        }
-
-        const program = haruluya_webgl_utils.createProgramFromScripts(gl, ["vertex-shader", "fragment-shader"]);
-        gl.useProgram(program);
-
-        // lookup.
-        const positionLocation = gl.getAttribLocation(program, "a_position");
-        const colorLocation = gl.getAttribLocation(program, "a_color");
-        const matrixLocation = gl.getUniformLocation(program, "u_matrix");
-        const positionBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-
-        // set geometry.
-        const numElements = setGeometry(gl);
-
-        // set color.
-        const colorBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-        setColors(gl);
-
-        drawScene();
-
-        // ui.
-        haruluya_webgl_utils.setupSlider("targetAngle", {value: haruluya_webgl_utils.radToDeg(targetAngleRadians), slide: updateTargetAngle, min: -360, max: 360});
-        haruluya_webgl_utils.setupSlider("targetHeight", {value: target[1], slide: updateTargetHeight, min: 50, max: 300});
-
-
-        // update.
-        function drawScene() {
-
-            const numFs = 5;
-            const radius = 600;
+            const gl = this.gl;
+            const program = this.program;
             haruluya_webgl_utils.resizeCanvasToDisplaySize(gl.canvas);
             gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
             gl.enable(gl.CULL_FACE);
             gl.enable(gl.DEPTH_TEST);
+
             gl.useProgram(program);
 
-            // position.
-            gl.enableVertexAttribArray(positionLocation);
-            gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-            let size = 3;         
-            let type = gl.FLOAT;   
-            let normalize = false; 
-            let stride = 0;        
-            let offset = 0;       
-            gl.vertexAttribPointer(
-                positionLocation, size, type, normalize, stride, offset);
-
-            // color.
-            gl.enableVertexAttribArray(colorLocation);
-            gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-            size = 3;                
-            type = gl.UNSIGNED_BYTE; 
-            normalize = true;        
-            stride = 0;              
-            offset = 0;            
-            gl.vertexAttribPointer(
-                colorLocation, size, type, normalize, stride, offset);
-
-            // perspective.
-            let aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
-            let zNear = 1;
-            let zFar = 3000;
-            let projectionMatrix = haruluya_webgl_utils.perspective(fieldOfViewRadians, aspect, zNear, zFar);
+            haruluya_webgl_utils.setBuffersAndAttributes(gl, this.attribSetters, this.bufferInfo);
 
 
-            // 相机追踪目标。
-            var cameraTarget = [0, -100, 0];
-            var cameraPosition = [500, 300, 500];
-            var up = [0, 1, 0];
-            var cameraMatrix = haruluya_webgl_utils.lookAt(cameraPosition, cameraTarget, up);
-            var viewMatrix = haruluya_webgl_utils.inverse(cameraMatrix);
-            var viewProjectionMatrix = haruluya_webgl_utils.multiply3d(projectionMatrix, viewMatrix);
+            //perspective.
+            let projectionMatrix = haruluya_webgl_utils.perspective(this.perspective.fieldOfViewRadians, 
+                this.perspective.aspect, 
+                this.perspective.zNear, 
+                this.perspective.zFar
+            );
 
-            // 画人头。
-            var deep = 5;
-            var across = 5;
-            for (var zz = 0; zz < deep; ++zz) {
-                var v = zz / (deep - 1);
-                var z = (v - .5) * deep * 150;
-                for (var xx = 0; xx < across; ++xx) {
-                    var u = xx / (across - 1);
-                    var x = (u - .5) * across * 150;
-                    var matrix = haruluya_webgl_utils.lookAt([x, 0, z], target, up);
-                    drawHead(matrix, viewProjectionMatrix, matrixLocation, numElements);
+            let cameraMatrix = haruluya_webgl_utils.lookAt(this.camera.cameraPosition, this.camera.cameraTarget, this.camera.up);
+            let viewMatrix = haruluya_webgl_utils.inverse(cameraMatrix);
+            let viewProjectionMatrix = haruluya_webgl_utils.multiply3d(projectionMatrix, viewMatrix);
+            
+            
+            // Draw circle。
+            let deep = this.sectionParams.deep;
+            let across = this.sectionParams.across;
+            for (let zz = 0; zz < deep; ++zz) {
+                let v = zz / (deep - 1);
+                let z = (v - .5) * deep * 150;
+                for (let xx = 0; xx < across; ++xx) {
+                    let u = xx / (across - 1);
+                    let x = (u - .5) * across * 150;
+                    let matrix = haruluya_webgl_utils.lookAt([x, 0, z], this.sectionParams.target, this.camera.up);
+                    const MVP = haruluya_webgl_utils.multiply3d(viewProjectionMatrix, matrix);
+                    this.uniformsData.u_matrix = MVP;
+                    haruluya_webgl_utils.setUniforms(this.uniformSetters, this.uniformsData);
+                    gl.drawArrays(gl.TRIANGLES, 0, this.numElements);
                 }
             }
-            drawHead(haruluya_webgl_utils.translation3d(target[0], target[1], target[2]), viewProjectionMatrix, matrixLocation, numElements);
+        },
+        SetUI(){
+            const Render = this.Render;
+            let targetAngleRadians = this.sectionParams.targetAngleRadians;
+            let target = this.sectionParams.target;
+
+
+            // callback.
+            const updateTargetAngle = function (event, ui) {
+                targetAngleRadians = haruluya_webgl_utils.degToRad(ui.value);
+                target[0] = Math.sin(targetAngleRadians) * targetRadius;
+                target[2] = Math.cos(targetAngleRadians) * targetRadius;
+                Render();
+            }
+            const updateTargetHeight = function (event, ui) {
+                target[1] = ui.value;
+                Render();
+            }
+                    // ui.
+            haruluya_webgl_utils.setupSlider("targetAngle", {value: haruluya_webgl_utils.radToDeg(targetAngleRadians), slide: updateTargetAngle, min: -360, max: 360});
+            haruluya_webgl_utils.setupSlider("targetHeight", {value: target[1], slide: updateTargetHeight, min: 50, max: 300});
+        },
+        Destory(){
+
+        },
+
+        handleClick() {
+            window.location.href = "https://github.com/Haruluya/Rock-sugar/blob/master/rock-sugar/src/pages/WebglDemo/CameraPosition/index.vue";
+        },
+
+        setPosition(){
+            let positions = new Float32Array(modelData.positions);
+            let matrix = haruluya_webgl_utils.multiply3d(haruluya_webgl_utils.scaling3d(6, 6, 6), haruluya_webgl_utils.yRotation(Math.PI));
+            for (let ii = 0; ii < positions.length; ii += 3) {
+                let vector = haruluya_webgl_utils.vectorMultiply([positions[ii + 0], positions[ii + 1], positions[ii + 2], 1], matrix);
+                positions[ii + 0] = vector[0];
+                positions[ii + 1] = vector[1];
+                positions[ii + 2] = vector[2];
+            }
+            this.bufferData.position.data = positions;
+            return positions.length / 3;
+        },
+        setColor(){
+            let normals = modelData.normals;
+            let colors = new Uint8Array(normals.length);
+            let offset = 0;
+            for (let ii = 0; ii < colors.length; ii += 3) {
+                for (let jj = 0; jj < 3; ++jj) {
+                colors[offset] = (normals[offset] * 0.5 + 0.5) * 255;
+                ++offset;
+                }
+            }
+            this.bufferData.color.data = colors;
         }
 
-        function drawHead(matrix, viewProjectionMatrix, matrixLocation, numElements) {
-            matrix = haruluya_webgl_utils.multiply3d(viewProjectionMatrix, matrix);
-
-            gl.uniformMatrix4fv(matrixLocation, false, matrix);
-            var primitiveType = gl.TRIANGLES;
-            var offset = 0;
-            gl.drawArrays(gl.TRIANGLES, 0, numElements);
-        }
-        }
+    },
+    beforeDestory() {
+        this.Destory();
     },
 }
 </script>

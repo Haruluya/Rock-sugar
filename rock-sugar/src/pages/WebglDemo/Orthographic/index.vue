@@ -34,8 +34,9 @@
     
 </template>
 <script>
-
-
+import vertexShaderSource from './resource/vertex-shader.js'
+import fragmentShaderSource from './resource/fragment-shader.js'
+import data from './resource/data'
 const desData = {
     category:"Webgl",
     name:"Orthographic",
@@ -45,126 +46,8 @@ const desData = {
 }
 
 
-const vertexShaderSource = `
-    attribute vec4 a_position;
-    attribute vec4 a_color;
-    uniform mat4 u_matrix;
-    varying vec4 v_color;
-    void main() {
-        gl_Position = u_matrix * a_position;
-        v_color = a_color;
-    }
-`
-
-const fragmentShaderSource = `
-precision mediump float;
-varying vec4 v_color;
-void main() {
-    gl_FragColor = v_color;
-}
-`
-
-const position = [
-    // 正面。
-    200,   50,  0,
-    0, 50,  0,
-    0,   150,  0,
-    0, 150,  0,
-    200, 150,  0,
-    200,   50,  0,
-
-    // 顶面。
-    200,   50,  100,
-    0,  50,  100,
-    0,   50,  0,
-    0,  50,  0,
-    200,  50,  0,
-    200,   50,  100,
-
-    // 右侧面。
-    200,  50,  0,
-    200,  150,  0,
-    200,  150,  100,
-    200,  150,  100,
-    200,  50,  100,
-    200,  50,  0,
-
-    // 左侧面。
-    0,   50,  0,
-    0,   50,  100,
-    0,   150,  100,
-    0,   150,  100,
-    0,   150,  0,
-    0, 50,  0,
-
-    // 底面。
-    0,   150,  0,
-    0,   150,  100,
-    200,   150,  100,
-    200,   150,  100,
-    200,  150,  0,
-    0,   150,  0,
-
-    // 后面。
-    200,  50,  100,
-    200,  150,  100,
-    0,  150,  100,
-    0,  150,  100,
-    0,  50,  100,
-    200,  50,  100,  
-
-
-]
-
-const colors = [
-    // 正面。
-    0,  59, 252,
-    0,  80, 252,
-    0,  218, 252,
-    0,  218, 252,
-    0,  80, 252,
-    0,  59, 252,
-    // 顶面。
-    252,  0, 0,
-    150,  0, 0,
-    0,  0, 0,
-    0,  0, 0,
-    150,  0, 0,
-    252,  0, 0,
-
-    // 右侧面。
-    252,  227, 103,
-    150,  227, 103,
-    0,  227, 103,
-    0,  227, 103,
-    150,  227, 103,
-    252,  227, 103,
-
-    // 左侧面。
-    252,  227, 103,
-    150,  227, 103,
-    0,  227, 103,
-    0,  227, 103,
-    150,  227, 103,
-    252,  227, 103,
-
-    // 底面。
-    252,  0, 0,
-    150,  0, 0,
-    0,  0, 0,
-    0,  0, 0,
-    150,  0, 0,
-    252,  0, 0,
-
-    // 后面。
-    0,  59, 252,
-    0,  80, 252,
-    0,  218, 252,
-    0,  218, 252,
-    0,  80, 252,
-    0,  59, 252,
-
-]
+const positions = data.position;
+const colors = data.color;
 
 /*
     @author:haruluya
@@ -181,8 +64,8 @@ export default {
             fragmentShaderSource,
             desData,
             bufferData:{
-                position:{data:position},
-                color:{data:new Uint8Array(colors)},
+                position:{data:positions},
+                color:{data:colors},
             },
             uniformsData:{
                 u_matrix: null,

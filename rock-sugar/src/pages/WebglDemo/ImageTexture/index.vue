@@ -26,6 +26,9 @@
 </template>
 <script>
 import haruluyaImg from "../../../assets/images/haruluya.jpg"
+import vertexShaderSource from './resource/vertex-shader.js'
+import fragmentShaderSource from './resource/fragment-shader.js'
+import data from './resource/data'
 
 const desData = {
     category:"Webgl",
@@ -35,119 +38,9 @@ const desData = {
     content:"Maybe putting my picture here is the only way I can make a record."
 }
 
+const positions = data.position;
+const texCoords = data.texcoord;
 
-const vertexShaderSource = `
-    attribute vec4 a_position;
-    attribute vec2 a_texcoord;
-
-    uniform mat4 u_matrix;
-
-    varying vec2 v_texcoord;
-
-    void main() {
-        gl_Position = u_matrix * a_position;
-        v_texcoord = a_texcoord;
-    }
-`
-
-const fragmentShaderSource = `
-    precision mediump float;
-    varying vec2 v_texcoord;
-    uniform sampler2D u_texture;
-
-    void main() {
-        gl_FragColor = texture2D(u_texture, v_texcoord);
-    }
-`
-
-const position = [
-    -0.5, -0.5,  -0.5,
-    -0.5,  0.5,  -0.5,
-    0.5, -0.5,  -0.5,
-    -0.5,  0.5,  -0.5,
-    0.5,  0.5,  -0.5,
-    0.5, -0.5,  -0.5,
-
-    -0.5, -0.5,   0.5,
-    0.5, -0.5,   0.5,
-    -0.5,  0.5,   0.5,
-    -0.5,  0.5,   0.5,
-    0.5, -0.5,   0.5,
-    0.5,  0.5,   0.5,
-
-    -0.5,   0.5, -0.5,
-    -0.5,   0.5,  0.5,
-    0.5,   0.5, -0.5,
-    -0.5,   0.5,  0.5,
-    0.5,   0.5,  0.5,
-    0.5,   0.5, -0.5,
-
-    -0.5,  -0.5, -0.5,
-    0.5,  -0.5, -0.5,
-    -0.5,  -0.5,  0.5,
-    -0.5,  -0.5,  0.5,
-    0.5,  -0.5, -0.5,
-    0.5,  -0.5,  0.5,
-
-    -0.5,  -0.5, -0.5,
-    -0.5,  -0.5,  0.5,
-    -0.5,   0.5, -0.5,
-    -0.5,  -0.5,  0.5,
-    -0.5,   0.5,  0.5,
-    -0.5,   0.5, -0.5,
-
-    0.5,  -0.5, -0.5,
-    0.5,   0.5, -0.5,
-    0.5,  -0.5,  0.5,
-    0.5,  -0.5,  0.5,
-    0.5,   0.5, -0.5,
-    0.5,   0.5,  0.5,
-
-]
-const texcord =  [
-    // select the top left image
-    0   , 0  ,
-    0   , 0.5,
-    0.25, 0  ,
-    0   , 0.5,
-    0.25, 0.5,
-    0.25, 0  ,
-    // select the top middle image
-    0.25, 0  ,
-    0.5 , 0  ,
-    0.25, 0.5,
-    0.25, 0.5,
-    0.5 , 0  ,
-    0.5 , 0.5,
-    // select to top right image
-    0.5 , 0  ,
-    0.5 , 0.5,
-    0.75, 0  ,
-    0.5 , 0.5,
-    0.75, 0.5,
-    0.75, 0  ,
-    // select the bottom left image
-    0   , 0.5,
-    0.25, 0.5,
-    0   , 1  ,
-    0   , 1  ,
-    0.25, 0.5,
-    0.25, 1  ,
-    // select the bottom middle image
-    0.25, 0.5,
-    0.25, 1  ,
-    0.5 , 0.5,
-    0.25, 1  ,
-    0.5 , 1  ,
-    0.5 , 0.5,
-    // select the bottom right image
-    0.5 , 0.5,
-    0.75, 0.5,
-    0.5 , 1  ,
-    0.5 , 1  ,
-    0.75, 0.5,
-    0.75, 1  ,
-]
 
 export default {
     name:'ImageTexture',
@@ -159,30 +52,121 @@ export default {
             vertexShaderSource,
             fragmentShaderSource,
             desData,
-            position,
-            texcord,
+            bufferData:{
+                position:{numComponents:2,data:positions},
+                texCoord:{numComponents:2,data:texCoords},
+            },
+            uniformsData:{
+                u_matrix:null,
+                // u_texture:null
+            },
+            bufferInfo:null,
+            uniformSetters:null,
+            attribSetters:null,
             transfrom:{
+
+            },
+            sectionParams:{
+                last:0,
                 fieldOfViewRadians: haruluya_webgl_utils.degToRad(60),
                 modelXRotationRadians: haruluya_webgl_utils.degToRad(0),
                 modelYRotationRadians: haruluya_webgl_utils.degToRad(0),
-
-            }
+                texture:0,
+            },
+            perspective:{
+                aspect:0,
+                fieldOfViewRadians:  haruluya_webgl_utils.degToRad(60),
+                zNear: 1,
+                zFar: 2000,
+            },
+            camera:{
+                target:[0, 35, 0],
+                position:[100, 150, 200],
+                up:[0,1,0]
+            },
         }
     },
     mounted() {
-        this.Init();
+        this.LoadImg();
         this.SetUI();
 
     },
     methods: {
+        LoadImg(){
+            // Set image.
+            let image = new Image();
+            image.src = haruluyaImg;
+            image.addEventListener('load', ()=> {
+                gl.bindTexture(gl.TEXTURE_2D, this.texture);
+                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA,gl.UNSIGNED_BYTE, image);
+                if (this.isPowerOf2(image.width) && this.isPowerOf2(image.height)) {
+                    gl.generateMipmap(gl.TEXTURE_2D);
+                } else {
+                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+                }
+            });
+            this.Init();
+        },
         Init(){
             const { gl, canvas } = haruluya_webgl_utils.initWebglContext("canvas");
             this.gl = gl;
             this.canvas = canvas;
             this.program = haruluya_webgl_utils.createProgramFromScripts(gl, ["vertex-shader", "fragment-shader"]);
+            this.perspective.aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
+            //Get bufferinfo and setters.
+            this.bufferInfo = haruluya_webgl_utils.createBufferInfoFromArrays(gl, this.bufferData);
+            this.uniformSetters = haruluya_webgl_utils.createUniformSetters(gl, this.program);
+            this.attribSetters  = haruluya_webgl_utils.createAttributeSetters(gl, this.program);
             
+            this.texture = gl.createTexture();
+            gl.bindTexture(gl.TEXTURE_2D, this.texture);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
+                            new Uint8Array([0, 0, 255, 255]));
+            requestAnimationFrame(this.Render);
         },
-        Render(){
+        Render(time){
+            time *= 0.001;
+            let deltaTime = time - this.last;
+            this.last = time;
+
+            const gl = this.gl;
+            const program = this.program;
+            haruluya_webgl_utils.resizeCanvasToDisplaySize(gl.canvas);
+            gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+            gl.enable(gl.CULL_FACE);
+            gl.enable(gl.DEPTH_TEST);
+
+            this.sectionParams.modelYRotationRadians += -0.7 * deltaTime;
+            this.sectionParams.modelXRotationRadians += -0.4 * deltaTime;
+            gl.useProgram(program);
+            haruluya_webgl_utils.setBuffersAndAttributes(gl, this.attribSetters, this.bufferInfo);
+            
+            let cameraMatrix = haruluya_webgl_utils.lookAt(this.camera.position, this.camera.target, this.camera.up);
+            let viewMatrix = haruluya_webgl_utils.inverse(cameraMatrix);
+            let projectionMatrix = haruluya_webgl_utils.perspective(
+                this.perspective.fieldOfViewRadians, 
+                this.perspective.aspect, 
+                this.perspective.zNear, 
+                this.perspective.zFar
+                );
+            let viewProjectionMatrix = haruluya_webgl_utils.multiply3d(projectionMatrix, viewMatrix);
+
+            let matrix = haruluya_webgl_utils.xRotate(viewProjectionMatrix, this.sectionParams.modelXRotationRadians);
+            matrix = haruluya_webgl_utils.yRotate(matrix, this.sectionParams.modelYRotationRadians);
+
+            this.uniformsData.u_matrix = matrix;
+
+            // this.uniformsData.u_texture = 0;
+
+            gl.uniform1i(gl.getUniformLocation(program, "u_texture"), 0);
+            haruluya_webgl_utils.setUniforms(this.uniformSetters, this.uniformsData);
+
+            gl.drawArrays(gl.TRIANGLES, 0, 6 * 6);
+
+            requestAnimationFrame(this.Render);
 
         },
         SetUI(){
@@ -194,7 +178,9 @@ export default {
         handleClick() {
             window.location.href = "https://github.com/Haruluya/Rock-sugar/blob/master/rock-sugar/src/pages/WebglDemo/ImageTexture/index.vue";
         },
-
+        isPowerOf2(value) {
+                return (value & (value - 1)) === 0;
+        }
     },
     beforeDestory() {
         this.Destory();

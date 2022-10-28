@@ -29,7 +29,9 @@
 </template>
 <script>
 import { nano_canvas } from '@/packages';
-
+import vertexShaderSource from './resource/vetex-shader.js'
+import fragmentShaderSource from './resource/fragment-shader.js'
+import data from './resource/data.js'
 const desData = {
     category:"Webgl",
     name:"Triangle",
@@ -37,27 +39,8 @@ const desData = {
     title:"三角",
     content:"Say 'Hello World!' to CG world."
 }
+const position =  data.position;
 
-const vertexShaderSource = `
-        attribute vec2 a_position;
-        uniform mat3 u_matrix;
-        varying vec4 v_color;    
-        void main() {
-            gl_Position = vec4((u_matrix * vec3(a_position, 1)).xy, 0, 1);
-            v_color = gl_Position * 0.5 + 0.5;
-        }
-`;
-
-const fragmentShaderSource = `
-        precision mediump float;
-        varying vec4 v_color;
-        void main() {
-            gl_FragColor = v_color;
-        }
-
-`;
-
-const position =  new Float32Array([0, -100, 150, 125, -175, 100]);
 
 /*
     @author:haruluya
@@ -100,6 +83,7 @@ export default {
             this.bufferInfo = haruluya_webgl_utils.createBufferInfoFromArrays(gl, this.bufferData);
             this.attribSetters  = haruluya_webgl_utils.createAttributeSetters(gl, this.program);
             this.Render();
+
         },
         Render() {
             const gl = this.gl;
