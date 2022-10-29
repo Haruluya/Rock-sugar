@@ -16,6 +16,13 @@
                     >
                 </nano_button>
             </div>
+            <div class="background">
+                <nano_effect_bg_starry
+                    :prop_star_count=2500
+                    :prop_begin_hsl=[55,100,30]
+                    :prop_end_hsl=[55,100,4]
+                />
+            </div>
         </div>
         <div class="webglLink">
             <div class="desContainer">
@@ -42,7 +49,12 @@
                 </div>
             </div>
             <div class="contentContainer">
-                <div class="steps"></div>
+                <div class="steps">
+                    <nano_process_button_line
+                        :prop_category="default"
+                        :prop_item_title="['BASIC','LIGHT','SCENE','SHADOW','TIPS','PBR']"
+                    />
+                </div>
                 <div class="show">
                     
                 </div>
@@ -149,8 +161,9 @@
 
 
 
-import { nano_footer } from "@/packages";
+import { nano_effect_bg_starry, nano_footer, nano_process_button_line } from "@/packages";
 import ImgResource from "_utils/ImgResource.js"
+
 
 
 const proLinkDatas = [
@@ -265,7 +278,7 @@ export default {
 
         }
     },
-    components: { nano_footer }
+    components: { nano_footer, nano_effect_bg_starry, nano_process_button_line }
 }
 </script>
 <style lang="less" scoped>

@@ -3,8 +3,8 @@
   <div class="app">
     <div class="menu"><nano_menu></nano_menu></div>
     <div class="content">
+        <nano_totop_button/>
         <router-view>
-
         </router-view>
     </div>
     <div class="footer">
@@ -14,60 +14,49 @@
 </template>
 
 <script>
-import { nano_footer } from './packages';
+import { nano_footer, nano_totop_button } from './packages';
 
 
 
 export default {
     name: "App",
-    components: { nano_footer }
+    components: { nano_footer, nano_totop_button }
 }
 </script>
 
-<style lang="css">
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-
-.menu{
-
-}
-
-.content{
-    margin-top: 6.4vw;
-}
-.footer{
-    height: 20vw;
-}
+<style lang="less">
 
 
 
-a {
-	text-decoration: none; 
-	outline: none;	
-	color: #000;	
-}
+/*app */
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    .menu{
+
+    }
+    
+    .content{
+        margin-top: 6.4vw;
+    }
+    .footer{
+        height: 20vw;
+    }
 }
 
 
 
-/*Text animation.*/
-span{
-    font-family: "Arial Rounded MT Bold", "Helvetica Rounded", Arial, sans-serif;;
-    mask: radial-gradient(circle at 0 50%, #000, transparent 10%, transparent 0);
-    mask-size: 10000%;
-    animation: textShow 3s;
-}
 
 
-/*create runtime*/
+
+
+
+
+
+
+
 
 input[type=range] {
     -webkit-appearance: none;
@@ -97,9 +86,7 @@ input[type=range]::-webkit-slider-thumb {
     box-shadow: 0 .125em .125em #3b4547; 
 }
 
-body{
-    margin: 0;
-}
+
 
 
 #uiContainer{
@@ -152,5 +139,5 @@ body{
     margin-right: 20px;
 }
 @import "./styles/webglAnimationKey.less";
-
+@import "./styles/global.less";
 </style>

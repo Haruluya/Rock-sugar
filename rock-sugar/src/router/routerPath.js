@@ -78,6 +78,10 @@ export const routes = [
         name: 'DataTexture',
         component: () => import('_pages/WebglDemo/DataTexture'),
     },
-
+    {
+        path: '/CompTest',
+        name: 'CompTest',
+        component: () => import('_pages/Test/CompTest'),
+    },
     
 ]
