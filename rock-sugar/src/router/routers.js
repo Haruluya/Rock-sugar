@@ -1,10 +1,11 @@
 
 import {routes} from './routerPath.js';
-import {createWebHistory,createRouter} from 'vue-router';
-const routerHistory = createWebHistory()
+
+import { createRouter, createWebHashHistory } from 'vue-router';
+
 const router = createRouter({
   base:'/http/',
-  history: routerHistory,  
+  history: createWebHashHistory(),  
   routes,
 })
 

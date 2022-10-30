@@ -42,7 +42,7 @@ const texCoords = data.texcoord;
 
 
 export default {
-    name:'ImageProcess',
+    name:'DataTexture',
     data() {
         return {
             gl: null,
@@ -177,7 +177,7 @@ export default {
 
         },
         handleClick() {
-            window.location.href = "https://github.com/Haruluya/Rock-sugar/blob/master/rock-sugar/src/pages/WebglDemo/Orthographic/index.vue";
+            window.location.href = "https://github.com/Haruluya/Rock-sugar/blob/master/rock-sugar/src/pages/WebglDemo/DataTexture/index.vue";
         },
 
     },
