@@ -1,11 +1,11 @@
 
 import {routes} from './routerPath.js';
 
-import { createRouter, createWebHashHistory } from 'vue-router';
-
+import { createRouter, createWebHashHistory} from 'vue-router';
+const routerHistory = createWebHashHistory()
 const router = createRouter({
-  base:'/http/',
-  history: createWebHashHistory(),  
+  base: process.env.NODE_ENV === "production" ? "/Rock-sugar" : "/",
+  history: routerHistory,  
   routes,
 })
 
