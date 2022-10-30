@@ -1,8 +1,8 @@
 const { defineConfig } = require('@vue/cli-service')
-module.exports = defineConfig({
+module.exports = {
   transpileDependencies: true,
   lintOnSave: false,
-  removeAttributeQuotes:false,
+  // removeAttributeQuotes:false,
   publicPath: "./",
   //devServer.
   devServer:{
@@ -27,4 +27,4 @@ module.exports = defineConfig({
       }
     }
   }
-})
+}
