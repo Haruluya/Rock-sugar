@@ -1,0 +1,69 @@
+.compContainer{
+	margin: 0 auto;
+	display: inline-block;
+	animation: showComponent 2s 1;
+}
+
+@keyframes showComponent {
+	from{
+		opacity: 0;
+	}
+	to{
+		opacity: 1;
+	}
+}
+.nanoButton{
+
+	font-family: "Arial Rounded MT Bold", "Helvetica Rounded", Arial, sans-serif;;
+    display: block;
+    color: black;
+	font-weight: 600;
+	font-size: 1.5vw;
+	cursor: pointer;
+	position: relative;
+	
+	&:hover{
+		transform: scale(1.01);
+	}
+	
+	&:hover::before{
+		transform: scale(1.05);
+		border-image-source: radial-gradient(0% 0%, transparent 0px, transparent 100%, #787878 100%);
+	}
+	.background{
+		position: absolute;
+		top: 0vw;
+		left: 0vw;
+		right: 0vw;
+		bottom: 0vw;
+		clip-path: polygon(0 25%,10% 0, 100% 0, 100% 75%, 90% 100%, 0 100%);
+	}
+	
+}
+
+
+
+
+
+
+
+
+.nanoButton:before{
+	content: '';
+	position: absolute;
+	background-color: transparent;
+	top: 0vw;
+	left: 0vw;
+	right: 0vw;
+	bottom: 0vw;
+	border-image-source: radial-gradient(60% 60%, transparent 0px, transparent 100%, #787878 100%);
+	border-image-slice: 1;
+	border-width: 3px;
+	border-style: solid;
+	border-image-outset: 0.1cm;
+	transition: all 0.8s ease-out;
+}
+
+
+
+
