@@ -1,330 +1,189 @@
 <template lang="html">
-    <div class="webglContainer">
-        <div class="canvesContainer">
-            <canvas id="canvas">
-                <pre  id="vertex-shader" type="x-shader/x-vertex">
-                    attribute vec4 a_position;
-                    attribute vec2 a_texcoord;
-                    
-                    uniform mat4 u_matrix;
-                    
-                    varying vec2 v_texcoord;
-                    
-                    void main() {
-                      // Multiply the position by the matrix.
-                      gl_Position = u_matrix * a_position;
-                    
-                      // Pass the texcoord to the fragment shader.
-                      v_texcoord = a_texcoord;
-                    }
-                </pre>
-            
-                <pre  id="fragment-shader" type="x-shader/x-fragment">
-                    precision mediump float;
-            
-                    // Passed in from the vertex shader.
-                    varying vec2 v_texcoord;
-                    
-                    // The texture.
-                    uniform sampler2D u_texture;
-                    
-                    void main() {
-                       gl_FragColor = texture2D(u_texture, v_texcoord);
-                    }
-                </pre>
-            </canvas>
-        </div>
-    </div>
-    <div class="desContainer">
-        <div class="des">
-            <div class="title">
-                <span id="category">webgl</span>
-                <span id="name">DataTexture</span>
-            </div>
-            <div class="codeLink">
-                <nano_button @handleClick="handleClick"></nano_button>
+    <div class="pageContainer">
+        <div class="webglContainer">
+            <nano_canvas
+             :prop_vertex_shader_source="vertexShaderSource"
+             :prop_fragment_shader_source="fragmentShaderSource"
+            />
+            <div id="uiContainer">
+                <div id="ui">
+                </div>
             </div>
         </div>
-        <div class="conclusion">
-            <span class="title"><span id="conTitle">程序纹理</span></span>
-            <span class="content">The next is DataHuman.</span>
-        </div>
-        <div class="menu">
-            <nano_items_menu></nano_items_menu>
-        </div>
+        
+        <nano_webgl_des_panel
+            :prop_category="desData.category"
+            :prop_name="desData.name"
+            :prop_button_content="desData.buttonContent"
+            :prop_title="desData.title"
+            :prop_content="desData.content"
+            @handleClick="handleClick"
+            />
+
     </div>
 
+    
 </template>
 <script>
+import vertexShaderSource from './resource/vertex-shader.js'
+import fragmentShaderSource from './resource/fragment-shader.js'
+import data from './resource/data'
+
+const desData = {
+    category:"Webgl",
+    name:"DataTexture",
+    buttonContent:"查看源码",
+    title:"程序纹理",
+    content:"The next is DataHuman."
+}
+
+const positions = data.position;
+const texCoords = data.texcoord;
+
+
 export default {
-    name:'DataTexture',
-    mounted(){
-        this.Render();
+    name:'ImageProcess',
+    data() {
+        return {
+            gl: null,
+            canvas: null,
+            program: null,
+            vertexShaderSource,
+            fragmentShaderSource,
+            desData,
+            bufferData:{
+                position:{numComponents:3,data:positions},
+                texcoord:{numComponents:2,data:texCoords},
+            },
+            uniformsData:{
+                u_matrix:null,
+                // u_texture:null
+            },
+            bufferInfo:null,
+            uniformSetters:null,
+            attribSetters:null,
+            transfrom:{
+
+            },
+            sectionParams:{
+                last:0,
+                fieldOfViewRadians: haruluya_webgl_utils.degToRad(60),
+                modelXRotationRadians: haruluya_webgl_utils.degToRad(0),
+                modelYRotationRadians: haruluya_webgl_utils.degToRad(0),
+                texture:0,
+                img:null,
+            },
+            perspective:{
+                aspect:0,
+                fieldOfViewRadians:  haruluya_webgl_utils.degToRad(60),
+                zNear: 1,
+                zFar: 2000,
+            },
+            camera:{
+                target:[0, 0, 0],
+                position:[0, 0, 2],
+                up:[0,1,0]
+            },
+        }
     },
-    methods:{
-        Render(){
- function setGeometry(gl) {
-        var positions = new Float32Array(
-        [   
-            -0.5, -0.5,  -0.5,
-            -0.5,  0.5,  -0.5,
-            0.5, -0.5,  -0.5,
-            -0.5,  0.5,  -0.5,
-            0.5,  0.5,  -0.5,
-            0.5, -0.5,  -0.5,
+    mounted() {
+        this.Init();
+        this.SetUI();
 
-            -0.5, -0.5,   0.5,
-            0.5, -0.5,   0.5,
-            -0.5,  0.5,   0.5,
-            -0.5,  0.5,   0.5,
-            0.5, -0.5,   0.5,
-            0.5,  0.5,   0.5,
+    },
+    methods: {
+        Init(){
+            const { gl, canvas } = haruluya_webgl_utils.initWebglContext("canvas");
+            this.gl = gl;
+            this.canvas = canvas;
+            this.program = haruluya_webgl_utils.createProgramFromScripts(gl, ["vertex-shader", "fragment-shader"]);
+            this.perspective.aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
+            //Get bufferinfo and setters.
+            this.bufferInfo = haruluya_webgl_utils.createBufferInfoFromArrays(gl, this.bufferData);
+            this.uniformSetters = haruluya_webgl_utils.createUniformSetters(gl, this.program);
+            this.attribSetters  = haruluya_webgl_utils.createAttributeSetters(gl, this.program);
+            this.sectionParams.texture = gl.createTexture();
+            gl.bindTexture(gl.TEXTURE_2D, this.sectionParams.texture);
 
-            -0.5,   0.5, -0.5,
-            -0.5,   0.5,  0.5,
-            0.5,   0.5, -0.5,
-            -0.5,   0.5,  0.5,
-            0.5,   0.5,  0.5,
-            0.5,   0.5, -0.5,
-
-            -0.5,  -0.5, -0.5,
-            0.5,  -0.5, -0.5,
-            -0.5,  -0.5,  0.5,
-            -0.5,  -0.5,  0.5,
-            0.5,  -0.5, -0.5,
-            0.5,  -0.5,  0.5,
-
-            -0.5,  -0.5, -0.5,
-            -0.5,  -0.5,  0.5,
-            -0.5,   0.5, -0.5,
-            -0.5,  -0.5,  0.5,
-            -0.5,   0.5,  0.5,
-            -0.5,   0.5, -0.5,
-
-            0.5,  -0.5, -0.5,
-            0.5,   0.5, -0.5,
-            0.5,  -0.5,  0.5,
-            0.5,  -0.5,  0.5,
-            0.5,   0.5, -0.5,
-            0.5,   0.5,  0.5,
-
+            // fill texture with 3x2 pixels
+            const level = 0;
+            const internalFormat = gl.LUMINANCE;
+            const width = 3;
+            const height = 2;
+            const border = 0;
+            const format = gl.LUMINANCE;
+            const type = gl.UNSIGNED_BYTE;
+            const data = new Uint8Array([
+                128,  64, 128,
+                0, 192,   0,
             ]);
-        gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
-        }
+            const alignment = 1;
+            gl.pixelStorei(gl.UNPACK_ALIGNMENT, alignment);
+            gl.texImage2D(gl.TEXTURE_2D, level, internalFormat, width, height, border,
+                            format, type, data);
 
-        // Fill the buffer with texture coordinates the cube.
-        function setTexcoords(gl) {
-        gl.bufferData(
-            gl.ARRAY_BUFFER,
-            new Float32Array(
-                [
-                0, 0,
-                0, 1,
-                1, 0,
-                0, 1,
-                1, 1,
-                1, 0,
+            // set the filtering so we don't need mips and it's not filtered
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
-                0, 0,
-                0, 1,
-                1, 0,
-                1, 0,
-                0, 1,
-                1, 1,
-
-                0, 0,
-                0, 1,
-                1, 0,
-                0, 1,
-                1, 1,
-                1, 0,
-
-                0, 0,
-                0, 1,
-                1, 0,
-                1, 0,
-                0, 1,
-                1, 1,
-
-                0, 0,
-                0, 1,
-                1, 0,
-                0, 1,
-                1, 1,
-                1, 0,
-
-                0, 0,
-                0, 1,
-                1, 0,
-                1, 0,
-                0, 1,
-                1, 1,
-
-            ]),
-            gl.STATIC_DRAW);
-        }
-
-
-        var canvas = document.querySelector("#canvas");
-        var gl = canvas.getContext("webgl");
-        if (!gl) {
-            return;
-        }
-
-
-        var program = haruluya_webgl_utils.createProgramFromScripts(gl, ["vertex-shader", "fragment-shader"]);
-
-        // look up where the vertex data needs to go.
-        var positionLocation = gl.getAttribLocation(program, "a_position");
-        var texcoordLocation = gl.getAttribLocation(program, "a_texcoord");
-
-        // lookup uniforms
-        var matrixLocation = gl.getUniformLocation(program, "u_matrix");
-        var textureLocation = gl.getUniformLocation(program, "u_texture");
-
-        var positionBuffer = gl.createBuffer();
-        // Bind it to ARRAY_BUFFER (think of it as ARRAY_BUFFER = positionBuffer)
-        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-        // Put the positions in the buffer
-        setGeometry(gl);
-
-        // provide texture coordinates for the rectangle.
-        var texcoordBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, texcoordBuffer);
-        // Set Texcoords.
-        setTexcoords(gl);
-
-        // Create a texture.
-        var texture = gl.createTexture();
-        gl.bindTexture(gl.TEXTURE_2D, texture);
-
-        // fill texture with 3x2 pixels
-        const level = 0;
-        const internalFormat = gl.LUMINANCE;
-        const width = 3;
-        const height = 2;
-        const border = 0;
-        const format = gl.LUMINANCE;
-        const type = gl.UNSIGNED_BYTE;
-        const data = new Uint8Array([
-            128,  64, 128,
-            0, 192,   0,
-        ]);
-        const alignment = 1;
-        gl.pixelStorei(gl.UNPACK_ALIGNMENT, alignment);
-        gl.texImage2D(gl.TEXTURE_2D, level, internalFormat, width, height, border,
-                        format, type, data);
-
-        // set the filtering so we don't need mips and it's not filtered
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-
-        function degToRad(d) {
-            return d * Math.PI / 180;
-        }
-
-        var fieldOfViewRadians = degToRad(60);
-        var modelXRotationRadians = degToRad(0);
-        var modelYRotationRadians = degToRad(0);
-
-        // Get the starting time.
-        var then = 0;
-
-        requestAnimationFrame(drawScene);
-
-        // Draw the scene.
-        function drawScene(time) {
-            // convert to seconds
+            requestAnimationFrame(this.Render);
+        },
+        Render(time){
             time *= 0.001;
-            // Subtract the previous time from the current time
-            var deltaTime = time - then;
-            // Remember the current time for the next frame.
-            then = time;
+            let deltaTime = time - this.sectionParams.last;
+            this.sectionParams.last = time;
+
+            const gl = this.gl;
+            const program = this.program;
 
             haruluya_webgl_utils.resizeCanvasToDisplaySize(gl.canvas);
-
-            // Tell WebGL how to convert from clip space to pixels
             gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-
+            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
             gl.enable(gl.CULL_FACE);
             gl.enable(gl.DEPTH_TEST);
-
-            // Animate the rotation
-            modelYRotationRadians += -0.7 * deltaTime;
-            modelXRotationRadians += -0.4 * deltaTime;
-
-            // Clear the canvas AND the depth buffer.
-            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
-            // Tell it to use our program (pair of shaders)
+            this.sectionParams.modelYRotationRadians += -0.7 * deltaTime;
+            this.sectionParams.modelXRotationRadians += -0.4 * deltaTime;
+            
             gl.useProgram(program);
+            haruluya_webgl_utils.setBuffersAndAttributes(gl, this.attribSetters, this.bufferInfo);
+            let cameraMatrix = haruluya_webgl_utils.lookAt(this.camera.position, this.camera.target, this.camera.up);
+            let viewMatrix = haruluya_webgl_utils.inverse(cameraMatrix);
+            let projectionMatrix = haruluya_webgl_utils.perspective(
+                this.perspective.fieldOfViewRadians, 
+                this.perspective.aspect, 
+                this.perspective.zNear, 
+                this.perspective.zFar
+                );
+            let viewProjectionMatrix = haruluya_webgl_utils.multiply3d(projectionMatrix, viewMatrix);
 
-            // Turn on the position attribute
-            gl.enableVertexAttribArray(positionLocation);
+            let matrix = haruluya_webgl_utils.xRotate(viewProjectionMatrix, this.sectionParams.modelXRotationRadians);
+            matrix = haruluya_webgl_utils.yRotate(matrix, this.sectionParams.modelYRotationRadians);
+            this.uniformsData.u_matrix = matrix;
 
-            // Bind the position buffer.
-            gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+            gl.uniform1i(gl.getUniformLocation(program, "u_texture"), 0);
+            
+            haruluya_webgl_utils.setUniforms(this.uniformSetters, this.uniformsData);
 
-            // Tell the position attribute how to get data out of positionBuffer (ARRAY_BUFFER)
-            var size = 3;          // 3 components per iteration
-            var type = gl.FLOAT;   // the data is 32bit floats
-            var normalize = false; // don't normalize the data
-            var stride = 0;        // 0 = move forward size * sizeof(type) each iteration to get the next position
-            var offset = 0;        // start at the beginning of the buffer
-            gl.vertexAttribPointer(
-                positionLocation, size, type, normalize, stride, offset);
-
-            // Turn on the texcoord attribute
-            gl.enableVertexAttribArray(texcoordLocation);
-
-            // bind the texcoord buffer.
-            gl.bindBuffer(gl.ARRAY_BUFFER, texcoordBuffer);
-
-            // Tell the texcoord attribute how to get data out of texcoordBuffer (ARRAY_BUFFER)
-            var size = 2;          // 2 components per iteration
-            var type = gl.FLOAT;   // the data is 32bit floats
-            var normalize = false; // don't normalize the data
-            var stride = 0;        // 0 = move forward size * sizeof(type) each iteration to get the next position
-            var offset = 0;        // start at the beginning of the buffer
-            gl.vertexAttribPointer(
-                texcoordLocation, size, type, normalize, stride, offset);
-
-            // Compute the projection matrix
-            var aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
-            var projectionMatrix =
-                haruluya_webgl_utils.perspective(fieldOfViewRadians, aspect, 1, 2000);
-
-            var cameraPosition = [0, 0, 2];
-            var up = [0, 1, 0];
-            var target = [0, 0, 0];
-
-            // Compute the camera's matrix using look at.
-            var cameraMatrix = haruluya_webgl_utils.lookAt(cameraPosition, target, up);
-
-            // Make a view matrix from the camera matrix.
-            var viewMatrix = haruluya_webgl_utils.inverse(cameraMatrix);
-
-            var viewProjectionMatrix = haruluya_webgl_utils.multiply3d(projectionMatrix, viewMatrix);
-
-            var matrix = haruluya_webgl_utils.xRotate(viewProjectionMatrix, modelXRotationRadians);
-            matrix = haruluya_webgl_utils.yRotate(matrix, modelYRotationRadians);
-
-            // Set the matrix.
-            gl.uniformMatrix4fv(matrixLocation, false, matrix);
-
-            // Tell the shader to use texture unit 0 for u_texture
-            gl.uniform1i(textureLocation, 0);
-
-            // Draw the geometry.
             gl.drawArrays(gl.TRIANGLES, 0, 6 * 6);
 
-            requestAnimationFrame(drawScene);
-        }
+            requestAnimationFrame(this.Render);
+        },
+        SetUI(){
 
-        }
-    }
+        },
+        Destory(){
+
+        },
+        handleClick() {
+            window.location.href = "https://github.com/Haruluya/Rock-sugar/blob/master/rock-sugar/src/pages/WebglDemo/Orthographic/index.vue";
+        },
+
+    },
+    beforeDestory() {
+        this.Destory();
+    },
 }
 </script>
 <style lang="less" scoped>
