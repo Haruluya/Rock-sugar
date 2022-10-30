@@ -1,15 +1,22 @@
 export const routes = [
     {
         path: '/',
-        component: () => import('../pages/RSHome'),
+        component: () => import('../pages/Main'),
         meta:{
             showFooter:true,
         },
     },
     {
-        path: '/rshome',
-        name: 'RSHome',
-        component: () => import('../pages/RSHome'),
+        path: '/main',
+        name: 'Main',
+        component: () => import('../pages/Main'),
+        meta:{
+        },
+    },
+    {
+        path: '/nanocore',
+        name: 'NanoCore',
+        component: () => import('../pages/NanoCore'),
         meta:{
         },
     },

@@ -9,9 +9,9 @@
               <ul>
                 <li><a href="#" :class="{'current': current === 0}"><span>Main</span></a></li>
                 <li><a href="/webgl_demo/Triangle" :class="{'current': current === 1}"><span>Webgl</span></a></li>
-                <li><a href="#" :class="{'current': current === 2}"><span>NanoCore</span></a></li>
-                <li><a href="#" :class="{'current': current === 3}"><span>Games</span></a></li>
-                <li><a href="#" :class="{'current': current === 4}"><span>Haruluya</span></a></li>
+                <li><a href="/nanocore" :class="{'current': current === 2}"><span>NanoCore</span></a></li>
+                <li><a href="/games" :class="{'current': current === 3}"><span>Games</span></a></li>
+                <li><a href="/haruluya" :class="{'current': current === 4}"><span>Haruluya</span></a></li>
               </ul>
               <div class="mobileMenu">
                 <div class="iconBt">

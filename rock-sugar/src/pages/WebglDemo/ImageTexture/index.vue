@@ -53,8 +53,8 @@ export default {
             fragmentShaderSource,
             desData,
             bufferData:{
-                position:{numComponents:2,data:positions},
-                texCoord:{numComponents:2,data:texCoords},
+                position:{numComponents:3,data:positions},
+                texcoord:{numComponents:2,data:texCoords},
             },
             uniformsData:{
                 u_matrix:null,
@@ -72,6 +72,7 @@ export default {
                 modelXRotationRadians: haruluya_webgl_utils.degToRad(0),
                 modelYRotationRadians: haruluya_webgl_utils.degToRad(0),
                 texture:0,
+                img:null,
             },
             perspective:{
                 aspect:0,
@@ -80,13 +81,14 @@ export default {
                 zFar: 2000,
             },
             camera:{
-                target:[0, 35, 0],
-                position:[100, 150, 200],
+                target:[0, 0, 0],
+                position:[0, 0, 2],
                 up:[0,1,0]
             },
         }
     },
     mounted() {
+
         this.LoadImg();
         this.SetUI();
 
@@ -96,18 +98,12 @@ export default {
             // Set image.
             let image = new Image();
             image.src = haruluyaImg;
-            image.addEventListener('load', ()=> {
-                gl.bindTexture(gl.TEXTURE_2D, this.texture);
-                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA,gl.UNSIGNED_BYTE, image);
-                if (this.isPowerOf2(image.width) && this.isPowerOf2(image.height)) {
-                    gl.generateMipmap(gl.TEXTURE_2D);
-                } else {
-                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-                }
-            });
-            this.Init();
+            this.img = image;
+            image.onload = ()=>{
+
+                this.Init();
+            }
+
         },
         Init(){
             const { gl, canvas } = haruluya_webgl_utils.initWebglContext("canvas");
@@ -121,26 +117,37 @@ export default {
             this.attribSetters  = haruluya_webgl_utils.createAttributeSetters(gl, this.program);
             
             this.texture = gl.createTexture();
+
             gl.bindTexture(gl.TEXTURE_2D, this.texture);
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
-                            new Uint8Array([0, 0, 255, 255]));
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA,gl.UNSIGNED_BYTE, this.img);
+            if (this.isPowerOf2(this.img.width) && this.isPowerOf2(this.img.height)) {
+                gl.generateMipmap(gl.TEXTURE_2D);
+            }
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+            
+           
+            
             requestAnimationFrame(this.Render);
         },
         Render(time){
+
             time *= 0.001;
-            let deltaTime = time - this.last;
-            this.last = time;
+            let deltaTime = time - this.sectionParams.last;
+            this.sectionParams.last = time;
 
             const gl = this.gl;
             const program = this.program;
+
             haruluya_webgl_utils.resizeCanvasToDisplaySize(gl.canvas);
             gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
             gl.enable(gl.CULL_FACE);
             gl.enable(gl.DEPTH_TEST);
-
             this.sectionParams.modelYRotationRadians += -0.7 * deltaTime;
             this.sectionParams.modelXRotationRadians += -0.4 * deltaTime;
+            
             gl.useProgram(program);
             haruluya_webgl_utils.setBuffersAndAttributes(gl, this.attribSetters, this.bufferInfo);
             
@@ -156,12 +163,11 @@ export default {
 
             let matrix = haruluya_webgl_utils.xRotate(viewProjectionMatrix, this.sectionParams.modelXRotationRadians);
             matrix = haruluya_webgl_utils.yRotate(matrix, this.sectionParams.modelYRotationRadians);
-
             this.uniformsData.u_matrix = matrix;
 
             // this.uniformsData.u_texture = 0;
-
             gl.uniform1i(gl.getUniformLocation(program, "u_texture"), 0);
+            
             haruluya_webgl_utils.setUniforms(this.uniformSetters, this.uniformsData);
 
             gl.drawArrays(gl.TRIANGLES, 0, 6 * 6);
