@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkrock_sugar"]=self["webpackChunkrock_sugar"]||[]).push([[24],{1024:function(n,r,u){function e(n,r,u,e,t,s){return null}u.r(r),u.d(r,{default:function(){return c}});var t={mounted(){},data(){return{renderer:null,snow:null}},methods:{}},s=u(89);const a=(0,s.Z)(t,[["render",e]]);var c=a}}]);
+//# sourceMappingURL=24.0c502cc2.js.map
