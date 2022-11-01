@@ -5,4 +5,3 @@ nano_process_button_line.install = function(Vue) {
 };
 
 export default nano_process_button_line;
-

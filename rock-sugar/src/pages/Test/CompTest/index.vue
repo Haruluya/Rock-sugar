@@ -1,5 +1,7 @@
 <template lang="">
-
+    <div class="content">
+        <nano_param_panel/>
+    </div>
 </template>
 <script>
 
@@ -19,6 +21,6 @@ export default {
     },
 }
 </script>
-<style lang="">
-    
+<style lang="less" scoped>
+@import "./index.less";
 </style>

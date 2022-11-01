@@ -105,16 +105,27 @@
                 <div class="content">
                     Show the nanocore world! 
                 </div>
-                <div class="link">
-                    <nano_button
-                        prop_content="Come" 
-                        prop_border="Quad" 
-                        prop_color="#65f9fd"
-                        prop_size_width=4
-                        prop_size_height=1
-                        >
-                    </nano_button>
+                <div class="linkContainer">
+
+                    <div class="video">
+                        <nano_effect_bg_video
+                            :prop_video_source="nanocorePv3"
+                        />
+                        <div class="link">
+                            <nano_button
+                            prop_content="Come" 
+                            prop_border="Quad" 
+                            prop_color="#65f9fd"
+                            prop_size_width=4
+                            prop_size_height=1
+                            >
+                        </nano_button> 
+                        </div>
+                        <border class="videoBorder"></border>
+                    </div>
+
                 </div>
+
             </div>
             <div class="charContainer">
                 <div class="charName">
@@ -163,7 +174,7 @@
 
 import { nano_effect_bg_starry, nano_footer, nano_process_button_line } from "@/packages";
 import ImgResource from "_utils/ImgResource.js"
-
+import nanocorePv3 from "../../assets/videos/pv3.mp4"
 
 
 const proLinkDatas = [
@@ -251,6 +262,7 @@ export default {
             ImgResource,
             mechaShowDatas,
             charCurrentIndex:0,
+            nanocorePv3,
         };
     },
     mounted() {

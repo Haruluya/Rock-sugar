@@ -715,15 +715,15 @@
 
 
     // 设置滑块。
-    function setupSlider(divId, options) {
-        var parent = document.getElementById(divId);
-        if (!parent) {
+    function setupSlider(slider, options) {
+
+      //let vue component effective.
+        // var parent = document.getElementById(divId);
+        if (!slider) {
+          console.log("Slider ref not fount!")
           return;
         }
-        if (!options.name) {
-          options.name = divId;
-        }
-        return createSlider(parent, options); 
+        return createSlider(slider, options); 
     }
     
     // 16进制转rgb。
@@ -764,6 +764,8 @@
 
     // 创建滑块。
     function createSlider(parent, options) {
+
+
         var precision = options.precision || 0;
         var min = options.min || 0;
         var step = options.step || 1;
@@ -777,17 +779,9 @@
         min /= step;
         max /= step;
         value /= step;
-    
-        parent.innerHTML = `
-          <div class="webgl-slider-outer">
-            <div class="webgl-slider-label">${name}</div>
-            <input class="webgl-slider-slider" type="range" min="${min}" max="${max}" value="${value}" />
-            <div class="webgl-slider-value"></div>
-            </div>
-        `;
-        var valueElem = parent.querySelector(".webgl-slider-value");
-        var sliderElem = parent.querySelector(".webgl-slider-slider");
-    
+        var valueElem = parent.$refs.sliderValue;
+        var sliderElem = parent.$refs.sliderSlider;
+
         function updateValue(value) {
           valueElem.textContent = (value * step * uiMult).toFixed(uiPrecision);
         }
@@ -795,7 +789,9 @@
         updateValue(value);
     
         function handleChange(event) {
+         
           var value = parseInt(event.target.value);
+    
           updateValue(value);
           fn(event, { value: value * step });
         }
