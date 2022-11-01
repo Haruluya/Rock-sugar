@@ -153,6 +153,7 @@ export default {
         this.Destory();
     },
     components: { nano_canvas }
+    
 };
 
 
