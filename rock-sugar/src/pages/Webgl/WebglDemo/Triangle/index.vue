@@ -221,7 +221,12 @@ export default {
     destroyed() {
         this.Destory();
     },
+<<<<<<< HEAD:rock-sugar/src/pages/Webgl/WebglDemo/Triangle/index.vue
   
+=======
+    components: { nano_canvas }
+    
+>>>>>>> 0e227d8e6363c650a7e358a6c663238e63a411e7:rock-sugar/src/pages/WebglDemo/Triangle/index.vue
 };
 
 
