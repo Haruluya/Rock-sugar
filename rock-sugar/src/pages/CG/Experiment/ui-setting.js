@@ -104,10 +104,11 @@ const globalUiCallbacks = {
             Render();
         }
     },
-    updateGridSize:(component)=>{
+    updateValue:(component,valueName)=>{
+        let sectionParams = component.sectionParams;
         let Render = component.Render;
-        return function(event,ui){
-            component.sectionParams.girdSize = ui.value;
+        return function(event, ui){
+            sectionParams[valueName] = ui.value;
             Render();
         }
     }
@@ -170,6 +171,15 @@ const drawPointInGrid = (component, gridx,gridy)=>{
 
 }
 
+const drawLine = (ctx,beginPoint, endPoint,color)=>{
+    ctx.beginPath();
+    ctx.moveTo(beginPoint.x,beginPoint.y);
+    ctx.lineTo(endPoint.x,endPoint.y);
+    ctx.strokeStyle = color;
+    ctx.stroke();
+}
+
+
 export default{
     panelDrag,
     setDefaultUI,
@@ -179,7 +189,8 @@ export default{
     updateSlot,
     destroy,
     drawGrid,
-    drawPointInGrid
+    drawPointInGrid,
+    drawLine
 }
 
 

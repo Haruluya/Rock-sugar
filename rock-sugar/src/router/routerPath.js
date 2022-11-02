@@ -116,9 +116,9 @@ export const routes = [
         component: () => import('_pages/CG/Experiment/ClipPolygon'),
     },
     {
-        path: '/cg/experiment/DDA',
-        name: 'DDA',
-        component: () => import('_pages/CG/Experiment/DDA'),
+        path: '/cg/experiment/DAA',
+        name: 'DAA',
+        component: () => import('_pages/CG/Experiment/DAA'),
     },
     {
         path: '/cg/experiment/DrawCircle',

@@ -61,7 +61,7 @@ const desData = {
 */
 
 export default {
-    name: "DrawLine",
+    name: "DAA",
     data() {
         return {
             canvas:null,
@@ -105,8 +105,8 @@ export default {
                 {type:"slider", id:"endY", value: sectionParams.endPoint.y, min:0, max:100, 
                     callback:uiSetting.globalUiCallbacks.updatePoint(this,"endPoint",'y')
                 },
-                {type:"slider", id:"gridSize",value:sectionParams.girdSize,min:1,max:100,
-                    callback:uiSetting.globalUiCallbacks.updateGridSize(this)
+                {type:"slider", id:"girdSize",value:sectionParams.girdSize,min:1,max:100,
+                    callback:uiSetting.globalUiCallbacks.updateValue(this,"girdSize")
                 }
             ]
         },
@@ -125,7 +125,6 @@ export default {
             const gridy = parseInt(this.canvas.height / this.sectionParams.girdSize) - 1;
 
             ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-            console.log(gridx)
             uiSetting.drawGrid(this);
             
             this.debugContent = [{
@@ -217,7 +216,7 @@ export default {
             return{
                 handleClick:()=>{
                     window.location.href = 
-                        "https://github.com/Haruluya/Rock-sugar/blob/master/rock-sugar/src/pages/CG/Experiment/DrawLine/index.vue";
+                        "https://github.com/Haruluya/Rock-sugar/blob/master/rock-sugar/src/pages/CG/Experiment/DAA/index.vue";
                 },
                 showDebugPanel:()=>{
                     this.showDebug = !this.showDebug;
