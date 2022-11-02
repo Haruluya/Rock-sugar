@@ -49,6 +49,13 @@ export default {
             required:true,
         }
     },
+    // watch:{
+    //     prop_content:{
+    //         handler(newVal,oldVal){
+                
+    //         }
+    //     }
+    // },
     methods: {
         ShowContent(){
             this.showContent = !this.showContent;

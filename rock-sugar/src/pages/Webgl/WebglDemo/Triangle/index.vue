@@ -206,6 +206,7 @@ export default {
             if (this.showDebug){
                 this.$nextTick(()=>{
                     uiSetting.setDebugPanelCon(this);
+                    uiSetting.nodeLines.debugPanelLine.show('draw')
                 })
             }else{
                 uiSetting.nodeLines.debugPanelLine.hide('draw');
@@ -221,12 +222,7 @@ export default {
     destroyed() {
         this.Destory();
     },
-<<<<<<< HEAD:rock-sugar/src/pages/Webgl/WebglDemo/Triangle/index.vue
   
-=======
-    components: { nano_canvas }
-    
->>>>>>> 0e227d8e6363c650a7e358a6c663238e63a411e7:rock-sugar/src/pages/WebglDemo/Triangle/index.vue
 };
 
 

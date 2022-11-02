@@ -90,5 +90,104 @@ export const routes = [
         name: 'CompTest',
         component: () => import('_pages/Test/CompTest'),
     },
-    
+    {
+        path: '/cg/experiment/3DHouse',
+        name: '3DHouse',
+        component: () => import('_pages/CG/Experiment/3DHouse'),
+    },
+    {
+        path: '/cg/experiment/Bezier',
+        name: 'Bezier',
+        component: () => import('_pages/CG/Experiment/Bezier'),
+    },
+    {
+        path: '/cg/experiment/Bresenham',
+        name: 'Bresenham',
+        component: () => import('_pages/CG/Experiment/Bresenham'),
+    },
+    {
+        path: '/cg/experiment/ClipLine',
+        name: 'ClipLine',
+        component: () => import('_pages/CG/Experiment/ClipLine'),
+    },
+    {
+        path: '/cg/experiment/ClipPolygon',
+        name: 'ClipPolygon',
+        component: () => import('_pages/CG/Experiment/ClipPolygon'),
+    },
+    {
+        path: '/cg/experiment/DDA',
+        name: 'DDA',
+        component: () => import('_pages/CG/Experiment/DDA'),
+    },
+    {
+        path: '/cg/experiment/DrawCircle',
+        name: 'DrawCircle',
+        component: () => import('_pages/CG/Experiment/DrawCircle'),
+    },
+    {
+        path: '/cg/experiment/DrawEllipse',
+        name: 'DrawEllipse',
+        component: () => import('_pages/CG/Experiment/DrawEllipse'),
+    },
+    {
+        path: '/cg/experiment/DrawLine',
+        name: 'DrawLine',
+        component: () => import('_pages/CG/Experiment/DrawLine'),
+    },
+    {
+        path: '/cg/experiment/EdgeTablePolygon',
+        name: 'EdgeTablePolygon',
+        component: () => import('_pages/CG/Experiment/EdgeTablePolygon'),
+    },
+    {
+        path: '/cg/experiment/EdgeTablePolygonFlag',
+        name: 'EdgeTablePolygonFlag',
+        component: () => import('_pages/CG/Experiment/EdgeTablePolygonFlag'),
+    },
+    {
+        path: '/cg/experiment/Interaction',
+        name: 'Interaction',
+        component: () => import('_pages/CG/Experiment/Interaction'),
+    },
+    {
+        path: '/cg/experiment/LightModel',
+        name: 'LightModel',
+        component: () => import('_pages/CG/Experiment/LightModel'),
+    },
+    {
+        path: '/cg/experiment/MidPoint',
+        name: 'MidPoint',
+        component: () => import('_pages/CG/Experiment/MidPoint'),
+    },
+    {
+        path: '/cg/experiment/Pyramid',
+        name: 'Pyramid',
+        component: () => import('_pages/CG/Experiment/Pyramid'),
+    },
+    {
+        path: '/cg/experiment/SeedPolygon',
+        name: 'SeedPolygon',
+        component: () => import('_pages/CG/Experiment/SeedPolygon'),
+    },
+    {
+        path: '/cg/experiment/ShadowShade',
+        name: 'ShadowShade',
+        component: () => import('_pages/CG/Experiment/ShadowShade'),
+    },
+    {
+        path: '/cg/experiment/Texture',
+        name: 'Texture',
+        component: () => import('_pages/CG/Experiment/Texture'),
+    },
+    {
+        path: '/cg/experiment/ViewTransform',
+        name: 'ViewTransform',
+        component: () => import('_pages/CG/Experiment/ViewTransform'),
+    },
+    {
+        path: '/cg/experiment/Weiler-Athenton',
+        name: 'Weiler-Athenton',
+        component: () => import('_pages/CG/Experiment/Weiler-Athenton'),
+    },
 ]

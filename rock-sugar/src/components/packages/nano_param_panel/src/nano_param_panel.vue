@@ -94,6 +94,8 @@ export default {
                     );
                 }
                 });
+                this.$emit("updateSlot");
+
             })
 
         },
@@ -101,7 +103,9 @@ export default {
             this.debug = !this.debug;
             this.$nextTick(()=>{
                 this.$emit("showDebug");
+                this.$emit("updateSlot");
             })
+
         }
     },
     components: { nano_param_panel }

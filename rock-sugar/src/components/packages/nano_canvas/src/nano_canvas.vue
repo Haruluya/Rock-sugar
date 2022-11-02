@@ -1,7 +1,7 @@
 <template>
     <div class="compContainer" >
         <div class="canvesContainer">
-            <canvas id="canvas">
+            <canvas id="canvas" ref="canvas">
                 <div id="vertex-shader">
                     {{prop_vertex_shader_source}}
                 </div>
