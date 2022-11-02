@@ -1,32 +1,33 @@
 <template>
 
   <div class="app">
-    <div class="menu"><nano_menu></nano_menu></div>
-    <div class="content">
+    <div class="app-menu"><nano_menu></nano_menu></div>
+    <div class="app-content">
         <nano_totop_button/>
         <router-view>
         </router-view>
     </div>
-    <div class="footer">
+    <div class="app-footer">
         <nano_footer></nano_footer>
     </div>
   </div>
 </template>
 
 <script>
-import { nano_footer, nano_totop_button } from './packages';
+
 
 
 
 export default {
     name: "App",
-    components: { nano_footer, nano_totop_button }
 }
 </script>
 
 <style lang="less">
 
-
+html{
+    overflow-x: hidden;
+}
 
 /*app */
 #app {
@@ -34,14 +35,15 @@ export default {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
-    .menu{
+    .app-menu{
 
     }
     
-    .content{
-        margin-top: 6.4vw;
+    .app-content{
+        margin-top: 6vw;
+
     }
-    .footer{
+    .app-footer{
         height: 20vw;
     }
 }

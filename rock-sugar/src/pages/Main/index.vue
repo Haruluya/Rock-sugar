@@ -172,7 +172,7 @@
 
 
 
-import { nano_effect_bg_starry, nano_footer, nano_process_button_line } from "@/packages";
+
 import ImgResource from "_utils/ImgResource.js"
 import nanocorePv3 from "../../assets/videos/pv3.mp4"
 
@@ -290,7 +290,7 @@ export default {
 
         }
     },
-    components: { nano_footer, nano_effect_bg_starry, nano_process_button_line }
+   
 }
 </script>
 <style lang="less" scoped>
