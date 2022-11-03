@@ -31,29 +31,29 @@ git clone https://github.com/Haruluya/Rock-sugar.git
 
 **Main**
 
-![image-20221103201104207](.\Document\Images\image-20221103201104207.png)
+![image-20221103201104207](./Document/Images/image-20221103201104207.png)
 
 
 
-![image-20221103201249139](.\Document\Images\image-20221103201249139.png)
+![image-20221103201249139](./Document/Images/image-20221103201249139.png)
 
 
 
-![image-20221103201305567](.\Document\Images\image-20221103201305567.png)
+![image-20221103201305567](./Document/Images/image-20221103201305567.png)
 
 **EX**
 
-![image-20221103201207040](.\Document\Images\image-20221103201207040.png)
+![image-20221103201207040](./Document/Images/image-20221103201207040.png)
 
 
 
 **Webgl**
 
-![image-20221103201337872](.\Document\Images\image-20221103201337872.png)
+![image-20221103201337872](./Document/Images/image-20221103201337872.png)
 
 **Experiment**
 
-![image-20221103201409904](.\Document\Images\image-20221103201409904.png)
+![image-20221103201409904](./Document/Images/image-20221103201409904.png)
 
 
 
