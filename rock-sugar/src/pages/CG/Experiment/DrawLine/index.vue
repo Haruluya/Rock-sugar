@@ -91,7 +91,6 @@ export default {
         SetUI(){
             this.$refs.page.SetUI();
             this.sectionParams.debugContent = [{title:"Debug",content:"Nothing to debug."}];
-            uiSetting.setDefaultUI(this);
         },
 
     },

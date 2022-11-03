@@ -1,7 +1,11 @@
 <template>
 
   <div class="app">
-    <div class="app-menu"><nano_menu></nano_menu></div>
+    <div class="app-menu">
+        <nano_menu
+            :prop_dropdown_nav_data="navData"
+        />
+    </div>
     <div class="app-content">
         <nano_totop_button/>
         <router-view>
@@ -14,12 +18,17 @@
 </template>
 
 <script>
-
+import navData from "_router/navData"
 
 
 
 export default {
     name: "App",
+    data() {
+        return {
+            navData,
+        }
+    },
 }
 </script>
 

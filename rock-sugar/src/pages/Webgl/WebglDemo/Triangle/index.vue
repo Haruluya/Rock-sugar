@@ -1,51 +1,15 @@
 <template lang="html">
-    <div class="pageContainer">
-        <div class="webglContainer" id="canvasSlot">
-            <nano_canvas
-             :prop_vertex_shader_source="vertexShaderSource"
-             :prop_fragment_shader_source="fragmentShaderSource"
-            />
-        </div>
-        
-        <div class="desPanel">
-            <nano_webgl_des_panel
-            :prop_category="desData.category"
-            :prop_name="desData.name"
-            :prop_button_content="desData.buttonContent"
-            :prop_title="desData.title"
-            :prop_content="desData.content"
-            @handleClick="handleClick"
-            />
-        </div>
-
-        <div class="sidePanel" ref="sidePanel"
-            >
-            <div class="mainPanel"
-                :style="{left:sidePanelPos.mainPanel.x + 'px',top:sidePanelPos.mainPanel.y + 'px'}"
-                @mousedown="uiSetting.panelDrag(this,'mainPanel',$event)" >
-                <nano_param_panel
-                :prop_ui_setter="uiSetter"
-                @showDebug="showDebugPanel"
-                />
-            </div>
-            <transition name="debugPanelTransition">
-                <div class="debugPanel"
-                    v-show="showDebug"
-                    :style="{left:sidePanelPos.debugPanel.x + 'px',top:sidePanelPos.debugPanel.y + 'px'}"
-                    @mousedown="uiSetting.panelDrag(this,'debugPanel',$event)">
-                    <nano_param_output_panel
-                        prop_title="Debug"
-                        :prop_content="debugContent"
-                    />
-                </div>
-            </transition>
-        </div>
-    </div>
+    <nano_webgl_demo_panel
+        :prop_des_data="desData"
+        :prop_ui_setter="uiSetter"
+        :prop_shader="shaderSource"
+        :prop_section_params="sectionParams"
+        ref="page"
+    />
 </template>
 <script>
 
-
-import vertexShaderSource from './resource/vetex-shader.js'
+import vertexShaderSource from './resource/vertex-shader.js'
 import fragmentShaderSource from './resource/fragment-shader.js'
 import data from './resource/data.js'
 import uiSetting from "../ui-setting"
@@ -69,13 +33,13 @@ export default {
     name: "Triangle",
     data() {
         return {
-
             //gl context.
             gl: null,
             program: null,
-            vertexShaderSource,
-            fragmentShaderSource,
-
+            shaderSource:{
+                vertexShaderSource,
+                fragmentShaderSource
+            },
             //attribute and uniform.
             bufferData:{
                 position:{numComponents:2,data:position}
@@ -87,74 +51,35 @@ export default {
             attribSetters:null,
             uniformSetters:null,
 
-            //params.
-            transfrom: {
+            sectionParams:{
+                //params.
                 translation: [300, 200,0],
                 rotation:[haruluya_webgl_utils.degToRad(0), haruluya_webgl_utils.degToRad(0), haruluya_webgl_utils.degToRad(0)],
-                scale: [1, 1,1]
+                scale: [1, 1,1],
+                angleInRadians:0,
+                debugContent:null
             },
-            angleInRadians:0,
 
             // component data.
             desData,
-            uiSetting,
-   
-            //vue watching data.
-            sidePanelPos:{
-                mainPanel:{ x: 1050, y: 150 },
-                debugPanel:{x:1200, y:400}
-            },
-            showDebug:false,
-            debugContent:null,
-
         };
     },
 
     computed:{
         //uiSetter.
         uiSetter(){
-            let transfrom = this.transfrom;
-            let angleInRadians = this.angleInRadians;
+            let sectionParams = this.sectionParams;
             return [
-                {type:"slider", id:"x", value: transfrom.translation[0], min:0, max:400, callback:this.uiCallback.updatePosition(0)},
-                {type:"slider", id:"y", value: transfrom.translation[1], min:0, max:400,  callback:this.uiCallback.updatePosition(1)},
-                {type:"slider", id:"angle", value: angleInRadians, min:0, max:360,  callback:this.uiCallback.updateAngle},
-                {type:"slider", id:"scaleX", value: transfrom.scale[0], min:-5, max:5, callback:this.uiCallback.updateScale(0)},
-                {type:"slider", id:"scaleY", value: transfrom.scale[1], min:-5, max:5, callback:this.uiCallback.updateScale(1)},
+                { type: "slider", id: "beginX", value: sectionParams.translation[0], min: 0, max: 1000, callback: uiSetting.globalUiCallbacks.updatePoint(this, "translation", 0)
+                },
+
             ]
         },
-
-        // callbacks of uisetter.
-        uiCallback(){
-            let Render = this.Render;
-            let transfrom = this.transfrom;
-            let angleInRadians =this.angleInRadians;
-            return {
-                updatePosition:(index)=>{
-                    return function (event, ui) {
-                        transfrom.translation[index] = ui.value;
-                        Render();
-                    };
-                },
-                updateAngle:()=>{
-                    let Render = this.Render;
-                    var angleInDegrees = 360 - ui.value;
-                    angleInRadians = angleInDegrees * Math.PI / 180;
-                    Render();
-                },
-                updateScale:(index)=>{
-                    let transfrom = this.transfrom;
-                    let Render = this.Render;
-                    return function (event, ui) {
-                        transfrom.scale[index] = ui.value;
-                        Render();
-                    };
-                }
-            }
-        },  
     },
     methods: {
         Init() {
+            console.log(this.$refs.page)
+            this.$refs.page.Init();
             const { gl, canvas } = haruluya_webgl_utils.initWebglContext("canvas");
             this.gl = gl;
             this.canvas = canvas;
@@ -163,22 +88,25 @@ export default {
             this.bufferInfo = haruluya_webgl_utils.createBufferInfoFromArrays(gl, this.bufferData);
             this.attribSetters  = haruluya_webgl_utils.createAttributeSetters(gl, this.program);
             this.Render();
-
-
         },
         Render() {
+            this.$refs.page.Render();
+
             const gl = this.gl;
             haruluya_webgl_utils.resizeCanvasToDisplaySize(gl.canvas);
+
             gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
             gl.clear(gl.COLOR_BUFFER_BIT);
             gl.useProgram(this.program);
 
             // set matix.
+            const sectionParams = this.sectionParams;
+
             const matrixLocation = gl.getUniformLocation(this.program, "u_matrix");
             let matrix = haruluya_webgl_utils.projection2d(gl.canvas.clientWidth, gl.canvas.clientHeight);
-            matrix = haruluya_webgl_utils.translate2d(matrix, this.transfrom.translation[0], this.transfrom.translation[1]);
-            matrix = haruluya_webgl_utils.rotate2d(matrix, this.angleInRadians);
-            matrix = haruluya_webgl_utils.scale2d(matrix, this.transfrom.scale[0], this.transfrom.scale[1]);
+            matrix = haruluya_webgl_utils.translate2d(matrix, sectionParams.translation[0], sectionParams.translation[1]);
+            matrix = haruluya_webgl_utils.rotate2d(matrix, sectionParams.angleInRadians);
+            matrix = haruluya_webgl_utils.scale2d(matrix, sectionParams.scale[0], sectionParams.scale[1]);
             gl.uniformMatrix3fv(matrixLocation, false, matrix);
 
             haruluya_webgl_utils.setBuffersAndAttributes(gl, this.attribSetters, this.bufferInfo);
@@ -187,48 +115,13 @@ export default {
         },
         
         SetUI(){
-            uiSetting.setDefaultUI(this);
-        },
-
-
-
-        Destory() {
-            console.log("WBBGL DESTORY!!!");
-        
-        },
-
-        handleClick() {
-            window.location.href = "https://github.com/Haruluya/Rock-sugar/blob/master/rock-sugar/src/pages/WebglDemo/Triangle/index.vue";
-        },
-        
-        showDebugPanel(){
-            this.showDebug = !this.showDebug;
-            if (this.showDebug){
-                this.$nextTick(()=>{
-                    uiSetting.setDebugPanelCon(this);
-                    uiSetting.nodeLines.debugPanelLine.show('draw')
-                })
-            }else{
-                uiSetting.nodeLines.debugPanelLine.hide('draw');
-                uiSetting.nodeLines.debugPanelLine.remove();
-                uiSetting.nodeLines.debugPanelLine = null;
-            }
+            this.$refs.page.SetUI();
         },
     },
     mounted() {
         this.Init();
         this.SetUI();
     },
-    destroyed() {
-        this.Destory();
-    },
-  
+
 };
-
-
-
-
 </script>
-<style lang="less" scoped>
-@import "../index.less";
-</style>

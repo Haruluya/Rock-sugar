@@ -5,7 +5,7 @@ module.exports = defineConfig({
   lintOnSave: false,
 
 
-  publicPath: process.env.NODE_ENV === "production" ? "/Rock-sugar" : "/",
+  publicPath: process.env.NODE_ENV === "production" ? "/Rock-sugar/" : "/",
 
 
   // Alias.

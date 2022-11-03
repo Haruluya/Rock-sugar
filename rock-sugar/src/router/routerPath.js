@@ -14,6 +14,13 @@ export const routes = [
         },
     },
     {
+        path: '/cg',
+        name: 'cg_nav',
+        component: () => import('../pages/CG/Nav'),
+        meta:{
+        },
+    },
+    {
         path: '/nanocore',
         name: 'NanoCore',
         component: () => import('../pages/NanoCore'),
@@ -21,67 +28,67 @@ export const routes = [
         },
     },
     {
-        path: '/webgl_demo/Triangle',
-        name: 'WebglDemo',
+        path: '/cg/webgl_demo/Triangle',
+        name: 'Triangle',
         component: () => import('_pages/Webgl/WebglDemo/Triangle'),
     },
     {
-        path: '/webgl_demo/SpotLight',
+        path: '/cg/webgl_demo/SpotLight',
         name: 'SpotLight',
         component: () => import('_pages/Webgl/WebglDemo/SpotLight'),
     },
     {
-        path: '/webgl_demo/SolarSystem',
+        path: '/cg/webgl_demo/SolarSystem',
         name: 'SolarSystem',
         component: () => import('_pages/Webgl/WebglDemo/SolarSystem'),
     },
     {
-        path: '/webgl_demo/Perspective',
+        path: '/cg/webgl_demo/Perspective',
         name: 'Perspective',
         component: () => import('_pages/Webgl/WebglDemo/Perspective'),
     },
     {
-        path: '/webgl_demo/Orthographic',
+        path: '/cg/webgl_demo/Orthographic',
         name: 'Orthographic',
         component: () => import('_pages/Webgl/WebglDemo/Orthographic'),
     },
     {
-        path: '/webgl_demo/ObjResolver',
+        path: '/cg/webgl_demo/ObjResolver',
         name: 'ObjResolver',
         component: () => import('_pages/Webgl/WebglDemo/ObjResolver'),
     },
     {
-        path: '/webgl_demo/MultipleObject',
+        path: '/cg/webgl_demo/MultipleObject',
         name: 'MultipleObject',
         component: () => import('_pages/Webgl/WebglDemo/MultipleObject'),
     },
     {
-        path: '/webgl_demo/LightingPoint',
+        path: '/cg/webgl_demo/LightingPoint',
         name: 'LightingPoint',
         component: () => import('_pages/Webgl/WebglDemo/LightingPoint'),
     },
     {
-        path: '/webgl_demo/ImageTexture',
+        path: '/cg/webgl_demo/ImageTexture',
         name: 'ImageTexture',
         component: () => import('_pages/Webgl/WebglDemo/ImageTexture'),
     },
     {
-        path: '/webgl_demo/ImageProcess',
+        path: '/cg/webgl_demo/ImageProcess',
         name: 'ImageProcess',
         component: () => import('_pages/Webgl/WebglDemo/ImageProcess'),
     },
     {
-        path: '/webgl_demo/DirectionalLight',
+        path: '/cg/webgl_demo/DirectionalLight',
         name: 'DirectionalLight',
         component: () => import('_pages/Webgl/WebglDemo/DirectionalLight'),
     },
     {
-        path: '/webgl_demo/CameraPosition',
+        path: '/cg/webgl_demo/CameraPosition',
         name: 'CameraPosition',
         component: () => import('_pages/Webgl/WebglDemo/CameraPosition'),
     },
     {
-        path: '/webgl_demo/DataTexture',
+        path: '/cg/webgl_demo/DataTexture',
         name: 'DataTexture',
         component: () => import('_pages/Webgl/WebglDemo/DataTexture'),
     },
@@ -186,8 +193,8 @@ export const routes = [
         component: () => import('_pages/CG/Experiment/ViewTransform'),
     },
     {
-        path: '/cg/experiment/Weiler-Athenton',
-        name: 'Weiler-Athenton',
-        component: () => import('_pages/CG/Experiment/Weiler-Athenton'),
+        path: '/cg/experiment/WeilerAthenton',
+        name: 'WeilerAthenton',
+        component: () => import('_pages/CG/Experiment/WeilerAthenton'),
     },
 ]
