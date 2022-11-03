@@ -1,6 +1,6 @@
 <template lang="">
     <div class="content">
-        <nano_param_color/>
+        <nano_param_slider_vector3/>
     </div>
 </template>
 <script>
