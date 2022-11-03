@@ -1,6 +1,6 @@
 <template lang="">
     <div class="content">
-        <nano_param_output_panel/>
+        <nano_param_color/>
     </div>
 </template>
 <script>

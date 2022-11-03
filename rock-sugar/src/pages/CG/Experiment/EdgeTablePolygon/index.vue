@@ -35,7 +35,7 @@ export default {
             // params of page.
             sectionParams: {
                 points: [{ x: 20, y: 20 }, { x: 20, y: 70 }, { x: 50, y: 50 }, { x: 110, y: 60 }, { x: 110, y: 30 }, { x: 50, y: 10 }],
-                color: "#e6c202",
+                color:'#0bc6e3',
                 debugContent: null,
                 girdSize: 5,
             }
@@ -51,6 +51,7 @@ export default {
                     type: "slider", id: "girdSize", value: sectionParams.girdSize, min: 1, max: 100,
                     callback: uiSetting.globalUiCallbacks.updateValue(this, "girdSize")
                 },
+                { type: "color",id: "color",default: sectionParams.color, callback: uiSetting.globalUiCallbacks.updateValue(this, "color")}
             ]
         },
 

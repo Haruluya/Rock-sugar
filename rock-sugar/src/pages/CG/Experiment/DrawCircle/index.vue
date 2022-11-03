@@ -36,7 +36,7 @@ export default {
             sectionParams:{
                 circleCenter:{x:30,y:18},
                 radius:10,
-                color:'#d4ba2f',
+                color:'#0bc6e3',
                 girdSize:10,
                 debugContent:null,
             }
@@ -60,6 +60,7 @@ export default {
                 {type:"slider", id:"girdSize", value: sectionParams.girdSize, min:1, max:100, 
                     callback:uiSetting.globalUiCallbacks.updateValue(this,"girdSize")
                 },
+                { type: "color",id: "color",default: sectionParams.color, callback: uiSetting.globalUiCallbacks.updateValue(this, "color")}
             ]
         },
     },
@@ -101,17 +102,18 @@ export default {
             const circleCenter = this.sectionParams.circleCenter
             while(x<y)
             {
+
                 //draw point.
                 const p = {x,y}; 
-                uiSetting.drawPointInGrid(this,p.x +circleCenter.x,p.y+circleCenter.y);
-                uiSetting.drawPointInGrid(this,p.x +circleCenter.x, p.y+circleCenter.y);
-                uiSetting.drawPointInGrid(this,p.y +circleCenter.x, p.x+circleCenter.y);
-                uiSetting.drawPointInGrid(this,-p.y+circleCenter.x, p.x+circleCenter.y);
-                uiSetting.drawPointInGrid(this,-p.x+circleCenter.x, p.y+circleCenter.y);
-                uiSetting.drawPointInGrid(this,p.y +circleCenter.x,-p.x+circleCenter.y);
-                uiSetting.drawPointInGrid(this,p.x +circleCenter.x,-p.y+circleCenter.y);
-                uiSetting.drawPointInGrid(this,-p.x+circleCenter.x,-p.y+circleCenter.y);
-                uiSetting.drawPointInGrid(this,-p.y+circleCenter.x,-p.x+circleCenter.y);
+                uiSetting.drawPointInGrid(this,p.x +circleCenter.x,p.y+circleCenter.y,sectionParams.color);
+                uiSetting.drawPointInGrid(this,p.x +circleCenter.x, p.y+circleCenter.y,sectionParams.color);
+                uiSetting.drawPointInGrid(this,p.y +circleCenter.x, p.x+circleCenter.y,sectionParams.color);
+                uiSetting.drawPointInGrid(this,-p.y+circleCenter.x, p.x+circleCenter.y,sectionParams.color);
+                uiSetting.drawPointInGrid(this,-p.x+circleCenter.x, p.y+circleCenter.y,sectionParams.color);
+                uiSetting.drawPointInGrid(this,p.y +circleCenter.x,-p.x+circleCenter.y,sectionParams.color);
+                uiSetting.drawPointInGrid(this,p.x +circleCenter.x,-p.y+circleCenter.y,sectionParams.color);
+                uiSetting.drawPointInGrid(this,-p.x+circleCenter.x,-p.y+circleCenter.y,sectionParams.color);
+                uiSetting.drawPointInGrid(this,-p.y+circleCenter.x,-p.x+circleCenter.y,sectionParams.color);
 
                 if(e<=0)
                     e=e+2*x+3;

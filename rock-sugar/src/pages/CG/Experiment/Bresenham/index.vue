@@ -40,7 +40,7 @@ export default {
             sectionParams:{
                 beginPoint:{x:1,y:1},
                 endPoint:{x:100, y:20},
-                color:'#ffffff',
+                color:'#0bc6e3',
                 girdSize:10,
                 debugContent:null,
             }
@@ -66,7 +66,8 @@ export default {
                 },
                 {type:"slider", id:"girdSize",value:sectionParams.girdSize,min:1,max:100,
                     callback:uiSetting.globalUiCallbacks.updateValue(this,"girdSize")
-                }
+                },
+                { type: "color",id: "color",default: sectionParams.color, callback: uiSetting.globalUiCallbacks.updateValue(this, "color")}
             ]
         },
     },
@@ -74,7 +75,7 @@ export default {
         Init() {
             this.$refs.page.Init();
 
-            this.canvas = this.$refs.nanoCanvas.$refs.canvas;
+            this.canvas = this.$refs.page.getCanvas();
             this.ctx = canvas.getContext('2d');
             this.Render();
         },

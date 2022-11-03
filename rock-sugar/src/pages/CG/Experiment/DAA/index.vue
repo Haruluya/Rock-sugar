@@ -34,7 +34,7 @@ export default {
             sectionParams: {
                 beginPoint: { x: 1, y: 1 },
                 endPoint: { x: 100, y: 20 },
-                color: "#ffffff",
+                color: "#0bc6e3",
                 girdSize: 10,
                 debugContent:null,
             }
@@ -54,7 +54,8 @@ export default {
                 { type: "slider", id: "endY", value: sectionParams.endPoint.y, min: 0, max: 100, callback: uiSetting.globalUiCallbacks.updatePoint(this, "endPoint", "y")
                 },
                 { type: "slider", id: "girdSize", value: sectionParams.girdSize, min: 1, max: 100, callback: uiSetting.globalUiCallbacks.updateValue(this, "girdSize")
-                }
+                },
+                { type: "color",id: "color",default: sectionParams.color, callback: uiSetting.globalUiCallbacks.updateValue(this, "color")}
             ];
         },
     },
@@ -85,6 +86,8 @@ export default {
                 }];
                 
             ctx.fillStyle = sectionParams.color;
+
+
             let beginPoint = sectionParams.beginPoint;
             let endPoint = sectionParams.endPoint;
             //DAA.
@@ -98,7 +101,7 @@ export default {
                     endPoint = temp;
                 }
                 for (let gridx = beginPoint.x; gridx < endPoint.x; gridx++)
-                    uiSetting.drawPointInGrid(this, gridx, beginPoint.y);
+                    uiSetting.drawPointInGrid(this, gridx, beginPoint.y,sectionParams.color);
             }
             //Vertical line.
             else if (beginPoint.x === endPoint.x) {
@@ -108,7 +111,7 @@ export default {
                     endPoint = temp;
                 }
                 for (let gridy = beginPoint.y; gridy < endPoint.y; gridy++)
-                    uiSetting.drawPointInGrid(this, beginPoint.x, gridy);
+                    uiSetting.drawPointInGrid(this, beginPoint.x, gridy,sectionParams.color);
             }
             else {
                 m = (endPoint.y - beginPoint.y) / (endPoint.x - beginPoint.x);
@@ -122,7 +125,7 @@ export default {
                     ty = beginPoint.y;
                     for (x = beginPoint.x; x < endPoint.x; x++) {
                         y = parseInt(ty + 0.5);
-                        uiSetting.drawPointInGrid(this, x, y);
+                        uiSetting.drawPointInGrid(this, x, y,sectionParams.color);
                         ty += m;
                     }
                 }
@@ -136,7 +139,7 @@ export default {
                     tx = beginPoint.x;
                     for (y = beginPoint.y; y < endPoint.y; y++) {
                         x = parseInt(tx + 0.5);
-                        uiSetting.drawPointInGrid(this, x, y);
+                        uiSetting.drawPointInGrid(this, x, y,sectionParams.color);
                         tx += 1 / m;
                     }
                 }

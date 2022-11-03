@@ -849,14 +849,11 @@
 
 
     // 创建取色器。
-    function setupColorInput(id,callback){
-      let ui = document.getElementById(id);
-      ui.innerHTML = `<span class="webgl-Input-colorlabel">${id}</span>`;
-      ui.classList.add("webgl-input-color");
-      let input = document.createElement("input");
-      input.type = 'color';
-      ui.appendChild(input);
-      input.onchange = callback;
+    function setupColorInput(colorRef,options){
+      colorRef.$refs.input.onchange = (event)=>{
+        let ui = {value:event.target.value};
+        options.callback(event,ui);
+      };
     }
 
     // 向量相减，

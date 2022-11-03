@@ -39,7 +39,7 @@ export default {
                 circleCenter:{x:30,y:18},
                 radiusA:20,
                 radiusB:10,
-                color:'#d4ba2f',
+                color:'#0bc6e3',
                 girdSize:10,
                 debugContent:null,
             }
@@ -66,6 +66,7 @@ export default {
                 {type:"slider", id:"girdSize", value: sectionParams.girdSize, min:1, max:100, 
                     callback:uiSetting.globalUiCallbacks.updateValue(this,"girdSize")
                 },
+                { type: "color",id: "color",default: sectionParams.color, callback: uiSetting.globalUiCallbacks.updateValue(this, "color")}
             ]
         },
     },

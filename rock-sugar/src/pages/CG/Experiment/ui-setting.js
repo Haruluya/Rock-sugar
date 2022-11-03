@@ -62,15 +62,15 @@ const panelDrag = (sidePanelPos, panelID, e) => {
 
 
 // page default ui.
-const setDefaultUI = () => {
+const setDefaultUI = (component) => {
     let options = {
         startSocket: 'right',
         endSocket: 'top',
         color: 'rgba(255, 255, 0, 0.9)',
     };
     nodeLines.mainPanelLine = new LeaderLine(
-        document.getElementById("nano-panel-slot-1"),
-        document.getElementById("nano-slot-1"),
+        document.getElementById(component.slotID.MAIN_PANEL_SLOT_ID),
+        document.getElementById(component.slotID.CORE_SLOT_TOP_ID),
         options,
     );
 
@@ -91,8 +91,8 @@ const setDebugPanelCon = (component) => {
     };
 
     nodeLines.debugPanelLine = new LeaderLine(
-        document.getElementById("nano-panel-slot-3"),
-        document.getElementById("nano-panel-slot-2"),
+        document.getElementById(component.slotID.DEBUG_OUT_SLOT_ID),
+        document.getElementById(component.slotID.DEBUG_IN_SLOT_ID),
         options,
     );
     nodeLines.debugPanelLine.hide('none');
@@ -112,11 +112,12 @@ const globalUiCallbacks = {
     updateValue: (component, valueName) => {
         let sectionParams = component.sectionParams;
         let Render = component.Render;
-        return function (event, ui) {
+        return function (event,ui) {
             sectionParams[valueName] = ui.value;
             Render();
         }
-    }
+    },
+
 
 }
 
@@ -191,7 +192,6 @@ const drawLineInGrid = (component, beginPoint, endPoint, color) => {
     let temp = null;
     let m, x, y = 0;
     let e = -0.5;
-    console.log(component, beginPoint, endPoint, color)
     //Horizontal line.
     if (beginPoint.y == endPoint.y) {
         if (beginPoint.x > endPoint.x) {

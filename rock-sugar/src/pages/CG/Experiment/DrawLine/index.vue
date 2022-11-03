@@ -38,7 +38,7 @@ export default {
             sectionParams:{
                 beginPoint:{x:130,y:130},
                 endPoint:{x:300, y:300},
-                color:'#ffffff',
+                color:'#0bc6e3',
                 debugContent:null
             }
         };
@@ -61,6 +61,7 @@ export default {
                 {type:"slider", id:"endY", value: sectionParams.endPoint.y, min:0, max:400, 
                     callback:uiSetting.globalUiCallbacks.updatePoint(this,"endPoint",'y')
                 },
+                { type: "color",id: "color",default: sectionParams.color, callback: uiSetting.globalUiCallbacks.updateValue(this, "color")}
             ]
         },
     },
