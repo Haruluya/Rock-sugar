@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkrock_sugar"]=self["webpackChunkrock_sugar"]||[]).push([[222],{222:function(n,r,t){t.r(r),t.d(r,{default:function(){return d}});var a=t(3396);const e={class:"content"};function u(n,r,t,u,c,o){const s=(0,a.up)("nano_param_color");return(0,a.wg)(),(0,a.iD)("div",e,[(0,a.Wm)(s)])}var c={data(){return{line:null}},mounted(){},data(){return{}},methods:{}},o=t(89);const s=(0,o.Z)(c,[["render",u],["__scopeId","data-v-bbf2dffc"]]);var d=s}}]);
+//# sourceMappingURL=222.3c7e9630.js.map
