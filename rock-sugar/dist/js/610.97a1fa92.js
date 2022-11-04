@@ -1,2 +1,0 @@
-"use strict";(self["webpackChunkrock_sugar"]=self["webpackChunkrock_sugar"]||[]).push([[610],{7610:function(n,r,a){a.r(r),a.d(r,{default:function(){return i}});var e=a(3396);const c={class:"PageContainer"};function s(n,r,a,s,t,u){return(0,e.wg)(),(0,e.iD)("div",c)}var t={name:"cg_nav"},u=a(89);const o=(0,u.Z)(t,[["render",s],["__scopeId","data-v-5700964e"]]);var i=o}}]);
-//# sourceMappingURL=610.97a1fa92.js.map

@@ -3,6 +3,7 @@
   <div class="app">
     <div class="app-menu">
         <nano_menu
+            :prop_menu_data="mainMenu"
             :prop_dropdown_nav_data="navData"
         />
     </div>
@@ -19,7 +20,7 @@
 
 <script>
 import navData from "_router/navData"
-
+import mainMenu from "_router/mainMenu"
 
 
 export default {
@@ -27,6 +28,7 @@ export default {
     data() {
         return {
             navData,
+            mainMenu
         }
     },
 }
@@ -45,11 +47,10 @@ html{
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
     .app-menu{
-
     }
     
     .app-content{
-        margin-top: 6vw;
+        margin-top: 10vh;
 
     }
     .app-footer{
