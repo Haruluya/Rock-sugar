@@ -1,0 +1,138 @@
+.CompContainer-parent{
+    width: 100%;
+    position: absolute;
+    z-index: 1;
+    background: #131613c1;
+    box-shadow: 1px 1px 5px #1c1c1c;
+    border-radius: 5px;
+    padding: 1vw;
+    padding-top: .5vw;
+    overflow: hidden;
+    text-align: left;
+    .menu{
+        overflow-y: scroll;
+        width: 100%;
+        height: 100%;
+    }
+
+    .panelTitle{
+        color: gold;
+        font-size: 1.2vw;
+        font-weight: bold;
+        text-shadow: 1px 1px 2px gray;
+        // border-bottom: white solid 2px ;
+        position: relative;
+        display: flex;
+        align-items: center;
+        padding-bottom: 2%;
+       &::before{
+        position: absolute;
+        top: -70%;
+        bottom: 0%;
+        left: -6%;
+        right: -6.3%;
+        content: '';
+        background-color: rgba(255, 255, 255, 0.46);
+        z-index: -1;
+        border-radius: 5px 5px 0 0 ;
+       }
+       img{
+        width: 13%;
+        height: 13%;
+        margin-right: 3%;
+       }
+       &:hover{
+        cursor: pointer;
+       }
+       
+    }
+    .active{
+        background-color: rgba(114, 114, 114, 0.23);
+        border-radius: 3px;
+        svg{
+            transform: rotateZ(-90deg) scale(1.05);
+        }
+    }
+
+    .itemTitle{
+        color: white;
+        margin-top: 1vw;
+        margin-right: 10vw;
+        border-bottom: white solid 2px ;
+        transition: all 1s ease;
+        border-radius: .1vw;
+        font-size: .5vw;
+        padding: .3vw;
+        display: flex;
+        align-items: center;
+        &:hover{
+            font-weight: bold;
+            color: gold;
+            margin-right: 0vw;
+            cursor: pointer;
+            background-color: rgba(255, 255, 255, 0.425);
+        }
+
+        svg{
+            margin-right: 10%;
+            transition: all 1s ease;
+        }
+    }
+    
+    .itemContent{
+        margin-top: 1vw;
+        position: relative;
+    }
+    
+    
+    #uiContainer{
+        margin: 2%;
+        padding: 5%;
+        padding-top: 0;
+        position: relative;
+        overflow: scroll;
+        height: 18vw;
+        &::before{
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            // border: rgba(255, 255, 255, 0.508) solid 2px;
+            // clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+        }
+        // overflow-x: scroll;
+        .uiItem{
+            height: 10%;  
+            width: 100%;  
+            margin: 14% 0 ;
+  
+        }
+    }
+    
+
+
+
+    .debug .createDebugBt{
+        margin: 1vw;
+        padding-bottom: 1vw;
+        border-radius: 30%;
+        width: 60%;
+        color: rgb(48, 250, 75);
+        font-weight: bold;
+        font-size: .8vw;
+    }
+
+}
+
+.panelSlot{
+    position: absolute;
+    right: 0;
+}
+
+.debugSlot{
+    position: absolute;
+    right: 0;
+    top: 30%;
+}
