@@ -101,11 +101,11 @@ const setDebugPanelCon = (component) => {
 
 // some normal callbacks for param.
 const globalUiCallbacks = {
-    updatePoint: (component, pointName, index) => {
+    updatePoint: (component, pointName) => {
         let sectionParams = component.sectionParams;
         let Render = component.Render;
-        return function (event, ui) {
-            sectionParams[pointName][index] = ui.value;
+        return function (event,ui) {
+            sectionParams[pointName] = ui.value;
             Render();
         }
     },
@@ -117,7 +117,14 @@ const globalUiCallbacks = {
             Render();
         }
     },
-
+    updatePointArray:(component, valueName, index) =>{
+        let sectionParams = component.sectionParams;
+        let Render = component.Render;
+        return function (event, ui){
+            sectionParams[valueName][index] = ui.value;
+            Render();
+        }
+    }
 
 }
 

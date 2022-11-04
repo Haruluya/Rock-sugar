@@ -21,7 +21,7 @@ import nano_param_panel from "./nano_params/nano_param_panel";
 import nano_param_output_panel from "./nano_params/nano_param_output_panel";
 import nano_param_color from "./nano_params/nano_param_color";
 import nano_param_slot from "./nano_params/nano_param_slot";
-import nano_param_slider_vector3 from "./nano_params/nano_param_slider_vector3";
+import nano_param_slider_vectorn from "./nano_params/nano_param_slider_vectorn";
 
 const components = [
     nano_button,
@@ -42,7 +42,7 @@ const components = [
     nano_param_color,
     nano_param_widget,
     nano_param_slot,
-    nano_param_slider_vector3
+    nano_param_slider_vectorn
 ];
 
 
@@ -81,7 +81,7 @@ export {
     nano_param_color,
     nano_param_widget,
     nano_param_slot,
-    nano_param_slider_vector3
+    nano_param_slider_vectorn
 };
 
 
@@ -106,5 +106,5 @@ export default {
     nano_param_color,
     nano_param_widget,
     nano_param_slot,
-    nano_param_slider_vector3
+    nano_param_slider_vectorn
 };

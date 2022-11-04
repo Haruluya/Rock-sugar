@@ -52,21 +52,9 @@ export default {
         uiSetter(){
             let sectionParams = this.sectionParams;
             return [
-                {type:"slider", id:"beginX", value: sectionParams.beginPoint.x, min:0, max:100, 
-                    callback:uiSetting.globalUiCallbacks.updatePoint(this,"beginPoint",'x')
-                },
-                {type:"slider", id:"beginY", value: sectionParams.beginPoint.y, min:0, max:100, 
-                    callback:uiSetting.globalUiCallbacks.updatePoint(this,"beginPoint",'y')
-                },
-                {type:"slider", id:"endX", value: sectionParams.endPoint.x, min:0, max:100, 
-                    callback:uiSetting.globalUiCallbacks.updatePoint(this,"endPoint",'x')
-                },
-                {type:"slider", id:"endY", value: sectionParams.endPoint.y, min:0, max:100, 
-                    callback:uiSetting.globalUiCallbacks.updatePoint(this,"endPoint",'y')
-                },
-                {type:"slider", id:"girdSize",value:sectionParams.girdSize,min:1,max:100,
-                    callback:uiSetting.globalUiCallbacks.updateValue(this,"girdSize")
-                },
+                { type: "slider-vector", id: "beginPoint", value: sectionParams.beginPoint, min: { x: 0, y: 0 }, max: { x: 500, y: 500 }, callback: uiSetting.globalUiCallbacks.updatePoint(this, "beginPoint") },
+                { type: "slider-vector", id: "endPoint", value: sectionParams.endPoint, min: { x: 0, y: 0 }, max: { x: 500, y: 500 }, callback: uiSetting.globalUiCallbacks.updatePoint(this, "endPoint") },
+                { type: "slider", id: "girdSize", value: sectionParams.girdSize, min: 1, max: 100, callback: uiSetting.globalUiCallbacks.updateValue(this, "girdSize")},
                 { type: "color",id: "color",default: sectionParams.color, callback: uiSetting.globalUiCallbacks.updateValue(this, "color")}
             ]
         },

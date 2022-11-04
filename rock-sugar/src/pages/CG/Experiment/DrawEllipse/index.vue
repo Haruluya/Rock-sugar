@@ -51,12 +51,7 @@ export default {
         uiSetter(){
             let sectionParams = this.sectionParams;
             return [
-                {type:"slider", id:"circleCenterX", value: sectionParams.circleCenter.x, min:0, max:500, 
-                    callback:uiSetting.globalUiCallbacks.updatePoint(this,"circleCenter",'x')
-                },
-                {type:"slider", id:"circleCenterY", value: sectionParams.circleCenter.y, min:0, max:500, 
-                    callback:uiSetting.globalUiCallbacks.updatePoint(this,"circleCenter",'y')
-                },
+                { type: "slider-vector", id: "circleCenter", value: sectionParams.circleCenter, min: { x: 0, y: 0 }, max: { x: 500, y: 500 }, callback: uiSetting.globalUiCallbacks.updatePoint(this, "circleCenter") },
                 {type:"slider", id:"radiusA", value: sectionParams.radiusA, min:0, max:100, 
                     callback:uiSetting.globalUiCallbacks.updateValue(this,"radiusA")
                 },

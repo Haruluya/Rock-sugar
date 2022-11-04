@@ -46,13 +46,19 @@ export default {
         //uiSetter.
         uiSetter() {
             let sectionParams = this.sectionParams;
-            return [
+            let setter = [
                 {
                     type: "slider", id: "girdSize", value: sectionParams.girdSize, min: 1, max: 100,
                     callback: uiSetting.globalUiCallbacks.updateValue(this, "girdSize")
                 },
                 { type: "color",id: "color",default: sectionParams.color, callback: uiSetting.globalUiCallbacks.updateValue(this, "color")}
-            ]
+            ];
+            for (let i= 0; i < this.sectionParams.points.length; i++){
+                setter.push(
+                 { type: "slider-vector", id: "point"+i , value: sectionParams.points[i], min: { x: 0, y: 0 }, max: { x: 500, y: 500 }, callback: uiSetting.globalUiCallbacks.updatePointArray(this, "points", i) },
+                )
+            }
+            return setter;
         },
 
     },

@@ -856,6 +856,14 @@
       };
     }
 
+    // 设置vectorUI回调。
+    function setupSliderVector(vectorRef,options){
+      vectorRef.$refs.container.addEventListener("slider_vector_change",(event)=>{
+        let ui = {value:event.detail.sliderValue};
+        options.callback(event,ui)
+      })
+    }
+
     // 向量相减，
     function subtractVectors(a, b) {
       return [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
@@ -1881,6 +1889,8 @@ function getTransformMatrix(matrix, transfrom){
       createUniformSetters:createUniformSetters,
       createAttributeSetters:createAttributeSetters,
       getTransformMatrix:getTransformMatrix,
+
+      setupSliderVector:setupSliderVector
     }
 
 
