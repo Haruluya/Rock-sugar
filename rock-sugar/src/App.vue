@@ -1,5 +1,4 @@
 <template>
-
   <div class="app">
     <div class="app-menu">
         <nano_menu
@@ -37,7 +36,7 @@ export default {
 <style lang="less">
 
 html{
-    overflow-x: hidden;
+    overflow-x: hidden !important; 
 }
 
 /*app */
@@ -54,7 +53,7 @@ html{
 
     }
     .app-footer{
-        height: 20vw;
+        height: 40vh;
     }
 }
 

@@ -13,6 +13,7 @@
                     prop_size_width=2
                     prop_size_height=1
                     prop_color="#ffda16"
+                    @handleClick="sliderBtClick"
                     >
                 </nano_button>
             </div>
@@ -55,9 +56,11 @@
                         :prop_item_title="['BASIC','LIGHT','SCENE','SHADOW','TIPS','PBR']"
                     />
                 </div>
+
                 <div class="show">
-                    
+
                 </div>
+   
             </div>
         </div>
         <!-- <nano_transition_line></nano_transition_line> -->
@@ -110,7 +113,8 @@
                     <div class="video">
                         <nano_effect_bg_video
                             :prop_video_source="nanocorePv3"
-                        />
+                            ref="nanoCoreVideo"
+                            />
                         <div class="link">
                             <nano_button
                             prop_content="Come" 
@@ -288,6 +292,10 @@ export default {
                 this.charCurrentIndex = 0
             }
 
+        },
+        sliderBtClick(){
+            console.log("video play!")
+            this.$refs.nanoCoreVideo.$refs.video.play();
         }
     },
    

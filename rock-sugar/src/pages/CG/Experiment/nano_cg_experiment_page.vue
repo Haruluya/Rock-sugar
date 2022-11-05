@@ -101,6 +101,12 @@ export default {
             required:true
         }
     },
+    mounted(){
+        if (document.body.clientWidth < 992){
+            this.sidePanelPos.mainPanel = { x: 150, y: 150 };
+            this.sidePanelPos.debugPanel = {x:120, y:400};
+        }
+    },
     methods:{
         Init(){
 

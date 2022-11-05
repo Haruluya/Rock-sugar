@@ -1,4 +1,23 @@
 /* global*/
+@import "./theme.less";
+
+// me
+@min768: ~"(min-width: 768px)";
+@min992: ~"(max-width: 992px)";
+
+
+// z-index.
+@zTop:100;
+
+
+
+
+// Fontsize.
+.caclFontSize(@fontSizeVW){
+    @VW: @fontSizeVW*.6;
+    @PX: 10;
+    font-size: calc(~"@{VW}vw" + ~"@{PX}px") ;
+}
 
 * {
     box-sizing: border-box;
