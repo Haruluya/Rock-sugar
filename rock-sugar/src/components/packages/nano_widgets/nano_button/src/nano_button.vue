@@ -6,7 +6,7 @@
                     } " 
             @click="handleClick"
             :style="{
-                    padding:this.prop_size_height + 'vw ' + this.prop_size_width + 'vw'
+                    padding:this.prop_size_height*2 + 'vh ' + this.prop_size_width*2 + 'vh'
                      
                 }">
                 <div 

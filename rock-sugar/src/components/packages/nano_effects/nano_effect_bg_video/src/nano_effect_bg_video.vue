@@ -2,7 +2,12 @@
     <div class="CompContainer">
         <div class="Vidage">
             <div class="vidageImage"></div>
-            <video  id="VidageVideo" class="vidageVideo" preload="metadata" loop autoplay muted>
+            <video ref="video" id="VidageVideo" class="vidageVideo" preload="metadata" loop autoplay muted
+                x5-playsinline
+                playsinline
+                webkit-playsinline
+                x5-video-player-type="h5"
+            >
                 <source  :src="prop_video_source" type="video/mp4">
             </video>
     
@@ -279,9 +284,8 @@ export default {
                 }]
             }, {}, [8])(8)
         });
-
         new Vidage('#VidageVideo');
-
+        //auto play in mobile.
     },
     methods: {
        

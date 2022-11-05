@@ -1,5 +1,5 @@
 <template>
-    <div class="compContainer">
+    <div class="CompContainer">
         <div :class="{
                 'dotstyle':true,
                 'dotstyle-fillup':prop_category==='default', 

@@ -21,6 +21,7 @@ span{
 
     padding: 1vw 2vw;
     display: flex;
+    flex-wrap: wrap;
     &::before{
         content: '';
         position: absolute;
@@ -59,15 +60,15 @@ span{
     align-items: center;
     flex-direction: column;
     #conTitle,#category{
-        font-size: calc(1.5vw);
+        .caclFontSize(1.5)
     }
     #name{
-        font-size: 2.5vw;
+        .caclFontSize(2.5)
     }
 
 }
 .content{
-    font-size: 1.0vw;
+    .caclFontSize(1)
 }
 
 
@@ -112,4 +113,18 @@ span{
     100%{
         clip-path: inset(0 round 0 8%);
     }
+}
+
+
+@media @min992 {
+
+    .desContainer .conclusion,.desContainer .des, .desContainer .menu{
+        width: 100%;
+        height: 25%;
+        margin-bottom: 5%;
+    }
+    .title #conTitle, .title #category{
+        .caclFontSize(6)
+    }
+
 }
