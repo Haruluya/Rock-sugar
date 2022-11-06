@@ -48,7 +48,7 @@
     align-items: center;
     justify-content: center;   
     right: 8%;
-    font-size: 2.2vh;
+    .caclFontSize(.8);
 }
   
 .nav  a {
@@ -113,7 +113,7 @@
 }
   
 .nav .title{
-    font-size: calc(1.5vw + 10px);
+    .caclFontSize(2);
     display: flex;
     justify-content: left;
     align-items: center;
@@ -163,7 +163,7 @@
         width: 100%;
         height: 100%;
         color: #headerTheme[mobileMenuNavColor];
-        font-size: 2.6vh;
+        .caclFontSize(1.3);
         display: flex;
         align-items: center;
         padding-left: 2vh;
@@ -176,7 +176,7 @@
 .mobileMenu .logo{
     height: 10%;
     color: #headerTheme[mobileMenuLogoTitleColor];
-    font-size: 3vh;
+    .caclFontSize(1.8);
     font-weight: bold;
     display: flex;
     justify-content: left;
@@ -213,7 +213,7 @@
 .mobileMenu .footer{
     height: 50%;
     color: #headerTheme[mobileMenuFooterColor];
-    font-size: 1vh;
+    .caclFontSize(.5);
     margin-top: 3%;
     
 }
@@ -237,7 +237,7 @@
 .dropdownMenu .logo{
     height: 15%;
     color: #headerTheme[dropdownMenuLogoTitleColor];
-    font-size: 3vh;
+    .caclFontSize(1.5);
     font-weight: bold;
     display: flex;
     justify-content: left;
@@ -255,6 +255,11 @@
     justify-content: flex-start;
     align-content:flex-start;
     margin: 0 2vh;
+    a{
+        display: block;
+        width: 100%;
+        height: 100%;
+    }
 }
 
 .dropdownMenu .menuTabs{
@@ -265,14 +270,14 @@
     .title{
         padding: 1vh;
         border-radius: 5px;
-        font-size: 1vw;
+        .caclFontSize(1);
         font-weight: bold;
         background-color: #headerTheme[dropdownMenuTabBgColor];
     }
     .item{
 
         padding: 1vh;
-        font-size: .9vw;
+        .caclFontSize(.9);
         border-radius: 5px;
         color: #595959;
         &:hover{
