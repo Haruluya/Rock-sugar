@@ -2,9 +2,13 @@
     <nano_webgl_demo_panel
         :prop_des_data="desData"
         :prop_ui_setter="uiSetter"
-        :prop_shader="shaderSource"
+        :prop_vertex_shader="vertexShaderSource"
+        :prop_fragment_shader="fragmentShaderSource"
         :prop_section_params="sectionParams"
         ref="page"
+        @Init="Init"
+        @Render="Render"
+        @prop_ui_setter="uiSetter"
     />
 </template>
 <script>
@@ -28,99 +32,62 @@ const position =  data.position;
     @author:haruluya
     @des: Hello World!.
 */
-
 export default {
     name: "Triangle",
     data() {
         return {
-            //gl context.
-            gl: null,
-            program: null,
-            shaderSource:{
-                vertexShaderSource,
-                fragmentShaderSource
-            },
-            //attribute and uniform.
-            bufferData:{
-                position:{numComponents:2,data:position}
-            },
-            uniformsData:{
-                u_matrix: null,
-            },
-            bufferInfo:null,
-            attribSetters:null,
-            uniformSetters:null,
-
+            gl:null,
+            canvas:null,
+            program:null,
+            vertexShaderSource,
+            fragmentShaderSource,
             sectionParams:{
-                //params.
-                translation: [300, 200,0],
-                rotation:[haruluya_webgl_utils.degToRad(0), haruluya_webgl_utils.degToRad(0), haruluya_webgl_utils.degToRad(0)],
-                scale: [1, 1,1],
-                angleInRadians:0,
-                debugContent:null
+                translation: {x:300,y:200,z:0},
+                scale: {x:1,y:1,z:1},
+                angleInDegrees:0,
             },
-
-            // component data.
             desData,
+            uiSetter:[]
         };
     },
-
     computed:{
-        //uiSetter.
-        uiSetter(){
-            let sectionParams = this.sectionParams;
-            return [
-                { type: "slider", id: "beginX", value: sectionParams.translation[0], min: 0, max: 1000, callback: uiSetting.globalUiCallbacks.updatePoint(this, "translation", 0)
-                },
-
-            ]
-        },
+        angleInRadians(){
+            let angleInDegrees = 360 - this.sectionParams.angleInDegrees;
+            return  angleInDegrees * Math.PI / 180;
+        }
     },
     methods: {
         Init() {
-            console.log(this.$refs.page)
-            this.$refs.page.Init();
-            const { gl, canvas } = haruluya_webgl_utils.initWebglContext("canvas");
-            this.gl = gl;
-            this.canvas = canvas;
-            this.program = haruluya_webgl_utils.createProgramFromScripts(gl, ["vertex-shader", "fragment-shader"]);
-            // attributes.
-            this.bufferInfo = haruluya_webgl_utils.createBufferInfoFromArrays(gl, this.bufferData);
-            this.attribSetters  = haruluya_webgl_utils.createAttributeSetters(gl, this.program);
-            this.Render();
+            this.gl = this.$refs.page.getGL();
+            this.canvas = this.$refs.page.getCanvas();
+            this.program = this.$refs.page.getProgram();
+
+            this.$refs.page.addBuffer("position",{numComponents:2,data:position})
         },
         Render() {
-            this.$refs.page.Render();
-
             const gl = this.gl;
-            haruluya_webgl_utils.resizeCanvasToDisplaySize(gl.canvas);
-
-            gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-            gl.clear(gl.COLOR_BUFFER_BIT);
-            gl.useProgram(this.program);
-
             // set matix.
             const sectionParams = this.sectionParams;
-
-            const matrixLocation = gl.getUniformLocation(this.program, "u_matrix");
             let matrix = haruluya_webgl_utils.projection2d(gl.canvas.clientWidth, gl.canvas.clientHeight);
-            matrix = haruluya_webgl_utils.translate2d(matrix, sectionParams.translation[0], sectionParams.translation[1]);
-            matrix = haruluya_webgl_utils.rotate2d(matrix, sectionParams.angleInRadians);
-            matrix = haruluya_webgl_utils.scale2d(matrix, sectionParams.scale[0], sectionParams.scale[1]);
-            gl.uniformMatrix3fv(matrixLocation, false, matrix);
+            matrix = haruluya_webgl_utils.translate2d(matrix, sectionParams.translation["x"], sectionParams.translation["y"]);
+            matrix = haruluya_webgl_utils.rotate2d(matrix, this.angleInRadians);
+            matrix = haruluya_webgl_utils.scale2d(matrix, sectionParams.scale["x"], sectionParams.scale["y"]);
 
-            haruluya_webgl_utils.setBuffersAndAttributes(gl, this.attribSetters, this.bufferInfo);
+            this.$refs.page.addUniform("u_matrix",matrix);
+            this.$refs.page.glDraw({mode:gl.TRIANGLES,first:0,count:3})
+        },
 
-            gl.drawArrays(gl.TRIANGLES, 0, 3);
-        },
-        
-        SetUI(){
-            this.$refs.page.SetUI();
-        },
     },
     mounted() {
-        this.Init();
-        this.SetUI();
+        this.uiSetter = [
+                { type: "slider-vector", id: "translation" , value: this.sectionParams.translation, min: { x: 0, y: 0 ,z:0}, max: { x: 500, y: 500,z:500 }, callback: uiSetting.globalUiCallbacks.updateVector3(this.sectionParams, this.$refs.page.Render, "translation") },
+                { type: "slider-vector", id: "scale" , value: this.sectionParams.scale, min: { x: 0, y: 0 ,z:0}, 
+                max: { x: 10, y: 10,z:10 }, callback: uiSetting.globalUiCallbacks.updateVector3(this.sectionParams, this.$refs.page.Render, "scale") },
+                {
+                    type: "slider", id: "angleInDegrees", value: this.sectionParams.angleInDegrees, min: 0, max: 360,
+                    callback: uiSetting.globalUiCallbacks.updateValue(this.sectionParams,this.$refs.page.Render, "angleInDegrees")
+                },
+            ]
     },
 
 };

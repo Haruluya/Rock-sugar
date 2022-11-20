@@ -35,6 +35,7 @@ export default {
             // params of page.
             sectionParams: {
                 points: [{ x: 20, y: 20 }, { x: 20, y: 70 }, { x: 50, y: 50 }, { x: 110, y: 60 }, { x: 110, y: 30 }, { x: 50, y: 10 }],
+                // points:[{x:125,y:125},{x:250,y:43},{x:0,y:43}],
                 color:'#0bc6e3',
                 debugContent: null,
                 girdSize: 5,

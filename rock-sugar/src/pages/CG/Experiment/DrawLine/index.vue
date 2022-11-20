@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
     <nano_cg_experiment_page :prop_des_data="desData" :prop_ui_setter="uiSetter" :prop_section_params="sectionParams"
         ref="page" />
 </template>

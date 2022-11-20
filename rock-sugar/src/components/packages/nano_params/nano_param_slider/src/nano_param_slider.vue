@@ -28,6 +28,7 @@
 <script>
 export default {
     name:"nano_param_slider",
+
     props:{
         prop_id:{
             type:String,

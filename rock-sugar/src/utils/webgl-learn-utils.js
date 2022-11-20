@@ -695,7 +695,7 @@
     function perspective(fieldOfViewInRadians, aspect, near, far) {
         var f = Math.tan(Math.PI * 0.5 - 0.5 * fieldOfViewInRadians);
         var rangeInv = 1.0 / (near - far);
-    
+      console.log(f,aspect,"(((((")
         return [
         f / aspect, 0, 0, 0,
         0, f, 0, 0,
@@ -990,7 +990,7 @@
     function setUniforms(setters, ...values) {
       setters = setters.uniformSetters || setters;
       for (const uniforms of values) {
-
+        
         Object.keys(uniforms).forEach(function(name) {
           const setter = setters[name];
           console.log(uniforms,setter);
@@ -1238,6 +1238,7 @@
         }
         if (type === gl.FLOAT_VEC3) {
           return function(v) {
+            console.log(v)
             gl.uniform3fv(location, v);
           };
         }

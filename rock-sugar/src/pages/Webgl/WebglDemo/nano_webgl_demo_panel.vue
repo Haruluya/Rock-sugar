@@ -2,9 +2,11 @@
     <div class="pageContainer">
         <div class="webglContainer" id="canvasSlot">
             <nano_canvas ref="nanoCanvas"
-                :prop_vertex_shader_source="prop_shader.vertexShaderSource"
-                :prop_fragment_shader_source="prop_shader.fragmentShaderSource"
-            />
+                :prop_vertex_shader_source="prop_vertex_shader"
+                :prop_fragment_shader_source="prop_fragment_shader"
+                @mousedown="viewer"
+                @mousewheel="viewer"
+                />
         </div>
         <div class="desPanel">
             <nano_webgl_des_panel
@@ -39,7 +41,7 @@
                     <nano_param_output_panel
                         prop_title="Debug"
                         :prop_slot_id="slotID.DEBUG_IN_SLOT_ID"
-                        :prop_content="prop_section_params.debugContent"
+                        :prop_content="debugContent"
                     />
                 </div>
             </transition>
@@ -59,28 +61,51 @@ const slotID = {
     DEBUG_OUT_SLOT_ID : 3,
     CORE_SLOT_TOP_ID : 4
 }
-
+import AnimEvent from "_plugins/anim-event/anim-event.min.js"
 import uiSetting from "./ui-setting"
 export default {
 
     name:"nano_webgl_demo_panel",
     data() {
         return {
+            gl:null,
+            canvas:null,
+            program:null,
+            bufferData:{},
+            uniformsData:{},
+            bufferInfo:null,
+            attribSetters:null,
+            uniformSetters:null,
             uiSetting,
-   
+            transform:{
+                translation:[0,0, 0],
+                rotation:[haruluya_webgl_utils.degToRad(0), haruluya_webgl_utils.degToRad(0), haruluya_webgl_utils.degToRad(0)],
+                scale : [1, 1,1]
+            },
             //vue watching data.
             sidePanelPos:{
                 mainPanel:{ x: 1050, y: 150 },
                 debugPanel:{x:1200, y:400}
             },
             showDebug:false,
-            debugContent:null,
+            debugContent:[],
             slotID,
+            drawMode:{},
+            mousePosition:{
+                x:0,
+                y:0
             }
-
+        }
     },
     mounted(){
-
+        this.Init();
+        this.SetUI();
+ 
+    },
+    watch:{
+        uiSetter:{
+            deep:true
+        }
     },
     props:{
         prop_des_data:{
@@ -94,38 +119,72 @@ export default {
             },
             required:true
         },
-        prop_ui_setter:{
-            type:Array,
-            default:[],
-            required:true
-        },
         prop_section_params:{
             type:Object,
             default:{
             },
             required:true
         },
-        prop_shader:{
+        prop_vertex_shader:{
             type:Object,
-            default:{
-                vertexShaderSource:"",
-                fragmentShaderSource:""
-            },
+            default:"",
+            required:true
+        },
+        prop_fragment_shader:{
+            type:Object,
+            default:"",
+            required:true
+        },
+        prop_ui_setter:{
+            type:Array,
+            default:[],
             required:true
         }
+
+    },
+    computed:{
+
+
+    },
+    updated() {
+
     },
     methods:{
         Init(){
-
+            const { gl, canvas } = haruluya_webgl_utils.initWebglContext("canvas");
+            this.gl = gl;
+            this.canvas = canvas;
+            this.program = haruluya_webgl_utils.createProgramFromScripts(gl, ["vertex-shader", "fragment-shader"]);
+            this.$emit("Init");
+            // attributes.
+            console.log(this.bufferData)
+            this.bufferInfo = haruluya_webgl_utils.createBufferInfoFromArrays(gl, this.bufferData);
+            this.attribSetters  = haruluya_webgl_utils.createAttributeSetters(gl, this.program);
+            this.uniformSetters = haruluya_webgl_utils.createUniformSetters(gl, this.program);
+            this.Render();
         },
         Render(){
-        
+            const gl = this.gl;
+            haruluya_webgl_utils.resizeCanvasToDisplaySize(gl.canvas);
+
+            gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+            gl.clear(gl.COLOR_BUFFER_BIT);
+            gl.useProgram(this.program);
+
+            this.$emit("Render");
+
+            haruluya_webgl_utils.setBuffersAndAttributes(gl, this.attribSetters, this.bufferInfo);
+            haruluya_webgl_utils.setUniforms(this.uniformSetters, this.uniformsData);
+            
+            gl.drawArrays(this.drawMode.mode, this.drawMode.first,this.drawMode.count);
+
+            this.debugLog("None","No thing to debug.")
         },
         Destroy() {
             uiSetting.destroy();
         },
         SetUI(){
-            uiSetting.setDefaultUI(this);
+            uiSetting.setDefaultUI(this.slotID);
         },
         pageCallback() {
             return {
@@ -137,7 +196,7 @@ export default {
                     this.showDebug = !this.showDebug;
                     if (this.showDebug) {
                         this.$nextTick(() => {
-                            uiSetting.setDebugPanelCon(this);
+                            uiSetting.setDebugPanelCon(this.slotID);
                             uiSetting.nodeLines.debugPanelLine.show("draw");
                         });
                     }
@@ -148,7 +207,60 @@ export default {
                     }
                 },
             };
-        }
+        },
+        addBuffer(name,data){
+            this.bufferData[name] = data;
+        },
+        addUniform(name,data){
+            this.uniformsData[name] = data;
+        },
+        getGL(){
+            return this.gl;
+        },
+        getCanvas(){
+            return this.canvas;
+        },
+        getProgram(){
+            return this.program;
+        },
+        glDraw(drawMode){
+            this.drawMode = drawMode;
+        },
+        debugLog(title,content){
+            this.debugContent.push({
+                title,
+                content
+            })
+        },
+        setTransform(transform){
+            this.transform = transform
+        },
+        viewer(e){
+          if (e.type === "mousedown"){
+            this.mousePosition.x = e.clientX;
+           this.mousePosition.y = e.clientY;
+           document.onmousemove = AnimEvent.add((e)=>{
+
+                const offsetX = e.clientX - this.mousePosition.x;
+                const offsetY = e.clientY - this.mousePosition.y;
+                
+                this.transform.rotation[1] += offsetX/1000;
+                // this.transform.rotation[0] += offsetY/1000;
+                this.Render()
+
+            });
+            document.onmouseup = () => {
+                document.onmousemove = null;
+            };
+          }else if (e.type === "mousewheel"){
+            e.preventDefault();
+            for (let i = 0; i < this.transform.scale.length;i++){
+                this.transform.scale[i] += e.deltaY > 0? 0.15 : -0.15;
+            }
+            this.Render()
+            }
+        },
+
     },
     unmounted(){
         this.Destroy();
