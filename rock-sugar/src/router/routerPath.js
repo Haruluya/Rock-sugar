@@ -93,6 +93,23 @@ export const routes = [
         component: () => import('_pages/Webgl/WebglDemo/DataTexture'),
     },
     {
+        path: '/cg/webgl_demo/EnvMapping',
+        name: 'EnvMapping',
+        component: () => import('_pages/Webgl/WebglDemo/EnvMapping'),
+    },
+
+
+    {
+        path: '/cg/webgl_scene/Skybox',
+        name: 'Skybox',
+        component: () => import('_pages/Webgl/WebglScene/Skybox'),
+    },
+    {
+        path: '/cg/webgl_render',
+        name: 'WebglRender',
+        component: () => import('_pages/Webgl/WebglRender/Render'),
+    },
+    {
         path: '/CompTest',
         name: 'CompTest',
         component: () => import('_pages/Test/CompTest'),

@@ -1,5 +1,5 @@
 <template lang="html">
-    <nano_webgl_demo_panel
+    <webgl_basic_render_panel
         :prop_des_data="desData"
         :prop_ui_setter="uiSetter"
         :prop_vertex_shader="vertexShaderSource"
@@ -20,14 +20,14 @@ import uiSetting from "../ui-setting"
 
 const desData = {
     category:"Webgl",
-    name:"ObjResolver",
+    name:"WebglRender",
     buttonContent:"查看源码",
-    title:"模型解析",
-    content:"Model analysis."
+    title:"Webgl基础渲染器",
+    content:"WebglRender."
 }
 
 export default {
-    name:"ObjResolver",
+    name:"WebglRender",
     data() {
         return {
             gl: null,
@@ -57,7 +57,8 @@ export default {
             },
             page:null,
             uiSetter:[],
-            objectData:null
+            objectData:null,
+            objComponents:null
         }
     },
     mounted(){
@@ -70,21 +71,32 @@ export default {
             }
             this.page = this.$refs.page;
             this.gl = this.page.getGL();
-            this.canvas = this.page.getCanvas();
-            this.program = this.page.getProgram();
+
+
+            this.page.addProgram("obj",vertexShaderSource,fragmentShaderSource);
 
             //Get bufferinfo and setters.
             this.perspective.aspect = this.gl.canvas.clientWidth / this.gl.canvas.clientHeight;
 
-            this.page.setTransform(this.transform);
+            //set tranform for 3dviewer.
+            this.$refs.page.set3DViewer(this.perspective,this.camera,this.transform);
+
 
             const data = this.objectParse(this.objectData);
-            console.log(data,"data")
-            data.geometries.map(({data}) => {
-                this.page.addBuffer("position",{data:data.position});
-                this.page.addBuffer("texcoord",{numComponents:2,data:data.texcoord});
-                this.page.addBuffer("normal",{data:data.normal});
+            this.objComponents = data.geometries.map(({data,object}) => {
+                this.page.addComponent("obj",object);
+                this.page.addBuffer("position",{data:data.position},object);
+                this.page.addBuffer("texcoord",{numComponents:2,data:data.texcoord},object);
+                this.page.addBuffer("normal",{data:data.normal},object);
+                return {
+                    name:object,
+                    component:this.page.getComponents()[object],
+                    material: {
+                        u_diffuse: [Math.random(), Math.random(), Math.random(), 1],
+                    },
+                }
             });
+
         },
         Render(){
             if(!this.objectData){
@@ -106,12 +118,20 @@ export default {
 
             let worldMatrix = haruluya_webgl_utils.getTransformMatrix(
                     haruluya_webgl_utils.yRotation(0),this.transform);
-            this.page.addUniform("u_view",viewMatrix);
-            this.page.addUniform("u_lightDirection",haruluya_webgl_utils.normalize([-1,3,5]));
-            this.page.addUniform("u_projection",projectionMatrix);
+            
+            this.objComponents.forEach(e=>{
+                this.page.useProgram(e.component.program);
 
-            this.page.addUniform("u_diffuse",[1, 1, 1, 1]);
-            this.page.addUniform("u_world",worldMatrix);
+                this.page.addUniform("u_diffuse",[1, 1, 1, 1],e.name);
+                this.page.addUniform("u_world",worldMatrix,e.name);
+                this.page.addUniform("u_view",viewMatrix,e.name);
+                this.page.addUniform("u_lightDirection",haruluya_webgl_utils.normalize([-1,3,5]),e.name);
+                this.page.addUniform("u_projection",projectionMatrix,e.name);
+                this.page.setSetters(e.name);
+                this.page.drawComponent(e.name)
+            })
+
+
         },
         async getObjectData(){
             const response =  await fetch('https://webglfundamentals.org/webgl/resources/models/chair/chair.obj');  

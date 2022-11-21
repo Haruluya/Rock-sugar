@@ -57,7 +57,7 @@ export default {
             this.canvas = this.$refs.page.getCanvas();
             this.program = this.$refs.page.getProgram();
 
-            this.$refs.page.setTransfrom(this.sectionParams.transform);
+            this.$refs.page.setTransform(this.sectionParams.transform);
             this.$refs.page.addBuffer("position",{data:positions});
             this.$refs.page.addBuffer("color",{data:colors});
         },

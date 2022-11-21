@@ -18,7 +18,7 @@ void main() {
     float specular = 0.0;
     
     if (light > 0.0) {
-    specular = pow(dot(normal, halfVector), u_shininess);
+        specular = pow(dot(normal, halfVector), u_shininess);
     }
     
     gl_FragColor = v_color;

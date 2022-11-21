@@ -2,8 +2,6 @@
     <div class="pageContainer">
         <div class="webglContainer" id="canvasSlot">
             <nano_canvas ref="nanoCanvas"
-                :prop_vertex_shader_source="prop_vertex_shader"
-                :prop_fragment_shader_source="prop_fragment_shader"
                 @mousedown="viewer"
                 @mousewheel="viewer"
                 />
@@ -49,11 +47,14 @@
     </div>
 </template>
 <script>
-
+import skyboxFragmentShader from './resource/skybox-fragment-shader.js'
+import skyboxVertexShader from './resource/skybox-vertex-shader.js'
+import skyboxData from './resource/skybox-data.js'
 /*
     @author:haruluya.
     @des:This component is used to make the source code more concise.
 */
+const skyboxPosition = skyboxData.position;
 
 const slotID = {
     MAIN_PANEL_SLOT_ID : 1,
@@ -61,23 +62,27 @@ const slotID = {
     DEBUG_OUT_SLOT_ID : 3,
     CORE_SLOT_TOP_ID : 4
 }
-import { tsImportEqualsDeclaration } from "@babel/types"
 import AnimEvent from "_plugins/anim-event/anim-event.min.js"
 import uiSetting from "./ui-setting"
 export default {
 
-    name:"nano_webgl_demo_panel",
+    name:"nano_webgl_scene_panel",
     data() {
         return {
             gl:null,
             canvas:null,
-            program:null,
+            //{gl-setter.
+
+            //     bufferInfo:null,
+            //     attribSetters:null,
+            //     uniformSetters:null,
+            // }
             bufferData:{},
             uniformsData:{},
-            bufferInfo:null,
-            attribSetters:null,
-            uniformSetters:null,
+            glSetters:{},
             uiSetting,
+            perspective:null,
+            camera:null,
             transform:{
                 translation:[0,0, 0],
                 rotation:[haruluya_webgl_utils.degToRad(0), haruluya_webgl_utils.degToRad(0), haruluya_webgl_utils.degToRad(0)],
@@ -95,13 +100,18 @@ export default {
             mousePosition:{
                 x:0,
                 y:0
-            }
+            },
+            //mutiy program.
+            programList:[],
+            shaderList:[],
+
+            //skybox.
+            skyboxTexture:null,
         }
     },
     mounted(){
         this.Init();
         this.SetUI();
- 
     },
     watch:{
         uiSetter:{
@@ -126,16 +136,7 @@ export default {
             },
             required:true
         },
-        prop_vertex_shader:{
-            type:Object,
-            default:"",
-            required:true
-        },
-        prop_fragment_shader:{
-            type:Object,
-            default:"",
-            required:true
-        },
+
         prop_ui_setter:{
             type:Array,
             default:[],
@@ -155,16 +156,18 @@ export default {
             const { gl, canvas } = haruluya_webgl_utils.initWebglContext("canvas");
             this.gl = gl;
             this.canvas = canvas;
-            this.program = haruluya_webgl_utils.createProgramFromScripts(gl, ["vertex-shader", "fragment-shader"]);
             this.$emit("Init");
+          
+            this.programList.forEach(element => {
+                let bufferInfo = haruluya_webgl_utils.createBufferInfoFromArrays(this.gl, this.bufferData[element.name]);
+                let attribSetters  = haruluya_webgl_utils.createAttributeSetters(this.gl, element.program);
+  
+                let uniformSetters = haruluya_webgl_utils.createUniformSetters(this.gl, element.program);
+                this.glSetters[element.name] = {bufferInfo,attribSetters,uniformSetters};
 
+            });
             // attributes.
-            if (Object.getOwnPropertyNames(this.bufferData).length != 0){
-                this.bufferInfo = haruluya_webgl_utils.createBufferInfoFromArrays(gl, this.bufferData);
-                this.attribSetters  = haruluya_webgl_utils.createAttributeSetters(gl, this.program);
-                this.uniformSetters = haruluya_webgl_utils.createUniformSetters(gl, this.program);
-                this.Render();
-            }
+            this.Render();
         },
         Render(){
             const gl = this.gl;
@@ -172,18 +175,18 @@ export default {
 
             gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
             gl.clear(gl.COLOR_BUFFER_BIT);
-            gl.useProgram(this.program);
-
+            
+            // if skybox open, render skybox.
+            if (this.skyboxTexture){
+                this.renderSkybox();
+            }
             this.$emit("Render");
-            haruluya_webgl_utils.setBuffersAndAttributes(gl, this.attribSetters, this.bufferInfo);
-            haruluya_webgl_utils.setUniforms(this.uniformSetters, this.uniformsData);
-            
-            // gl.drawArrays(this.drawMode.mode, this.drawMode.first,this.drawMode.count);
-            this.drawBufferInfo(gl,this.bufferInfo);
-            
-            if(this.debugLog.length == 0){
+
+
+            if(this.debugLog.length === 0){
                 this.debugLog("None","No thing to debug.")
             }
+            
         },
         Destroy() {
             uiSetting.destroy();
@@ -191,7 +194,6 @@ export default {
         SetUI(){
             uiSetting.setDefaultUI(this.slotID);
         },
-        
         pageCallback() {
             return {
                 handleClick: () => {
@@ -214,22 +216,11 @@ export default {
                 },
             };
         },
-        drawBufferInfo(gl, bufferInfo, primitiveType, count, offset) {
-            const indices = bufferInfo.indices;
-            primitiveType = primitiveType === undefined ? gl.TRIANGLES : primitiveType;
-            const numElements = count === undefined ? bufferInfo.numElements : count;
-            offset = offset === undefined ? 0 : offset;
-            if (indices) {
-            gl.drawElements(primitiveType, numElements, gl.UNSIGNED_SHORT, offset);
-            } else {
-            gl.drawArrays(primitiveType, offset, numElements);
-            }
+        addBuffer(name,data,index){
+            this.bufferData[index][name] = data;
         },
-        addBuffer(name,data){
-            this.bufferData[name] = data;
-        },
-        addUniform(name,data){
-            this.uniformsData[name] = data;
+        addUniform(name,data,index){
+            this.uniformsData[index][name] = data;
         },
         getGL(){
             return this.gl;
@@ -237,34 +228,129 @@ export default {
         getCanvas(){
             return this.canvas;
         },
-        getProgram(){
-            return this.program;
+        getProgram(name){
+            let program;
+            this.programList.forEach(e=>{
+                if (e.name == name){
+                    program =  e.program;
+                }
+            })
+            return program;
         },
         glDraw(drawMode){
             this.drawMode = drawMode;
+            this.gl.drawArrays(this.drawMode.mode, this.drawMode.first,this.drawMode.count);
         },
+
         debugLog(title,content){
             this.debugContent.push({
                 title,
                 content
             })
         },
-        setTransform(transform){
+        set3DViewer(perspective,camera,transform){
+            this.perspective = perspective;
+            this.camera = camera;
             this.transform = transform
         },
-        addTexture(img){
-            const gl = this.gl;
-            const texture = gl.createTexture();
-            gl.bindTexture(gl.TEXTURE_2D, texture);
-            gl.generateMipmap(gl.TEXTURE_2D);
-
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA,gl.UNSIGNED_BYTE, img);
-            return texture;
+        caculateMVPMatrix(perspective,camera,transform){
+            let cameraMatrix = haruluya_webgl_utils.lookAt(camera.position, camera.target, camera.up);
+            let viewMatrix = haruluya_webgl_utils.inverse(cameraMatrix);
+            let projectionMatrix = haruluya_webgl_utils.perspective(
+                perspective.fieldOfViewRadians, 
+                perspective.aspect, 
+                perspective.zNear, 
+                perspective.zFar
+                );
+            let viewProjectionMatrix = haruluya_webgl_utils.multiply3d(projectionMatrix, viewMatrix);
+            let worldMatrix = haruluya_webgl_utils.getTransformMatrix(
+                haruluya_webgl_utils.xRotation(0),
+                transform
+            )
+            let worldViewProjectionMatrix = haruluya_webgl_utils.multiply3d(viewProjectionMatrix, worldMatrix);
+            return worldViewProjectionMatrix;
+        },
+        addProgram(name,vertexShaderSource,fragmentShaderSource){
+            this.programList.push({name,program:haruluya_webgl_utils.createProgramFromShaderSource(this.gl, vertexShaderSource,fragmentShaderSource)});  
+            console.log(this.programList,'program')
+            this.glSetters[name] = {};
+            this.bufferData[name] = {};
+            this.uniformsData[name] = {};
         },
 
+        setSetters(name){
+            if(Object.getOwnPropertyNames(this.bufferData[name]).length != 0){
+                haruluya_webgl_utils.setBuffersAndAttributes(this.gl, this.glSetters[name].attribSetters,  this.glSetters[name].bufferInfo);
+                haruluya_webgl_utils.setUniforms( this.glSetters[name].uniformSetters,  this.uniformsData[name]);
+            }
+        },
+        useProgram(name){
+            this.programList.forEach(e=>{
+                if(e.name === name){
+                    this.gl.useProgram(e.program);
+                }
+            })
+           console.log(this.programList,this.glSetters)
+        },
+        //add skybox in scene.
+        addSkybox(imgList){
+            const gl = this.gl;
+            this.addProgram("skybox",skyboxVertexShader,skyboxFragmentShader);
+            this.addBuffer("position",{numComponents:2,data:skyboxPosition},"skybox");
+
+            this.skyboxTexture = gl.createTexture();
+            gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.skyboxTexture);
+            imgList.forEach((e,i)=>{
+                const {target, url} = e;
+                const level = 0;
+                const internalFormat = gl.RGBA;
+                const format = gl.RGBA;
+                const type = gl.UNSIGNED_BYTE;
+                // gl.texImage2D(target, level, internalFormat, width, height, 0, format, type, null);
+
+                // Asynchronously load an image
+                const image = new Image();
+                image.src = url;
+                image.addEventListener('load', ()=>{
+                    gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.skyboxTexture);
+                    gl.texImage2D(target, level, internalFormat, format, type, image);
+                    gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
+                    if(i === imgList.length-1){
+                        this.Render();
+                    }
+                });
+            })
+            gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
+            gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+            
+        },
+        renderSkybox(){
+            const gl = this.gl;
+            let cameraMatrix = haruluya_webgl_utils.lookAt(this.camera.position, this.camera.target, this.camera.up);
+            let viewMatrix = haruluya_webgl_utils.inverse(cameraMatrix);
+            let projectionMatrix = haruluya_webgl_utils.perspective(
+                this.perspective.fieldOfViewRadians, 
+                this.perspective.aspect, 
+                this.perspective.zNear, 
+                this.perspective.zFar
+                );
+            let viewDirectionMatrix = haruluya_webgl_utils.copy(viewMatrix);
+            viewDirectionMatrix[12] = 0;
+            viewDirectionMatrix[13] = 0;
+            viewDirectionMatrix[14] = 0;
+            let viewDirectionProjectionMatrix = haruluya_webgl_utils.multiply3d(
+                projectionMatrix, viewDirectionMatrix);
+            let viewDirectionProjectionInverseMatrix =
+                haruluya_webgl_utils.inverse(viewDirectionProjectionMatrix);
+            this.addUniform("u_viewDirectionProjectionInverse",viewDirectionProjectionInverseMatrix,"skybox")
+            this.addUniform("u_texture",this.skyboxTexture,"skybox");
+            this.useProgram("skybox");
+            gl.enable(gl.CULL_FACE);
+            gl.enable(gl.DEPTH_TEST);
+            gl.depthFunc(gl.LEQUAL);
+            this.setSetters("skybox");
+            this.glDraw({mode:gl.TRIANGLES,first:0,count:6*6})
+        },
         viewer(e){
           if (e.type === "mousedown"){
             this.mousePosition.x = e.clientX;
@@ -290,24 +376,6 @@ export default {
             this.Render()
             }
         },
-        caculateMVPMatrix(camera,perspective,transform){
-            let cameraMatrix = haruluya_webgl_utils.lookAt(camera.position, camera.target, camera.up);
-            let viewMatrix = haruluya_webgl_utils.inverse(cameraMatrix);
-            let projectionMatrix = haruluya_webgl_utils.perspective(
-                perspective.fieldOfViewRadians, 
-                perspective.aspect, 
-                perspective.zNear, 
-                perspective.zFar
-                );
-            let viewProjectionMatrix = haruluya_webgl_utils.multiply3d(projectionMatrix, viewMatrix);
-           
-            let worldMatrix = haruluya_webgl_utils.getTransformMatrix(
-                haruluya_webgl_utils.xRotation(0),
-                transform
-            )
-            let worldViewProjectionMatrix = haruluya_webgl_utils.multiply3d(viewProjectionMatrix, worldMatrix);
-            return worldViewProjectionMatrix;
-        }
 
     },
     unmounted(){

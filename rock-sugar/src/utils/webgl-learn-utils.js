@@ -134,6 +134,7 @@
     function createProgramFromScripts(
         gl, shaderScriptIds, opt_attribs, opt_locations, opt_errorCallback) {
       const shaders = [];
+
       for (let ii = 0; ii < shaderScriptIds.length; ++ii) {
         shaders.push(createShaderFromScript(
             gl, shaderScriptIds[ii], gl[defaultShaderType[ii]], opt_errorCallback));
@@ -164,6 +165,35 @@
       return loadShader(
           gl, shaderSource, opt_shaderType ? opt_shaderType : shaderType,
           opt_errorCallback);
+    }
+    function createShaderFromSource(
+      gl, shaderSource, opt_shaderType, opt_errorCallback) {
+    let shaderType;
+    if (!opt_shaderType) {
+      if (shaderScript.type === 'x-shader/x-vertex') {
+        shaderType = gl.VERTEX_SHADER;
+      } else if (shaderScript.type === 'x-shader/x-fragment') {
+        shaderType = gl.FRAGMENT_SHADER;
+      } else if (shaderType !== gl.VERTEX_SHADER && shaderType !== gl.FRAGMENT_SHADER) {
+        throw ('*** Error: unknown shader type');
+      }
+    }
+
+    return loadShader(
+        gl, shaderSource, opt_shaderType ? opt_shaderType : shaderType,
+        opt_errorCallback);
+  }
+
+    function createProgramFromShaderSource(
+      gl, vertexShaderSource, fragmentShaderSource, opt_attribs, opt_locations, opt_errorCallback
+    ){
+      const source = [vertexShaderSource,fragmentShaderSource];
+      const shaders = [];
+      for (let ii = 0; ii < 2; ++ii) {
+        shaders.push(createShaderFromSource(
+            gl, source[ii], gl[defaultShaderType[ii]], opt_errorCallback));
+      }
+      return createProgram(gl, shaders, opt_attribs, opt_locations, opt_errorCallback);
     }
 
 
@@ -993,8 +1023,9 @@
         
         Object.keys(uniforms).forEach(function(name) {
           const setter = setters[name];
-          console.log(uniforms,setter);
+          console.log(uniforms,setter,"per uniforms");
           if (setter) {
+
             setter(uniforms[name]);
           }
         });
@@ -1891,7 +1922,8 @@ function getTransformMatrix(matrix, transfrom){
       createAttributeSetters:createAttributeSetters,
       getTransformMatrix:getTransformMatrix,
 
-      setupSliderVector:setupSliderVector
+      setupSliderVector:setupSliderVector,
+      createProgramFromShaderSource:createProgramFromShaderSource,
     }
 
 

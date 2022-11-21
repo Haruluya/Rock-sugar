@@ -1,42 +1,21 @@
 <template lang="html">
-    <div class="pageContainer">
-        <div class="webglContainer">
-            <nano_canvas
-             :prop_vertex_shader_source="vertexShaderSource"
-             :prop_fragment_shader_source="fragmentShaderSource"
-            />
-            <div id="uiContainer">
-                <div id="ui">
-                    <ui id="x"></ui>
-                    <ui id="y"></ui>
-                    <ui id="z"></ui>
-                    <ui id="angleX"></ui>
-                    <ui id="angleY"></ui>
-                    <ui id="angleZ"></ui>
-                    <ui id="scaleX"></ui>
-                    <ui id="scaleY"></ui>
-                    <ui id="scaleZ"></ui>
-                </div>
-            </div>
-        </div>
-        
-        <nano_webgl_des_panel
-            :prop_category="desData.category"
-            :prop_name="desData.name"
-            :prop_button_content="desData.buttonContent"
-            :prop_title="desData.title"
-            :prop_content="desData.content"
-            @handleClick="handleClick"
-            />
-
-    </div>
-
-    
+    <nano_webgl_demo_panel
+        :prop_des_data="desData"
+        :prop_ui_setter="uiSetter"
+        :prop_vertex_shader="vertexShaderSource"
+        :prop_fragment_shader="fragmentShaderSource"
+        :prop_section_params="sectionParams"
+        ref="page"
+        @Init="Init"
+        @Render="Render"
+        @prop_ui_setter="uiSetter"
+    />
 </template>
 <script>
 import vertexShaderSource from './resource/vertex-shader.js'
 import fragmentShaderSource from './resource/fragment-shader.js'
-import data from './resource/data'
+import data from './resource/data.js'
+import uiSetting from "../ui-setting"
 
 const desData = {
     category:"Webgl",
@@ -47,7 +26,7 @@ const desData = {
 }
 const colors = data.color;
 const positions = data.position;
-const normal = data.normal;
+const normals = data.normal;
 
 
 export default {
@@ -60,72 +39,53 @@ export default {
             vertexShaderSource,
             fragmentShaderSource,
             desData,
-            bufferData:{
-                position:{data:[]},
-                color:{data:colors},
-                normal:{data:normal}
-            },
-            uniformsData:{
-                u_worldViewProjection: null,
-                u_worldInverseTranspose:null,
-                u_reverseLightDirection:null
-            },
-            bufferInfo:null,
-            uniformSetters:null,
-            attribSetters:null,
-            transfrom:{
-                translation:[0, 0, 0],
-                rotation:[haruluya_webgl_utils.degToRad(180), haruluya_webgl_utils.degToRad(185), haruluya_webgl_utils.degToRad(360)],
-                scale:[1,0.8,1]
-            },
             perspective:{
                 aspect:0,
                 fieldOfViewRadians:  haruluya_webgl_utils.degToRad(60),
                 zNear: 1,
                 zFar: 2000,
             },
+            transform:{
+                translation:[100, 120, -20],
+                rotation:[haruluya_webgl_utils.degToRad(180), haruluya_webgl_utils.degToRad(200), haruluya_webgl_utils.degToRad(0)],
+                scale:[1,.7,.7]
+            },
             camera:{
                 target:[0, 35, 0],
                 position:[100, 150, 200],
                 up:[0,1,0]
             },
+            sectionParams:{
+                lightDir:{x:0.5,y:0.7,z:0}
+            },
+            page:null,
+            uiSetter:[]
         }
-    },
-    mounted() {
-        this.Init();
-        this.SetUI();
-
     },
     methods: {
         Init(){
-            const { gl, canvas } = haruluya_webgl_utils.initWebglContext("canvas");
-            this.gl = gl;
-            this.canvas = canvas;
-            this.program = haruluya_webgl_utils.createProgramFromScripts(gl, ["vertex-shader", "fragment-shader"]);
+            this.page = this.$refs.page;
+            this.gl = this.page.getGL();
+            this.canvas = this.page.getCanvas();
+            this.program = this.page.getProgram();
             //Get bufferinfo and setters.
-            this.perspective.aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
+            this.perspective.aspect = this.gl.canvas.clientWidth / this.gl.canvas.clientHeight;
 
-            this.setPosition();
-
-            this.bufferInfo = haruluya_webgl_utils.createBufferInfoFromArrays(gl, this.bufferData);
-            this.uniformSetters = haruluya_webgl_utils.createUniformSetters(gl, this.program);
-            this.attribSetters  = haruluya_webgl_utils.createAttributeSetters(gl, this.program);
-            this.Render();
+            this.page.setTransform(this.transform);
+            this.page.addBuffer("position",{data:positions});
+            this.page.addBuffer("color",{data:colors});
+            this.page.addBuffer("normal",{data:normals});
         },
         Render(){
             const gl = this.gl;
-            const program = this.program;
-            haruluya_webgl_utils.resizeCanvasToDisplaySize(gl.canvas);
-            gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
+            const lightDir = [
+                this.sectionParams.lightDir.x,
+                this.sectionParams.lightDir.y,
+                this.sectionParams.lightDir.z
+            ]
             gl.enable(gl.CULL_FACE);
             gl.enable(gl.DEPTH_TEST);
 
-            gl.useProgram(program);
-
-            haruluya_webgl_utils.setBuffersAndAttributes(gl, this.attribSetters, this.bufferInfo);
-        
             let projectionMatrix = haruluya_webgl_utils.perspective(
                 this.perspective.fieldOfViewRadians, 
                 this.perspective.aspect, 
@@ -134,88 +94,31 @@ export default {
                 );
             let cameraMatrix = haruluya_webgl_utils.lookAt(this.camera.position, this.camera.target, this.camera.up);
             let viewMatrix = haruluya_webgl_utils.inverse(cameraMatrix);
-            var viewProjectionMatrix = haruluya_webgl_utils.multiply3d(projectionMatrix, viewMatrix);
+            let viewProjectionMatrix = haruluya_webgl_utils.multiply3d(projectionMatrix, viewMatrix);
             let worldMatrix = haruluya_webgl_utils.getTransformMatrix(
                 haruluya_webgl_utils.xRotation(0),
-                this.transfrom
+                this.transform
             )
 
             // normal transform.
-            var worldViewProjectionMatrix = haruluya_webgl_utils.multiply3d(viewProjectionMatrix, worldMatrix);
-            var worldInverseMatrix = haruluya_webgl_utils.inverse(worldMatrix);
-            var worldInverseTransposeMatrix = haruluya_webgl_utils.transpose(worldInverseMatrix);
+            let worldViewProjectionMatrix = haruluya_webgl_utils.multiply3d(viewProjectionMatrix, worldMatrix);
+            let worldInverseMatrix = haruluya_webgl_utils.inverse(worldMatrix);
+            let worldInverseTransposeMatrix = haruluya_webgl_utils.transpose(worldInverseMatrix);
 
-            this.uniformsData.u_worldViewProjection = worldViewProjectionMatrix;
-            this.uniformsData.u_worldInverseTranspose = worldInverseTransposeMatrix;
-            this.uniformsData.u_reverseLightDirection = haruluya_webgl_utils.normalize([0.5, 0.7, 1]);
-            haruluya_webgl_utils.setUniforms(this.uniformSetters, this.uniformsData);
-            gl.drawArrays(gl.TRIANGLES, 0, 6*6);
+            this.page.addUniform("u_worldViewProjection",worldViewProjectionMatrix);
+            this.page.addUniform("u_worldInverseTranspose",worldInverseTransposeMatrix);
+            this.page.addUniform("u_reverseLightDirection",haruluya_webgl_utils.normalize(lightDir));
+
+            this.page.glDraw({mode:gl.TRIANGLES,first:0,count:16*6})
         },
-        SetUI(){
-            const gl = this.gl;
-            let Render = this.Render;
-            let transform = this.transfrom;
-
-            // transform callback.
-            const updatePosition = function (index) {
-                return function(event, ui) {
-                    transform.translation[index] = ui.value;
-                    Render();
-                };
-            }
-
-            const updateRotation = function (index) {
-                return function(event, ui) {
-                    const angleInDegrees = ui.value;
-                    const angleInRadians = angleInDegrees * Math.PI / 180;
-                    transform.rotation[index] = angleInRadians;
-                    Render();
-                };
-            }
-
-            const updateScale = function (index) {
-                return function(event, ui) {
-                    transform.scale[index] = ui.value;
-                    Render();
-                };
-            }
-
-            // draw slider.
-            haruluya_webgl_utils.setupSlider("x", {value: transform.translation[0], slide: updatePosition(0), max: gl.canvas.width });
-            haruluya_webgl_utils.setupSlider("y", {value: transform.translation[1], slide: updatePosition(1), max: gl.canvas.height});
-            haruluya_webgl_utils.setupSlider("z", {value: transform.translation[2], slide: updatePosition(2), max: gl.canvas.height});
-            haruluya_webgl_utils.setupSlider("angleX", {value: haruluya_webgl_utils.radToDeg(transform.rotation[0]), slide: updateRotation(0), max: 360});
-            haruluya_webgl_utils.setupSlider("angleY", {value: haruluya_webgl_utils.radToDeg(transform.rotation[1]), slide: updateRotation(1), max: 360});
-            haruluya_webgl_utils.setupSlider("angleZ", {value: haruluya_webgl_utils.radToDeg(transform.rotation[2]), slide: updateRotation(2), max: 360});
-            haruluya_webgl_utils.setupSlider("scaleX", {value: transform.scale[0], slide: updateScale(0), min: -5, max: 5, step: 0.01, precision: 2});
-            haruluya_webgl_utils.setupSlider("scaleY", {value: transform.scale[1], slide: updateScale(1), min: -5, max: 5, step: 0.01, precision: 2});
-            haruluya_webgl_utils.setupSlider("scaleZ", {value: transform.scale[2], slide: updateScale(2), min: -5, max: 5, step: 0.01, precision: 2});
-
-        },
-        Destory(){
-
-        },
-        handleClick() {
-            window.location.href = "https://github.com/Haruluya/Rock-sugar/blob/master/rock-sugar/src/pages/WebglDemo/DirectionLight/index.vue";
-        },
-        setPosition(){
-            let matrix = haruluya_webgl_utils.xRotation(Math.PI);
-            matrix = haruluya_webgl_utils.translate3d(matrix, -50, -75, -15);
-
-            for (let ii = 0; ii < positions.length; ii += 3) {
-                let vector = haruluya_webgl_utils.transformPoint(matrix, [positions[ii + 0], positions[ii + 1], positions[ii + 2], 1]);
-                positions[ii + 0] = vector[0];
-                positions[ii + 1] = vector[1];
-                positions[ii + 2] = vector[2];
-            }
-
-            this.bufferData.position.data = positions;
-        }
-
-
     },
-    beforeDestory() {
-        this.Destory();
+    mounted() {
+        this.uiSetter = [
+                { 
+                    type: "slider-vector", id: "lightDir" , value: this.sectionParams.lightDir, min: { x: -100, y: -100,z:-100 }, max: { x: 100, y: 100,z:100 }, 
+                    callback: uiSetting.globalUiCallbacks.updateVector3(this.sectionParams, this.$refs.page.Render, "lightDir")
+                },
+            ]
     },
 }
 </script>

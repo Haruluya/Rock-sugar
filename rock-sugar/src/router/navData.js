@@ -37,10 +37,17 @@ const navData = [
         {name:"ImageTexture", link:"/cg/webgl_demo/ImageTexture"},
         {name:"ImageProcess", link:"/cg/webgl_demo/ImageProcess"},
         {name:"MultipleObject", link:"/cg/webgl_demo/MultipleObject"},
-        {name:"MultipleObject", link:"/cg/webgl_demo/MultipleObject"},
         {name:"SolarSystem", link:"/cg/webgl_demo/SolarSystem"},
         {name:"DataTexture", link:"/cg/webgl_demo/DataTexture"},
+        {name:"EnvMapping", link:"/cg/webgl_demo/EnvMapping"},
+        {name:"RenderTexture", link:"/cg/webgl_demo/RenderTexture"},
+        {name:"ShadowMapping", link:"/cg/webgl_demo/ShadowMapping"},
+        {name:"PlanarPMapping", link:"/cg/webgl_demo/PlanarPMapping"},
+        {name:"Skinning", link:"/cg/webgl_demo/Skinning"},
+        {name:"Fog", link:"/cg/webgl_demo/Fog"},
+        {name:"Text", link:"/cg/webgl_demo/Text"},
         {name:"ObjResolver", link:"/cg/webgl_demo/ObjResolver"},
+        {name:"Interaction", link:"/cg/webgl_demo/Interaction"},
         ] 
     }
 ]

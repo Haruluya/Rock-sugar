@@ -1,43 +1,27 @@
 <template lang="html">
-    <div class="pageContainer">
-        <div class="webglContainer">
-            <nano_canvas
-             :prop_vertex_shader_source="vertexShaderSource"
-             :prop_fragment_shader_source="fragmentShaderSource"
-            />
-            <div id="uiContainer">
-                <div id="ui">
-                    <div id="targetAngle"></div>
-                    <div id="targetHeight"></div>
-                </div>
-            </div>
-        </div>
-        
-        <nano_webgl_des_panel
-            :prop_category="desData.category"
-            :prop_name="desData.name"
-            :prop_button_content="desData.buttonContent"
-            :prop_title="desData.title"
-            :prop_content="desData.content"
-            @handleClick="handleClick"
-            />
-
-    </div>
-
-    
+    <nano_webgl_demo_panel
+        :prop_des_data="desData"
+        :prop_ui_setter="uiSetter"
+        :prop_vertex_shader="vertexShaderSource"
+        :prop_fragment_shader="fragmentShaderSource"
+        :prop_section_params="sectionParams"
+        ref="page"
+        @Init="Init"
+        @Render="Render"
+        @prop_ui_setter="uiSetter"
+    />
 </template>
 <script>
-
 import vertexShaderSource from './resource/vertex-shader.js'
 import fragmentShaderSource from './resource/fragment-shader.js'
-import data from './resource/data'
+
 
 const desData = {
     category:"Webgl",
     name:"CameraPosition",
     buttonContent:"查看源码",
     title:"相机",
-    content:"I suddenly realized I'd never taken a selfie before."
+    content:"He suddenly realized he'd never taken a selfie before."
 }
 
 
@@ -101,34 +85,21 @@ export default {
     },
     methods: {
         Init(){
-            const { gl, canvas } = haruluya_webgl_utils.initWebglContext("canvas");
-            this.gl = gl;
-            this.canvas = canvas;
-            this.program = haruluya_webgl_utils.createProgramFromScripts(gl, ["vertex-shader", "fragment-shader"]);
+            this.page = this.$refs.page;
+            this.gl = this.page.getGL();
+            this.canvas = this.page.getCanvas();
+            this.program = this.page.getProgram();
             //Get bufferinfo and setters.
             this.numElements = this.setPosition();
             this.setColor();
             this.perspective.aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
-
-            this.bufferInfo = haruluya_webgl_utils.createBufferInfoFromArrays(gl, this.bufferData);
-            this.uniformSetters = haruluya_webgl_utils.createUniformSetters(gl, this.program);
-            this.attribSetters  = haruluya_webgl_utils.createAttributeSetters(gl, this.program);
-            this.Render();
+            this.page.addBuffer("position",{data:positions});
+            this.page.addBuffer("color",{data:colors});
         },
         Render(){
             const gl = this.gl;
-            const program = this.program;
-            haruluya_webgl_utils.resizeCanvasToDisplaySize(gl.canvas);
-            gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
             gl.enable(gl.CULL_FACE);
             gl.enable(gl.DEPTH_TEST);
-
-            gl.useProgram(program);
-
-            haruluya_webgl_utils.setBuffersAndAttributes(gl, this.attribSetters, this.bufferInfo);
-
 
             //perspective.
             let projectionMatrix = haruluya_webgl_utils.perspective(this.perspective.fieldOfViewRadians, 
@@ -159,34 +130,6 @@ export default {
                 }
             }
         },
-        SetUI(){
-            const Render = this.Render;
-            let targetAngleRadians = this.sectionParams.targetAngleRadians;
-            let target = this.sectionParams.target;
-
-
-            // callback.
-            const updateTargetAngle = function (event, ui) {
-                targetAngleRadians = haruluya_webgl_utils.degToRad(ui.value);
-                target[0] = Math.sin(targetAngleRadians) * targetRadius;
-                target[2] = Math.cos(targetAngleRadians) * targetRadius;
-                Render();
-            }
-            const updateTargetHeight = function (event, ui) {
-                target[1] = ui.value;
-                Render();
-            }
-                    // ui.
-            haruluya_webgl_utils.setupSlider("targetAngle", {value: haruluya_webgl_utils.radToDeg(targetAngleRadians), slide: updateTargetAngle, min: -360, max: 360});
-            haruluya_webgl_utils.setupSlider("targetHeight", {value: target[1], slide: updateTargetHeight, min: 50, max: 300});
-        },
-        Destory(){
-
-        },
-
-        handleClick() {
-            window.location.href = "https://github.com/Haruluya/Rock-sugar/blob/master/rock-sugar/src/pages/WebglDemo/CameraPosition/index.vue";
-        },
 
         setPosition(){
             let positions = new Float32Array(modelData.positions);
@@ -214,9 +157,7 @@ export default {
         }
 
     },
-    beforeDestory() {
-        this.Destory();
-    },
+
 }
 </script>
 <style lang="less" scoped>

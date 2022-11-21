@@ -47,9 +47,9 @@ export default {
                 zFar: 2000,
             },
             transform:{
-                translation:[0, 0, 0],
-                rotation:[haruluya_webgl_utils.degToRad(180), haruluya_webgl_utils.degToRad(185), haruluya_webgl_utils.degToRad(360)],
-                scale:[1,0.8,1]
+                translation:[100, 120, -20],
+                rotation:[haruluya_webgl_utils.degToRad(180), haruluya_webgl_utils.degToRad(200), haruluya_webgl_utils.degToRad(0)],
+                scale:[1,.7,.7]
             },
             camera:{
                 target:[0, 35, 0],
@@ -75,8 +75,6 @@ export default {
 
             //Get bufferinfo and setters.
             this.perspective.aspect = this.gl.canvas.clientWidth / this.gl.canvas.clientHeight;
-
-            this.setPosition();
 
             this.page.setTransform(this.transform);
 
@@ -134,17 +132,6 @@ export default {
 
             this.page.glDraw({mode:gl.TRIANGLES,first:0,count:16*6})
         },
-        setPosition(){
-            var matrix = haruluya_webgl_utils.xRotation(Math.PI);
-            matrix = haruluya_webgl_utils.translate3d(matrix, -50, -75, -15);
-
-            for (var ii = 0; ii < positions.length; ii += 3) {
-                var vector = haruluya_webgl_utils.transformPoint(matrix, [positions[ii + 0], positions[ii + 1], positions[ii + 2], 1]);
-                positions[ii + 0] = vector[0];
-                positions[ii + 1] = vector[1];
-                positions[ii + 2] = vector[2];
-            }
-        }
 
     },
     mounted() {
