@@ -725,7 +725,6 @@
     function perspective(fieldOfViewInRadians, aspect, near, far) {
         var f = Math.tan(Math.PI * 0.5 - 0.5 * fieldOfViewInRadians);
         var rangeInv = 1.0 / (near - far);
-      console.log(f,aspect,"(((((")
         return [
         f / aspect, 0, 0, 0,
         0, f, 0, 0,
@@ -1023,9 +1022,8 @@
         
         Object.keys(uniforms).forEach(function(name) {
           const setter = setters[name];
-          console.log(uniforms,setter,"per uniforms");
+          console.log(name,uniforms,setter,"per uniforms");
           if (setter) {
-
             setter(uniforms[name]);
           }
         });
@@ -1168,7 +1166,7 @@
           };
         } else {
           const array = makeTypedArray(origArray, bufferName);
-          console.log(array);
+          // console.log(array);
           attribs[attribName] = {
             buffer:        createBufferFromTypedArray(gl, array),
             numComponents: origArray.numComponents || array.numComponents || guessNumComponentsFromName(bufferName),

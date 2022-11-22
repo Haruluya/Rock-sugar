@@ -285,7 +285,7 @@ export default {
           }else if (e.type === "mousewheel"){
             e.preventDefault();
             for (let i = 0; i < this.transform.scale.length;i++){
-                this.transform.scale[i] += e.deltaY > 0? 0.15 : -0.15;
+                this.transform.scale[i] -= e.deltaY > 0? 0.15 : -0.15;
             }
             this.Render()
             }

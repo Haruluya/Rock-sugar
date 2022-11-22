@@ -50,6 +50,7 @@
 import skyboxFragmentShader from './resource/skybox-fragment-shader.js'
 import skyboxVertexShader from './resource/skybox-vertex-shader.js'
 import skyboxData from './resource/skybox-data.js'
+
 /*
     @author:haruluya.
     @des:This component is used to make the source code more concise.
@@ -79,7 +80,6 @@ export default {
             // }
             bufferData:{},
             uniformsData:{},
-            glSetters:{},
             uiSetting,
             perspective:null,
             camera:null,
@@ -102,11 +102,13 @@ export default {
                 y:0
             },
             //mutiy program.
-            programList:[],
+            programList:{},
             shaderList:[],
 
             //skybox.
             skyboxTexture:null,
+
+            componentList:{}
         }
     },
     mounted(){
@@ -157,14 +159,13 @@ export default {
             this.gl = gl;
             this.canvas = canvas;
             this.$emit("Init");
-          
-            this.programList.forEach(element => {
-                let bufferInfo = haruluya_webgl_utils.createBufferInfoFromArrays(this.gl, this.bufferData[element.name]);
-                let attribSetters  = haruluya_webgl_utils.createAttributeSetters(this.gl, element.program);
-  
-                let uniformSetters = haruluya_webgl_utils.createUniformSetters(this.gl, element.program);
-                this.glSetters[element.name] = {bufferInfo,attribSetters,uniformSetters};
 
+            Object.entries(this.componentList).forEach((value) => {
+                let bufferInfo = haruluya_webgl_utils.createBufferInfoFromArrays(this.gl, this.bufferData[value[0]]);
+                let attribSetters  = haruluya_webgl_utils.createAttributeSetters(this.gl, value[1].program);
+
+                let uniformSetters = haruluya_webgl_utils.createUniformSetters(this.gl, value[1].program);
+                value[1].bufferInfo = bufferInfo; value[1].attribSetters = attribSetters; value[1].uniformSetters = uniformSetters;
             });
             // attributes.
             this.Render();
@@ -216,17 +217,23 @@ export default {
                 },
             };
         },
-        addBuffer(name,data,index){
-            this.bufferData[index][name] = data;
-        },
-        addUniform(name,data,index){
-            this.uniformsData[index][name] = data;
-        },
+
         getGL(){
             return this.gl;
         },
         getCanvas(){
             return this.canvas;
+        },
+        getComponent(name){
+            if (this.componentList[name]){
+                return this.componentList[name]
+            }else{
+                console.log("ERROR: component not found!")
+            }
+
+        },
+        getComponents(){
+            return this.componentList;
         },
         getProgram(name){
             let program;
@@ -270,28 +277,54 @@ export default {
             let worldViewProjectionMatrix = haruluya_webgl_utils.multiply3d(viewProjectionMatrix, worldMatrix);
             return worldViewProjectionMatrix;
         },
+
+        addBuffer(name,data,componentName){
+            this.bufferData[componentName][name] = data;
+        },
+        addUniform(name,data,componentName){
+            this.uniformsData[componentName][name] = data;
+        },
         addProgram(name,vertexShaderSource,fragmentShaderSource){
-            this.programList.push({name,program:haruluya_webgl_utils.createProgramFromShaderSource(this.gl, vertexShaderSource,fragmentShaderSource)});  
-            console.log(this.programList,'program')
-            this.glSetters[name] = {};
-            this.bufferData[name] = {};
-            this.uniformsData[name] = {};
+            this.programList[name] = haruluya_webgl_utils.createProgramFromShaderSource(this.gl, vertexShaderSource,fragmentShaderSource);  
+        },
+
+        addComponent(programName,componentName){
+            this.componentList[componentName] = {
+                program:this.programList[programName],
+                bufferInfo:{},
+                attribSetters:{},
+                uniformSetters:{}
+            }
+            
+            this.bufferData[componentName] = {};
+            this.uniformsData[componentName] = {};
         },
 
         setSetters(name){
             if(Object.getOwnPropertyNames(this.bufferData[name]).length != 0){
-                haruluya_webgl_utils.setBuffersAndAttributes(this.gl, this.glSetters[name].attribSetters,  this.glSetters[name].bufferInfo);
-                haruluya_webgl_utils.setUniforms( this.glSetters[name].uniformSetters,  this.uniformsData[name]);
+                haruluya_webgl_utils.setBuffersAndAttributes(this.gl, this.componentList[name].attribSetters,  this.componentList[name].bufferInfo);
+                haruluya_webgl_utils.setUniforms( this.componentList[name].uniformSetters, this.uniformsData[name]);
             }
         },
-        useProgram(name){
-            this.programList.forEach(e=>{
-                if(e.name === name){
-                    this.gl.useProgram(e.program);
-                }
-            })
-           console.log(this.programList,this.glSetters)
+        drawComponent(componentName,primitiveType, count, offset) {
+            const gl = this.gl;
+            const bufferInfo = this.componentList[componentName].bufferInfo;
+            const indices = bufferInfo.indices;
+            primitiveType = primitiveType === undefined ? gl.TRIANGLES : primitiveType;
+            const numElements = count === undefined ? bufferInfo.numElements : count;
+            offset = offset === undefined ? 0 : offset;
+            if (indices) {
+                gl.drawElements(primitiveType, numElements, gl.UNSIGNED_SHORT, offset);
+            } else {
+                gl.drawArrays(primitiveType, offset, numElements);
+            }
         },
+        useProgram(program){
+            if(program){
+                this.gl.useProgram(program)
+            }
+        },
+
         //add skybox in scene.
         addSkybox(imgList){
             const gl = this.gl;
@@ -371,7 +404,7 @@ export default {
           }else if (e.type === "mousewheel"){
             e.preventDefault();
             for (let i = 0; i < this.transform.scale.length;i++){
-                this.transform.scale[i] += e.deltaY > 0? 0.15 : -0.15;
+                this.transform.scale[i] -= e.deltaY > 0? 0.15 : -0.15;
             }
             this.Render()
             }

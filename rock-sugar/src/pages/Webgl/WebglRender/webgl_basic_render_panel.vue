@@ -50,6 +50,8 @@
 import skyboxFragmentShader from './resource/skybox-fragment-shader.js'
 import skyboxVertexShader from './resource/skybox-vertex-shader.js'
 import skyboxData from './resource/skybox-data.js'
+import NanoObjParse from "./Render/resource/NanoObjParse.js"
+
 /*
     @author:haruluya.
     @des:This component is used to make the source code more concise.
@@ -268,6 +270,21 @@ export default {
             let worldViewProjectionMatrix = haruluya_webgl_utils.multiply3d(viewProjectionMatrix, worldMatrix);
             return worldViewProjectionMatrix;
         },
+        setObjectToSceenCenter(geometries){
+            const extents = NanoObjParse.getGeometriesExtents(geometries);
+            const range = haruluya_webgl_utils.subtractVectors(extents.max, extents.min);
+            let objOffset = haruluya_webgl_utils.scaleVector(
+                haruluya_webgl_utils.addVectors(
+                    extents.min,
+                    haruluya_webgl_utils.scaleVector(range, 0.5)),
+                -1);
+            const radius = haruluya_webgl_utils.length(range) * 1.2;
+
+            this.camera.position[2] = radius;
+            this.perspective.zNear = radius / 100;
+            this.perspective.zFar = radius * 3;
+            return objOffset;
+        },
         addBuffer(name,data,componentName){
             this.bufferData[componentName][name] = data;
         },
@@ -394,7 +411,7 @@ export default {
           }else if (e.type === "mousewheel"){
             e.preventDefault();
             for (let i = 0; i < this.transform.scale.length;i++){
-                this.transform.scale[i] += e.deltaY > 0? 0.15 : -0.15;
+                this.transform.scale[i] -= e.deltaY > 0? 0.15 : -0.15;
             }
             this.Render()
             }

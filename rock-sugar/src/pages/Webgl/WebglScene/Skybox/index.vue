@@ -71,9 +71,15 @@ export default {
             this.gl = this.page.getGL();
             const gl = this.gl;
             
-            //create program.
+            //create programs.
             this.page.addProgram("obj",objVertexShader,objFragmentShader);
             this.page.addProgram("skybox",skyboxVertexShader,skyboxFragmentShader);
+
+
+            //create components.
+            this.page.addComponent("obj","obj");
+            this.page.addComponent("skybox","skybox");
+            
 
             //set aspect.
             this.perspective.aspect = this.gl.canvas.clientWidth / this.gl.canvas.clientHeight;
@@ -114,6 +120,7 @@ export default {
                     this.page.Render();
                 });
             });
+
             gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
             gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
 
@@ -151,20 +158,20 @@ export default {
             this.page.addUniform("u_viewDirectionProjectionInverse",viewDirectionProjectionInverseMatrix,"skybox")
             this.page.addUniform("u_texture",this.sectionParams.texture,"obj");
             this.page.addUniform("u_texture",this.sectionParams.texture,"skybox");
-            this.page.useProgram("obj")
+            this.page.useProgram(this.page.getComponent("obj").program)
             gl.enable(gl.CULL_FACE);
             gl.enable(gl.DEPTH_TEST);
             gl.depthFunc(gl.LESS);  // use the default depth test
             this.page.setSetters("obj");
-            this.$refs.page.glDraw({mode:gl.TRIANGLES,first:0,count:6*6})
+            this.page.drawComponent("obj")
 
 
-            this.page.useProgram("skybox");
+            this.page.useProgram(this.page.getComponent("skybox").program);
             gl.enable(gl.CULL_FACE);
             gl.enable(gl.DEPTH_TEST);
             gl.depthFunc(gl.LEQUAL);
             this.page.setSetters("skybox");
-            this.$refs.page.glDraw({mode:gl.TRIANGLES,first:0,count:6*6})
+            this.page.drawComponent("skybox")
 
         },
         faceInfos(gl){

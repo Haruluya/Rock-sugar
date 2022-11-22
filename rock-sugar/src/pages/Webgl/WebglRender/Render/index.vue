@@ -14,9 +14,15 @@
 <script>
 import vertexShaderSource from './resource/vertex-shader.js'
 import fragmentShaderSource from './resource/fragment-shader.js'
-
+import NanoObjParse from "./resource/NanoObjParse.js"
 
 import uiSetting from "../ui-setting"
+import BCOL from './resource/images/windmill_001_base_COL.jpg'
+import BNOR from './resource/images/windmill_001_base_NOR.jpg'
+import BSPEC from './resource/images/windmill_001_base_SPEC.jpg'
+import LCOL from './resource/images/windmill_001_lopatky_COL.jpg'
+import LNOR from './resource/images/windmill_001_lopatky_NOR.jpg'
+import HeadDiffuse from './resource/images/diffuse.png'
 
 const desData = {
     category:"Webgl",
@@ -25,6 +31,21 @@ const desData = {
     title:"Webgl基础渲染器",
     content:"WebglRender."
 }
+
+
+
+
+
+
+const imgTextures = {
+    "windmill_001_base_COL.jpg" : BCOL,
+    "windmill_001_base_NOR.jpg" : BNOR,
+    "windmill_001_base_SPEC.jpg": BSPEC,
+    "windmill_001_lopatky_COL.jpg" : LCOL,
+    "windmill_001_lopatky_NOR.jpg" : LNOR,
+    "HeadDiffuse" :HeadDiffuse
+}
+
 
 export default {
     name:"WebglRender",
@@ -53,12 +74,28 @@ export default {
                 up:[0,1,0]
             },
             sectionParams:{
-                
+                lightDirection:[-1,3,5]
             },
             page:null,
             uiSetter:[],
             objectData:null,
-            objComponents:null
+            objComponentsInfo:null,
+            objOffset:null,
+
+        }
+    },
+    computed:{
+        defaultMaterial(){
+            return{
+                diffuse: [1, 1, 1],
+                diffuseMap: NanoObjParse.create1PixelTexture(this.gl, [127, 127, 255, 0]),
+                normalMap:  NanoObjParse.create1PixelTexture(this.gl, [127, 127, 255, 0]),
+                ambient: [0, 0, 0],
+                specular: [0, 0, 0],
+                specularMap: NanoObjParse.create1PixelTexture(this.gl, [255, 255, 255, 255]),
+                shininess: 400,
+                opacity: 1,
+            }
         }
     },
     mounted(){
@@ -66,13 +103,11 @@ export default {
     },
     methods: {
         Init(){
+            this.page = this.$refs.page;
+            this.gl = this.page.getGL();
             if(!this.objectData){
                 return;
             }
-            this.page = this.$refs.page;
-            this.gl = this.page.getGL();
-
-
             this.page.addProgram("obj",vertexShaderSource,fragmentShaderSource);
 
             //Get bufferinfo and setters.
@@ -82,18 +117,53 @@ export default {
             this.$refs.page.set3DViewer(this.perspective,this.camera,this.transform);
 
 
-            const data = this.objectParse(this.objectData);
-            this.objComponents = data.geometries.map(({data,object}) => {
-                this.page.addComponent("obj",object);
-                this.page.addBuffer("position",{data:data.position},object);
-                this.page.addBuffer("texcoord",{numComponents:2,data:data.texcoord},object);
-                this.page.addBuffer("normal",{data:data.normal},object);
+            const data = this.objectData.obj;
+
+            //offset.
+            this.objOffset = this.page.setObjectToSceenCenter(data.geometries);
+            console.log(data,"datass")
+            //get object info.
+            this.objComponentsInfo = data.geometries.map(({material,data,object}) => {
+                const componentName = object+material;
+                this.page.addComponent("obj",componentName);
+                //handel normal.
+                if (data.texcoord && data.normal) {
+                    data.tangent = NanoObjParse.generateTangents(data.position, data.texcoord);
+                    this.page.addBuffer("tangent",data.tangent,componentName);
+                } else {
+                    this.page.addBuffer("tangent",{ value: [1, 0, 0] },componentName);
+                }
+                
+                if (!data.texcoord) {
+                    data.texcoord = { value: [0, 0] };
+                }
+
+                if (!data.normal) {
+                    data.normal = { value: [0, 0, 1] };
+                }
+
+                //handle color.
+                if (data.color) {
+                    if (data.position.length === data.color.length) {
+                        data.color = { numComponents: 3, data: data.color };
+                        this.page.addBuffer("color",data.color,componentName);
+                    }
+                }else{
+                    this.page.addBuffer("color",{ value: [1, 1, 1, 1] },componentName);
+                }
+
+                this.page.addBuffer("position",{data:data.position},componentName);
+                this.page.addBuffer("texcoord",{numComponents:2,data:data.texcoord},componentName);
+                this.page.addBuffer("normal",{data:data.normal},componentName);
+                
+                console.log(this.objectData.materials[material],"material");
                 return {
-                    name:object,
-                    component:this.page.getComponents()[object],
-                    material: {
-                        u_diffuse: [Math.random(), Math.random(), Math.random(), 1],
-                    },
+                    name:componentName,
+                    component:this.page.getComponents()[componentName],
+                    material:{
+                        ...this.defaultMaterial,
+                        ...this.objectData.materials[material]
+                    }
                 }
             });
 
@@ -107,6 +177,7 @@ export default {
             gl.enable(gl.DEPTH_TEST);
             gl.enable(gl.CULL_FACE);
 
+            //matrix.
             let projectionMatrix = haruluya_webgl_utils.perspective(
                 this.perspective.fieldOfViewRadians, 
                 this.perspective.aspect, 
@@ -118,172 +189,66 @@ export default {
 
             let worldMatrix = haruluya_webgl_utils.getTransformMatrix(
                     haruluya_webgl_utils.yRotation(0),this.transform);
-            
-            this.objComponents.forEach(e=>{
-                this.page.useProgram(e.component.program);
+            worldMatrix = haruluya_webgl_utils.translate3d(worldMatrix,...this.objOffset);
 
-                this.page.addUniform("u_diffuse",[1, 1, 1, 1],e.name);
-                this.page.addUniform("u_world",worldMatrix,e.name);
-                this.page.addUniform("u_view",viewMatrix,e.name);
-                this.page.addUniform("u_lightDirection",haruluya_webgl_utils.normalize([-1,3,5]),e.name);
-                this.page.addUniform("u_projection",projectionMatrix,e.name);
-                this.page.setSetters(e.name);
-                this.page.drawComponent(e.name)
+            //render components.
+            this.objComponentsInfo.forEach(({name,component,material})=>{
+                this.page.useProgram(component.program);
+                const sharedUniforms = {
+                    "u_world": worldMatrix,
+                    "u_view": viewMatrix,
+                    "u_lightDirection": haruluya_webgl_utils.normalize(this.sectionParams.lightDirection),
+                    "u_projection": projectionMatrix,
+                    "u_viewWorldPosition":this.camera.position,
+                }
+                const uniforms = Object.assign(sharedUniforms,material);
+                console.log(uniforms,"uniforms")
+                Object.entries(uniforms).forEach(([key,value])=>{
+                    this.page.addUniform(key,value,name);
+                })
+                this.page.setSetters(name);
+                this.page.drawComponent(name)
             })
 
 
         },
         async getObjectData(){
-            const response =  await fetch('https://webglfundamentals.org/webgl/resources/models/chair/chair.obj');  
+            let objLink = './marci/marci.obj'
+            const response =  await fetch(objLink);  
             const text = await response.text();
-            this.objectData = text;
-            this.$refs.page.Init();
-        },
-        objectParse(text) {
-            // because indices are base 1 let's just fill in the 0th data
-            const objPositions = [[0, 0, 0]];
-            const objTexcoords = [[0, 0]];
-            const objNormals = [[0, 0, 0]];
-
-            // same order as `f` indices
-            const objVertexData = [
-                objPositions,
-                objTexcoords,
-                objNormals,
-            ];
-
-            // same order as `f` indices
-            let webglVertexData = [
-                [],   // positions
-                [],   // texcoords
-                [],   // normals
-            ];
-
-            const materialLibs = [];
-            const geometries = [];
-            let geometry;
-            let groups = ['default'];
-            let material = 'default';
-            let object = 'default';
-
-            const noop = () => {};
-
-            function newGeometry() {
-                // If there is an existing geometry and it's
-                // not empty then start a new one.
-                if (geometry && geometry.data.position.length) {
-                geometry = undefined;
-                }
-            }
-
-            function setGeometry() {
-                if (!geometry) {
-                const position = [];
-                const texcoord = [];
-                const normal = [];
-                webglVertexData = [
-                    position,
-                    texcoord,
-                    normal,
-                ];
-                geometry = {
-                    object,
-                    groups,
-                    material,
-                    data: {
-                    position,
-                    texcoord,
-                    normal,
-                    },
-                };
-                geometries.push(geometry);
-                }
-            }
-
-            function addVertex(vert) {
-                const ptn = vert.split('/');
-                ptn.forEach((objIndexStr, i) => {
-                if (!objIndexStr) {
-                    return;
-                }
-                const objIndex = parseInt(objIndexStr);
-                const index = objIndex + (objIndex >= 0 ? 0 : objVertexData[i].length);
-                webglVertexData[i].push(...objVertexData[i][index]);
+            const obj = NanoObjParse.objectParse(text);
+            const baseLink = new URL(objLink, window.location.href);
+            const matTexts = await Promise.all(obj.materialLibs.map(async filename => {
+                const matHref = new URL(filename, baseLink).href;
+                const response = await fetch(matHref);
+                return await response.text();
+            }));
+            const materials = NanoObjParse.parseMTL(matTexts.join('\n'));
+            const textures = {
+                defaultWhite: NanoObjParse.create1PixelTexture(this.gl, [255, 255, 255, 255]),
+            };
+            // load texture for materials
+            for (const material of Object.values(materials)) {
+                Object.entries(material)
+                .filter(([key]) => key.endsWith('Map'))
+                .forEach(([key, filename]) => {
+                    let texture = textures[filename];
+                    if (!texture) {
+                        const textureHref = new URL(filename, baseLink).href;
+                        texture = NanoObjParse.createTexture(this.gl, textureHref);
+                        textures[filename] = texture;
+                    }
+                    material[key] = texture;
                 });
             }
-
-            const keywords = {
-                v(parts) {
-                objPositions.push(parts.map(parseFloat));
-                },
-                vn(parts) {
-                objNormals.push(parts.map(parseFloat));
-                },
-                vt(parts) {
-                // should check for missing v and extra w?
-                objTexcoords.push(parts.map(parseFloat));
-                },
-                f(parts) {
-                    setGeometry();
-                    const numTriangles = parts.length - 2;
-                    for (let tri = 0; tri < numTriangles; ++tri) {
-                        addVertex(parts[0]);
-                        addVertex(parts[tri + 1]);
-                        addVertex(parts[tri + 2]);
-                    }
-                },
-                s: noop,    // smoothing group
-                mtllib(parts, unparsedArgs) {
-                    // the spec says there can be multiple filenames here
-                    // but many exist with spaces in a single filename
-                    materialLibs.push(unparsedArgs);
-                },
-                usemtl(parts, unparsedArgs) {
-                    material = unparsedArgs;
-                    newGeometry();
-                },
-                g(parts) {
-                    groups = parts;
-                    newGeometry();
-                },
-                o(parts, unparsedArgs) {
-                    object = unparsedArgs;
-                    newGeometry();
-                },
+            this.objectData = {
+                obj,
+                materials,
             };
-
-            const keywordRE = /(\w*)(?: )*(.*)/;
-            const lines = text.split('\n');
-            for (let lineNo = 0; lineNo < lines.length; ++lineNo) {
-                const line = lines[lineNo].trim();
-                if (line === '' || line.startsWith('#')) {
-                    continue;
-                }
-                const m = keywordRE.exec(line);
-                if (!m) {
-                    continue;
-                }
-                const [, keyword, unparsedArgs] = m;
-                const parts = line.split(/\s+/).slice(1);
-                const handler = keywords[keyword];
-                if (!handler) {
-                    console.warn('unhandled keyword:', keyword);  // eslint-disable-line no-console
-                    continue;
-                }
-                handler(parts, unparsedArgs);
-            }
-
-            // remove any arrays that have no entries.
-            for (const geometry of geometries) {
-                geometry.data = Object.fromEntries(
-                    Object.entries(geometry.data).filter(([, array]) => array.length > 0));
-            }
-
-            return {
-                geometries,
-                materialLibs,
-            };
+            this.$refs.page.Init();
         },
+
+
 
     }
 }
