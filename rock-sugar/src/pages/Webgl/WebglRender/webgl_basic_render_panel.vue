@@ -50,7 +50,7 @@
 import skyboxFragmentShader from './resource/skybox-fragment-shader.js'
 import skyboxVertexShader from './resource/skybox-vertex-shader.js'
 import skyboxData from './resource/skybox-data.js'
-import NanoObjParse from "./Render/resource/NanoObjParse.js"
+import NanoObjParse from "../HNWUEngine/ModelParse.js"
 
 /*
     @author:haruluya.
@@ -86,7 +86,7 @@ export default {
             camera:null,
             transform:{
                 translation:[0,0, 0],
-                rotation:[haruluya_webgl_utils.degToRad(0), haruluya_webgl_utils.degToRad(0), haruluya_webgl_utils.degToRad(0)],
+                rotation:[HNWUEngine.degToRad(0), HNWUEngine.degToRad(0), HNWUEngine.degToRad(0)],
                 scale : [1, 1,1]
             },
             //vue watching data.
@@ -156,16 +156,16 @@ export default {
     },
     methods:{
         Init(){
-            const { gl, canvas } = haruluya_webgl_utils.initWebglContext("canvas");
+            const { gl, canvas } = HNWUEngine.initWebglContext("canvas");
             this.gl = gl;
             this.canvas = canvas;
             this.$emit("Init");
 
             Object.entries(this.componentList).forEach((value) => {
-                let bufferInfo = haruluya_webgl_utils.createBufferInfoFromArrays(this.gl, this.bufferData[value[0]]);
-                let attribSetters  = haruluya_webgl_utils.createAttributeSetters(this.gl, value[1].program);
+                let bufferInfo = HNWUEngine.createBufferInfoFromArrays(this.gl, this.bufferData[value[0]]);
+                let attribSetters  = HNWUEngine.createAttributeSetters(this.gl, value[1].program);
 
-                let uniformSetters = haruluya_webgl_utils.createUniformSetters(this.gl, value[1].program);
+                let uniformSetters = HNWUEngine.createUniformSetters(this.gl, value[1].program);
                 value[1].bufferInfo = bufferInfo; value[1].attribSetters = attribSetters; value[1].uniformSetters = uniformSetters;
             });
             // attributes.
@@ -173,7 +173,7 @@ export default {
         },
         Render(){
             const gl = this.gl;
-            haruluya_webgl_utils.resizeCanvasToDisplaySize(gl.canvas);
+            HNWUEngine.resizeCanvasToDisplaySize(gl.canvas);
 
             gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
             gl.clear(gl.COLOR_BUFFER_BIT);
@@ -254,31 +254,31 @@ export default {
             this.transform = transform
         },
         caculateMVPMatrix(perspective,camera,transform){
-            let cameraMatrix = haruluya_webgl_utils.lookAt(camera.position, camera.target, camera.up);
-            let viewMatrix = haruluya_webgl_utils.inverse(cameraMatrix);
-            let projectionMatrix = haruluya_webgl_utils.perspective(
+            let cameraMatrix = HNWUEngine.lookAt(camera.position, camera.target, camera.up);
+            let viewMatrix = HNWUEngine.inverse(cameraMatrix);
+            let projectionMatrix = HNWUEngine.perspective(
                 perspective.fieldOfViewRadians, 
                 perspective.aspect, 
                 perspective.zNear, 
                 perspective.zFar
                 );
-            let viewProjectionMatrix = haruluya_webgl_utils.multiply3d(projectionMatrix, viewMatrix);
-            let worldMatrix = haruluya_webgl_utils.getTransformMatrix(
-                haruluya_webgl_utils.xRotation(0),
+            let viewProjectionMatrix = HNWUEngine.multiply3d(projectionMatrix, viewMatrix);
+            let worldMatrix = HNWUEngine.getTransformMatrix(
+                HNWUEngine.xRotation(0),
                 transform
             )
-            let worldViewProjectionMatrix = haruluya_webgl_utils.multiply3d(viewProjectionMatrix, worldMatrix);
+            let worldViewProjectionMatrix = HNWUEngine.multiply3d(viewProjectionMatrix, worldMatrix);
             return worldViewProjectionMatrix;
         },
         setObjectToSceenCenter(geometries){
             const extents = NanoObjParse.getGeometriesExtents(geometries);
-            const range = haruluya_webgl_utils.subtractVectors(extents.max, extents.min);
-            let objOffset = haruluya_webgl_utils.scaleVector(
-                haruluya_webgl_utils.addVectors(
+            const range = HNWUEngine.subtractVectors(extents.max, extents.min);
+            let objOffset = HNWUEngine.scaleVector(
+                HNWUEngine.addVectors(
                     extents.min,
-                    haruluya_webgl_utils.scaleVector(range, 0.5)),
+                    HNWUEngine.scaleVector(range, 0.5)),
                 -1);
-            const radius = haruluya_webgl_utils.length(range) * 1.2;
+            const radius = HNWUEngine.length(range) * 1.2;
 
             this.camera.position[2] = radius;
             this.perspective.zNear = radius / 100;
@@ -292,7 +292,7 @@ export default {
             this.uniformsData[componentName][name] = data;
         },
         addProgram(name,vertexShaderSource,fragmentShaderSource){
-            this.programList[name] = haruluya_webgl_utils.createProgramFromShaderSource(this.gl, vertexShaderSource,fragmentShaderSource);  
+            this.programList[name] = HNWUEngine.createProgramFromShaderSource(this.gl, vertexShaderSource,fragmentShaderSource);  
         },
 
         addComponent(programName,componentName){
@@ -309,8 +309,8 @@ export default {
 
         setSetters(name){
             if(Object.getOwnPropertyNames(this.bufferData[name]).length != 0){
-                haruluya_webgl_utils.setBuffersAndAttributes(this.gl, this.componentList[name].attribSetters,  this.componentList[name].bufferInfo);
-                haruluya_webgl_utils.setUniforms( this.componentList[name].uniformSetters, this.uniformsData[name]);
+                HNWUEngine.setBuffersAndAttributes(this.gl, this.componentList[name].attribSetters,  this.componentList[name].bufferInfo);
+                HNWUEngine.setUniforms( this.componentList[name].uniformSetters, this.uniformsData[name]);
             }
         },
         drawComponent(componentName,primitiveType, count, offset) {
@@ -366,22 +366,22 @@ export default {
         },
         renderSkybox(){
             const gl = this.gl;
-            let cameraMatrix = haruluya_webgl_utils.lookAt(this.camera.position, this.camera.target, this.camera.up);
-            let viewMatrix = haruluya_webgl_utils.inverse(cameraMatrix);
-            let projectionMatrix = haruluya_webgl_utils.perspective(
+            let cameraMatrix = HNWUEngine.lookAt(this.camera.position, this.camera.target, this.camera.up);
+            let viewMatrix = HNWUEngine.inverse(cameraMatrix);
+            let projectionMatrix = HNWUEngine.perspective(
                 this.perspective.fieldOfViewRadians, 
                 this.perspective.aspect, 
                 this.perspective.zNear, 
                 this.perspective.zFar
                 );
-            let viewDirectionMatrix = haruluya_webgl_utils.copy(viewMatrix);
+            let viewDirectionMatrix = HNWUEngine.copy(viewMatrix);
             viewDirectionMatrix[12] = 0;
             viewDirectionMatrix[13] = 0;
             viewDirectionMatrix[14] = 0;
-            let viewDirectionProjectionMatrix = haruluya_webgl_utils.multiply3d(
+            let viewDirectionProjectionMatrix = HNWUEngine.multiply3d(
                 projectionMatrix, viewDirectionMatrix);
             let viewDirectionProjectionInverseMatrix =
-                haruluya_webgl_utils.inverse(viewDirectionProjectionMatrix);
+                HNWUEngine.inverse(viewDirectionProjectionMatrix);
             this.addUniform("u_viewDirectionProjectionInverse",viewDirectionProjectionInverseMatrix,"skybox")
             this.addUniform("u_texture",this.skyboxTexture,"skybox");
             this.useProgram("skybox");

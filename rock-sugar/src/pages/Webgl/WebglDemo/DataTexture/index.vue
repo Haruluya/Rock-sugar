@@ -41,7 +41,7 @@ export default {
             desData,
             transform:{
                 translation:[0, 0, 0],
-                rotation:[haruluya_webgl_utils.degToRad(0), haruluya_webgl_utils.degToRad(0), haruluya_webgl_utils.degToRad(0)],
+                rotation:[HNWUEngine.degToRad(0), HNWUEngine.degToRad(0), HNWUEngine.degToRad(0)],
                 scale:[1,1,1]
             },
             sectionParams:{
@@ -49,7 +49,7 @@ export default {
             },
             perspective:{
                 aspect:0,
-                fieldOfViewRadians:  haruluya_webgl_utils.degToRad(60),
+                fieldOfViewRadians:  HNWUEngine.degToRad(60),
                 zNear: 1,
                 zFar: 2000,
             },

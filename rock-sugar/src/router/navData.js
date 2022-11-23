@@ -49,7 +49,20 @@ const navData = [
         {name:"ObjResolver", link:"/cg/webgl_demo/ObjResolver"},
         {name:"Interaction", link:"/cg/webgl_demo/Interaction"},
         ] 
-    }
+    },
+    {
+        title:"WebglScene",
+        content:[
+            {name:"Skybox", link:"/cg/webgl_scene/Skybox"},
+            {name:"Skinning", link:"/cg/webgl_scene/Skinning"},
+            ]
+    },
+    {
+        title:"Renderer",
+        content:[
+            {name:"WebglBasicRenderer", link:"/cg/webgl_render"},
+            ]
+    },
 ]
 
 export default navData;

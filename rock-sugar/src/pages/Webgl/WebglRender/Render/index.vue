@@ -14,36 +14,13 @@
 <script>
 import vertexShaderSource from './resource/vertex-shader.js'
 import fragmentShaderSource from './resource/fragment-shader.js'
-import NanoObjParse from "./resource/NanoObjParse.js"
-
-import uiSetting from "../ui-setting"
-import BCOL from './resource/images/windmill_001_base_COL.jpg'
-import BNOR from './resource/images/windmill_001_base_NOR.jpg'
-import BSPEC from './resource/images/windmill_001_base_SPEC.jpg'
-import LCOL from './resource/images/windmill_001_lopatky_COL.jpg'
-import LNOR from './resource/images/windmill_001_lopatky_NOR.jpg'
-import HeadDiffuse from './resource/images/diffuse.png'
-
+import NanoObjParse from "../../HNWUEngine/ModelParse.js"
 const desData = {
     category:"Webgl",
     name:"WebglRender",
     buttonContent:"查看源码",
     title:"Webgl基础渲染器",
     content:"WebglRender."
-}
-
-
-
-
-
-
-const imgTextures = {
-    "windmill_001_base_COL.jpg" : BCOL,
-    "windmill_001_base_NOR.jpg" : BNOR,
-    "windmill_001_base_SPEC.jpg": BSPEC,
-    "windmill_001_lopatky_COL.jpg" : LCOL,
-    "windmill_001_lopatky_NOR.jpg" : LNOR,
-    "HeadDiffuse" :HeadDiffuse
 }
 
 
@@ -59,13 +36,13 @@ export default {
             desData,
             perspective:{
                 aspect:0,
-                fieldOfViewRadians:  haruluya_webgl_utils.degToRad(60),
+                fieldOfViewRadians:  HNWUEngine.degToRad(60),
                 zNear: 1,
                 zFar: 1000,
             },
             transform:{
                 translation:[0, 0, 0],
-                rotation:[haruluya_webgl_utils.degToRad(0), haruluya_webgl_utils.degToRad(0), haruluya_webgl_utils.degToRad(0)],
+                rotation:[HNWUEngine.degToRad(0), HNWUEngine.degToRad(0), HNWUEngine.degToRad(0)],
                 scale:[1,1,1]
             },
             camera:{
@@ -178,18 +155,18 @@ export default {
             gl.enable(gl.CULL_FACE);
 
             //matrix.
-            let projectionMatrix = haruluya_webgl_utils.perspective(
+            let projectionMatrix = HNWUEngine.perspective(
                 this.perspective.fieldOfViewRadians, 
                 this.perspective.aspect, 
                 this.perspective.zNear, 
                 this.perspective.zFar
                 );
-            let cameraMatrix = haruluya_webgl_utils.lookAt(this.camera.position, this.camera.target, this.camera.up);
-            let viewMatrix = haruluya_webgl_utils.inverse(cameraMatrix);
+            let cameraMatrix = HNWUEngine.lookAt(this.camera.position, this.camera.target, this.camera.up);
+            let viewMatrix = HNWUEngine.inverse(cameraMatrix);
 
-            let worldMatrix = haruluya_webgl_utils.getTransformMatrix(
-                    haruluya_webgl_utils.yRotation(0),this.transform);
-            worldMatrix = haruluya_webgl_utils.translate3d(worldMatrix,...this.objOffset);
+            let worldMatrix = HNWUEngine.getTransformMatrix(
+                    HNWUEngine.yRotation(0),this.transform);
+            worldMatrix = HNWUEngine.translate3d(worldMatrix,...this.objOffset);
 
             //render components.
             this.objComponentsInfo.forEach(({name,component,material})=>{
@@ -197,7 +174,7 @@ export default {
                 const sharedUniforms = {
                     "u_world": worldMatrix,
                     "u_view": viewMatrix,
-                    "u_lightDirection": haruluya_webgl_utils.normalize(this.sectionParams.lightDirection),
+                    "u_lightDirection": HNWUEngine.normalize(this.sectionParams.lightDirection),
                     "u_projection": projectionMatrix,
                     "u_viewWorldPosition":this.camera.position,
                 }
@@ -213,7 +190,8 @@ export default {
 
         },
         async getObjectData(){
-            let objLink = './marci/marci.obj'
+            let objLink = './models/car/obj/source/car/car.obj'
+            // let objLink = './models/marci/marci.obj'
             const response =  await fetch(objLink);  
             const text = await response.text();
             const obj = NanoObjParse.objectParse(text);

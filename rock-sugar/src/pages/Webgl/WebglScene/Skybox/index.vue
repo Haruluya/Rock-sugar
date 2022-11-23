@@ -44,13 +44,13 @@ export default {
             desData,
             perspective:{
                 aspect:0,
-                fieldOfViewRadians:  haruluya_webgl_utils.degToRad(60),
+                fieldOfViewRadians:  HNWUEngine.degToRad(60),
                 zNear: 1,
                 zFar: 2000,
             },
             transform:{
                 translation:[0, 0, -0],
-                rotation:[haruluya_webgl_utils.degToRad(180), haruluya_webgl_utils.degToRad(200), haruluya_webgl_utils.degToRad(0)],
+                rotation:[HNWUEngine.degToRad(180), HNWUEngine.degToRad(200), HNWUEngine.degToRad(0)],
                 scale:[1,1,1]
             },
             camera:{
@@ -128,27 +128,27 @@ export default {
         Render(){
             const gl = this.gl;
             // matrix.
-            let cameraMatrix = haruluya_webgl_utils.lookAt(this.camera.position, this.camera.target, this.camera.up);
-            let viewMatrix = haruluya_webgl_utils.inverse(cameraMatrix);
-            let projectionMatrix = haruluya_webgl_utils.perspective(
+            let cameraMatrix = HNWUEngine.lookAt(this.camera.position, this.camera.target, this.camera.up);
+            let viewMatrix = HNWUEngine.inverse(cameraMatrix);
+            let projectionMatrix = HNWUEngine.perspective(
                 this.perspective.fieldOfViewRadians, 
                 this.perspective.aspect, 
                 this.perspective.zNear, 
                 this.perspective.zFar
                 );
-            let worldMatrix = haruluya_webgl_utils.getTransformMatrix(
-                haruluya_webgl_utils.xRotation(0),
+            let worldMatrix = HNWUEngine.getTransformMatrix(
+                HNWUEngine.xRotation(0),
                 this.transform
             )
             //skybox matrix.
-            var viewDirectionMatrix = haruluya_webgl_utils.copy(viewMatrix);
+            var viewDirectionMatrix = HNWUEngine.copy(viewMatrix);
             viewDirectionMatrix[12] = 0;
             viewDirectionMatrix[13] = 0;
             viewDirectionMatrix[14] = 0;
-            var viewDirectionProjectionMatrix = haruluya_webgl_utils.multiply3d(
+            var viewDirectionProjectionMatrix = HNWUEngine.multiply3d(
                 projectionMatrix, viewDirectionMatrix);
             var viewDirectionProjectionInverseMatrix =
-                haruluya_webgl_utils.inverse(viewDirectionProjectionMatrix);
+                HNWUEngine.inverse(viewDirectionProjectionMatrix);
 
             //set uniform.
             this.page.addUniform("u_projection",projectionMatrix,"obj");

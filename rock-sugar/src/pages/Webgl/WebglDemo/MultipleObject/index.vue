@@ -110,8 +110,8 @@ export default {
     methods: {
         Render(){
         // transform。
-        var cameraAngleRadians = haruluya_webgl_utils.degToRad(0);
-        var fieldOfViewRadians = haruluya_webgl_utils.degToRad(60);
+        var cameraAngleRadians = HNWUEngine.degToRad(0);
+        var fieldOfViewRadians = HNWUEngine.degToRad(60);
         var cameraHeight = 50;
 
         var canvas = document.querySelector("#canvas");
@@ -130,23 +130,23 @@ export default {
         };
 
         // 创建buffer。
-        var bufferInfo = haruluya_webgl_utils.createBufferInfoFromArrays(gl, arrays);
+        var bufferInfo = HNWUEngine.createBufferInfoFromArrays(gl, arrays);
 
         // programinfo。
-        var programInfo = haruluya_webgl_utils.createProgramInfo(gl, ["vertex-shader", "fragment-shader"]);
+        var programInfo = HNWUEngine.createProgramInfo(gl, ["vertex-shader", "fragment-shader"]);
 
         // const全局变量。
         var uniformsThatAreTheSameForAllObjects = {
             u_lightWorldPos:         [-50, 30, 100],
-            u_viewInverse:           haruluya_webgl_utils.identity(),
+            u_viewInverse:           HNWUEngine.identity(),
             u_lightColor:            [1, 1, 1, 1],
         };
 
         // 可变全局变量。
         var uniformsThatAreComputedForEachObject = {
-            u_worldViewProjection:   haruluya_webgl_utils.identity(),
-            u_world:                 haruluya_webgl_utils.identity(),
-            u_worldInverseTranspose: haruluya_webgl_utils.identity(),
+            u_worldViewProjection:   HNWUEngine.identity(),
+            u_world:                 HNWUEngine.identity(),
+            u_worldInverseTranspose: HNWUEngine.identity(),
         };
 
         var rand = function(min, max) {
@@ -182,9 +182,9 @@ export default {
             createObjects();
             drawScene();
         }
-        haruluya_webgl_utils.setupSlider("amount", {value: amount, slide: updateAmount, min: 0, max: 300, step: 10, precision: 2});
-        haruluya_webgl_utils.setupColorInput("color1",updateColor1);
-        haruluya_webgl_utils.setupColorInput("color2",updateColor2);
+        HNWUEngine.setupSlider("amount", {value: amount, slide: updateAmount, min: 0, max: 300, step: 10, precision: 2});
+        HNWUEngine.setupColorInput("color1",updateColor1);
+        HNWUEngine.setupColorInput("color2",updateColor2);
 
 
         // 材质。
@@ -194,9 +194,9 @@ export default {
             // 循环创建。
             objects = [];
             var textures = [
-                haruluya_webgl_utils.makeStripeTexture(gl, { color1, color2, }),
-                haruluya_webgl_utils.makeCheckerTexture(gl,{ color1, color2, }),
-                haruluya_webgl_utils.makeCircleTexture(gl, { color1, color2, }),
+                HNWUEngine.makeStripeTexture(gl, { color1, color2, }),
+                HNWUEngine.makeCheckerTexture(gl,{ color1, color2, }),
+                HNWUEngine.makeCircleTexture(gl, { color1, color2, }),
             ];
             var numObjects = amount;
             var baseColor = rand(240);
@@ -222,42 +222,42 @@ export default {
 
         function drawScene(time) {
             time = time * 0.0001 + 5;
-            haruluya_webgl_utils.resizeCanvasToDisplaySize(gl.canvas);
+            HNWUEngine.resizeCanvasToDisplaySize(gl.canvas);
             gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
             var aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
             var projectionMatrix =
-                haruluya_webgl_utils.perspective(fieldOfViewRadians, aspect, 1, 2000);
+                HNWUEngine.perspective(fieldOfViewRadians, aspect, 1, 2000);
 
             var cameraPosition = [0, 0, 100];
             var target = [0, 0, 0];
             var up = [0, 1, 0];
-            var cameraMatrix = haruluya_webgl_utils.lookAt(cameraPosition, target, up, uniformsThatAreTheSameForAllObjects.u_viewInverse);
+            var cameraMatrix = HNWUEngine.lookAt(cameraPosition, target, up, uniformsThatAreTheSameForAllObjects.u_viewInverse);
 
-            var viewMatrix = haruluya_webgl_utils.inverse(cameraMatrix);
-            var viewProjectionMatrix = haruluya_webgl_utils.multiply3d(projectionMatrix, viewMatrix);
+            var viewMatrix = HNWUEngine.inverse(cameraMatrix);
+            var viewProjectionMatrix = HNWUEngine.multiply3d(projectionMatrix, viewMatrix);
             gl.useProgram(programInfo.program);
 
             // 设置buffer和属性。
-            haruluya_webgl_utils.setBuffersAndAttributes(gl, programInfo, bufferInfo);
+            HNWUEngine.setBuffersAndAttributes(gl, programInfo, bufferInfo);
 
             // 设置全局变量。
-            haruluya_webgl_utils.setUniforms(programInfo, uniformsThatAreTheSameForAllObjects);
+            HNWUEngine.setUniforms(programInfo, uniformsThatAreTheSameForAllObjects);
 
             // Draw objects
             objects.forEach(function(object) {
-                var worldMatrix = haruluya_webgl_utils.xRotation(object.xRotation * time);
-                worldMatrix = haruluya_webgl_utils.yRotate(worldMatrix, object.yRotation * time);
-                worldMatrix = haruluya_webgl_utils.translate3d(worldMatrix, 0, 0, object.radius);
+                var worldMatrix = HNWUEngine.xRotation(object.xRotation * time);
+                worldMatrix = HNWUEngine.yRotate(worldMatrix, object.yRotation * time);
+                worldMatrix = HNWUEngine.translate3d(worldMatrix, 0, 0, object.radius);
                 uniformsThatAreComputedForEachObject.u_world = worldMatrix;
 
-                haruluya_webgl_utils.multiply3d(viewProjectionMatrix, worldMatrix, uniformsThatAreComputedForEachObject.u_worldViewProjection);
-                haruluya_webgl_utils.transpose(haruluya_webgl_utils.inverse(worldMatrix), uniformsThatAreComputedForEachObject.u_worldInverseTranspose);
+                HNWUEngine.multiply3d(viewProjectionMatrix, worldMatrix, uniformsThatAreComputedForEachObject.u_worldViewProjection);
+                HNWUEngine.transpose(HNWUEngine.inverse(worldMatrix), uniformsThatAreComputedForEachObject.u_worldInverseTranspose);
 
                 // 设置材质。
-                haruluya_webgl_utils.setUniforms(programInfo, uniformsThatAreComputedForEachObject);
-                haruluya_webgl_utils.setUniforms(programInfo, object.materialUniforms);
+                HNWUEngine.setUniforms(programInfo, uniformsThatAreComputedForEachObject);
+                HNWUEngine.setUniforms(programInfo, object.materialUniforms);
                 gl.drawArrays(gl.TRIANGLES, 0, bufferInfo.numElements);
                 // gl.drawElements(gl.TRIANGLES, bufferInfo.numElements, gl.UNSIGNED_SHORT, 0);
             });

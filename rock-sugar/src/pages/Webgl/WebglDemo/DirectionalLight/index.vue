@@ -41,13 +41,13 @@ export default {
             desData,
             perspective:{
                 aspect:0,
-                fieldOfViewRadians:  haruluya_webgl_utils.degToRad(60),
+                fieldOfViewRadians:  HNWUEngine.degToRad(60),
                 zNear: 1,
                 zFar: 2000,
             },
             transform:{
                 translation:[100, 120, -20],
-                rotation:[haruluya_webgl_utils.degToRad(180), haruluya_webgl_utils.degToRad(200), haruluya_webgl_utils.degToRad(0)],
+                rotation:[HNWUEngine.degToRad(180), HNWUEngine.degToRad(200), HNWUEngine.degToRad(0)],
                 scale:[1,.7,.7]
             },
             camera:{
@@ -86,28 +86,28 @@ export default {
             gl.enable(gl.CULL_FACE);
             gl.enable(gl.DEPTH_TEST);
 
-            let projectionMatrix = haruluya_webgl_utils.perspective(
+            let projectionMatrix = HNWUEngine.perspective(
                 this.perspective.fieldOfViewRadians, 
                 this.perspective.aspect, 
                 this.perspective.zNear, 
                 this.perspective.zFar
                 );
-            let cameraMatrix = haruluya_webgl_utils.lookAt(this.camera.position, this.camera.target, this.camera.up);
-            let viewMatrix = haruluya_webgl_utils.inverse(cameraMatrix);
-            let viewProjectionMatrix = haruluya_webgl_utils.multiply3d(projectionMatrix, viewMatrix);
-            let worldMatrix = haruluya_webgl_utils.getTransformMatrix(
-                haruluya_webgl_utils.xRotation(0),
+            let cameraMatrix = HNWUEngine.lookAt(this.camera.position, this.camera.target, this.camera.up);
+            let viewMatrix = HNWUEngine.inverse(cameraMatrix);
+            let viewProjectionMatrix = HNWUEngine.multiply3d(projectionMatrix, viewMatrix);
+            let worldMatrix = HNWUEngine.getTransformMatrix(
+                HNWUEngine.xRotation(0),
                 this.transform
             )
 
             // normal transform.
-            let worldViewProjectionMatrix = haruluya_webgl_utils.multiply3d(viewProjectionMatrix, worldMatrix);
-            let worldInverseMatrix = haruluya_webgl_utils.inverse(worldMatrix);
-            let worldInverseTransposeMatrix = haruluya_webgl_utils.transpose(worldInverseMatrix);
+            let worldViewProjectionMatrix = HNWUEngine.multiply3d(viewProjectionMatrix, worldMatrix);
+            let worldInverseMatrix = HNWUEngine.inverse(worldMatrix);
+            let worldInverseTransposeMatrix = HNWUEngine.transpose(worldInverseMatrix);
 
             this.page.addUniform("u_worldViewProjection",worldViewProjectionMatrix);
             this.page.addUniform("u_worldInverseTranspose",worldInverseTransposeMatrix);
-            this.page.addUniform("u_reverseLightDirection",haruluya_webgl_utils.normalize(lightDir));
+            this.page.addUniform("u_reverseLightDirection",HNWUEngine.normalize(lightDir));
 
             this.page.glDraw({mode:gl.TRIANGLES,first:0,count:16*6})
         },

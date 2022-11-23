@@ -80,7 +80,7 @@ export default {
             uiSetting,
             transform:{
                 translation:[0,0, 0],
-                rotation:[haruluya_webgl_utils.degToRad(0), haruluya_webgl_utils.degToRad(0), haruluya_webgl_utils.degToRad(0)],
+                rotation:[HNWUEngine.degToRad(0), HNWUEngine.degToRad(0), HNWUEngine.degToRad(0)],
                 scale : [1, 1,1]
             },
             //vue watching data.
@@ -152,31 +152,31 @@ export default {
     },
     methods:{
         Init(){
-            const { gl, canvas } = haruluya_webgl_utils.initWebglContext("canvas");
+            const { gl, canvas } = HNWUEngine.initWebglContext("canvas");
             this.gl = gl;
             this.canvas = canvas;
-            this.program = haruluya_webgl_utils.createProgramFromScripts(gl, ["vertex-shader", "fragment-shader"]);
+            this.program = HNWUEngine.createProgramFromScripts(gl, ["vertex-shader", "fragment-shader"]);
             this.$emit("Init");
 
             // attributes.
             if (Object.getOwnPropertyNames(this.bufferData).length != 0){
-                this.bufferInfo = haruluya_webgl_utils.createBufferInfoFromArrays(gl, this.bufferData);
-                this.attribSetters  = haruluya_webgl_utils.createAttributeSetters(gl, this.program);
-                this.uniformSetters = haruluya_webgl_utils.createUniformSetters(gl, this.program);
+                this.bufferInfo = HNWUEngine.createBufferInfoFromArrays(gl, this.bufferData);
+                this.attribSetters  = HNWUEngine.createAttributeSetters(gl, this.program);
+                this.uniformSetters = HNWUEngine.createUniformSetters(gl, this.program);
                 this.Render();
             }
         },
         Render(){
             const gl = this.gl;
-            haruluya_webgl_utils.resizeCanvasToDisplaySize(gl.canvas);
+            HNWUEngine.resizeCanvasToDisplaySize(gl.canvas);
 
             gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
             gl.clear(gl.COLOR_BUFFER_BIT);
             gl.useProgram(this.program);
 
             this.$emit("Render");
-            haruluya_webgl_utils.setBuffersAndAttributes(gl, this.attribSetters, this.bufferInfo);
-            haruluya_webgl_utils.setUniforms(this.uniformSetters, this.uniformsData);
+            HNWUEngine.setBuffersAndAttributes(gl, this.attribSetters, this.bufferInfo);
+            HNWUEngine.setUniforms(this.uniformSetters, this.uniformsData);
             
             // gl.drawArrays(this.drawMode.mode, this.drawMode.first,this.drawMode.count);
             this.drawBufferInfo(gl,this.bufferInfo);
@@ -291,21 +291,21 @@ export default {
             }
         },
         caculateMVPMatrix(camera,perspective,transform){
-            let cameraMatrix = haruluya_webgl_utils.lookAt(camera.position, camera.target, camera.up);
-            let viewMatrix = haruluya_webgl_utils.inverse(cameraMatrix);
-            let projectionMatrix = haruluya_webgl_utils.perspective(
+            let cameraMatrix = HNWUEngine.lookAt(camera.position, camera.target, camera.up);
+            let viewMatrix = HNWUEngine.inverse(cameraMatrix);
+            let projectionMatrix = HNWUEngine.perspective(
                 perspective.fieldOfViewRadians, 
                 perspective.aspect, 
                 perspective.zNear, 
                 perspective.zFar
                 );
-            let viewProjectionMatrix = haruluya_webgl_utils.multiply3d(projectionMatrix, viewMatrix);
+            let viewProjectionMatrix = HNWUEngine.multiply3d(projectionMatrix, viewMatrix);
            
-            let worldMatrix = haruluya_webgl_utils.getTransformMatrix(
-                haruluya_webgl_utils.xRotation(0),
+            let worldMatrix = HNWUEngine.getTransformMatrix(
+                HNWUEngine.xRotation(0),
                 transform
             )
-            let worldViewProjectionMatrix = haruluya_webgl_utils.multiply3d(viewProjectionMatrix, worldMatrix);
+            let worldViewProjectionMatrix = HNWUEngine.multiply3d(viewProjectionMatrix, worldMatrix);
             return worldViewProjectionMatrix;
         }
 

@@ -112,7 +112,7 @@ export default {
 
         },
         Render(){
-            haruluya_webgl_utils.resizeCanvasToDisplaySize(this.getCanvas());
+            HNWUEngine.resizeCanvasToDisplaySize(this.getCanvas());
         },
         Destroy() {
             uiSetting.destroy();

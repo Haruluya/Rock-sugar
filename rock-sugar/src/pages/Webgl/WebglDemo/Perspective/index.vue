@@ -43,7 +43,7 @@ export default {
             sectionParams:{
                 transform:{
                     translation:[-150, 0, -360],
-                    rotation:[haruluya_webgl_utils.degToRad(190), haruluya_webgl_utils.degToRad(40), haruluya_webgl_utils.degToRad(320)],
+                    rotation:[HNWUEngine.degToRad(190), HNWUEngine.degToRad(40), HNWUEngine.degToRad(320)],
                     scale:[1,1,1]
                 },
                 fieldOfViewRadians:60,
@@ -72,13 +72,13 @@ export default {
             gl.enable(gl.DEPTH_TEST);
             const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
             let matrix =
-                haruluya_webgl_utils.perspective(
-                    haruluya_webgl_utils.degToRad(this.sectionParams.fieldOfViewRadians), 
+                HNWUEngine.perspective(
+                    HNWUEngine.degToRad(this.sectionParams.fieldOfViewRadians), 
                     aspect, 
                     this.sectionParams.zNear, 
                     this.sectionParams.zFar
                 );
-            matrix = haruluya_webgl_utils.getTransformMatrix(matrix,this.sectionParams.transform);
+            matrix = HNWUEngine.getTransformMatrix(matrix,this.sectionParams.transform);
             this.$refs.page.addUniform("u_matrix",matrix);
             this.$refs.page.glDraw({mode:gl.TRIANGLES,first:0,count:36})
         },

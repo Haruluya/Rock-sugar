@@ -68,10 +68,10 @@ export default {
             const gl = this.gl;
             // set matix.
             const sectionParams = this.sectionParams;
-            let matrix = haruluya_webgl_utils.projection2d(gl.canvas.clientWidth, gl.canvas.clientHeight);
-            matrix = haruluya_webgl_utils.translate2d(matrix, sectionParams.translation["x"], sectionParams.translation["y"]);
-            matrix = haruluya_webgl_utils.rotate2d(matrix, this.angleInRadians);
-            matrix = haruluya_webgl_utils.scale2d(matrix, sectionParams.scale["x"], sectionParams.scale["y"]);
+            let matrix = HNWUEngine.projection2d(gl.canvas.clientWidth, gl.canvas.clientHeight);
+            matrix = HNWUEngine.translate2d(matrix, sectionParams.translation["x"], sectionParams.translation["y"]);
+            matrix = HNWUEngine.rotate2d(matrix, this.angleInRadians);
+            matrix = HNWUEngine.scale2d(matrix, sectionParams.scale["x"], sectionParams.scale["y"]);
 
             this.$refs.page.addUniform("u_matrix",matrix);
             this.$refs.page.glDraw({mode:gl.TRIANGLES,first:0,count:3})

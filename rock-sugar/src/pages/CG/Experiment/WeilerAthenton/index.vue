@@ -101,7 +101,7 @@ export default {
             this.Render();
         },
         Render() {
-            haruluya_webgl_utils.resizeCanvasToDisplaySize(this.canvas);
+            HNWUEngine.resizeCanvasToDisplaySize(this.canvas);
             const ctx = this.ctx;
             const sectionParams = this.sectionParams;
             const gridx = parseInt(this.canvas.width / this.sectionParams.girdSize) - 1;

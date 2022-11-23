@@ -26,7 +26,7 @@ const desData = {
 
 
 
-import modelData from '_utils/outData/HeadData.js'
+// import modelData from '_utils/outData/HeadData.js'
 
 export default {
     name:'CameraPosition',
@@ -50,13 +50,13 @@ export default {
             attribSetters:null,
             transfrom:{
                 translation:[0, 0, 0],
-                rotation:[haruluya_webgl_utils.degToRad(0), haruluya_webgl_utils.degToRad(0), haruluya_webgl_utils.degToRad(0)],
+                rotation:[HNWUEngine.degToRad(0), HNWUEngine.degToRad(0), HNWUEngine.degToRad(0)],
                 scale : [1, 1, 1]
 
             },
             perspective:{
                 aspect:0,
-                fieldOfViewRadians:  haruluya_webgl_utils.degToRad(60),
+                fieldOfViewRadians:  HNWUEngine.degToRad(60),
                 zNear: 1,
                 zFar: 3000,
             },
@@ -102,15 +102,15 @@ export default {
             gl.enable(gl.DEPTH_TEST);
 
             //perspective.
-            let projectionMatrix = haruluya_webgl_utils.perspective(this.perspective.fieldOfViewRadians, 
+            let projectionMatrix = HNWUEngine.perspective(this.perspective.fieldOfViewRadians, 
                 this.perspective.aspect, 
                 this.perspective.zNear, 
                 this.perspective.zFar
             );
 
-            let cameraMatrix = haruluya_webgl_utils.lookAt(this.camera.cameraPosition, this.camera.cameraTarget, this.camera.up);
-            let viewMatrix = haruluya_webgl_utils.inverse(cameraMatrix);
-            let viewProjectionMatrix = haruluya_webgl_utils.multiply3d(projectionMatrix, viewMatrix);
+            let cameraMatrix = HNWUEngine.lookAt(this.camera.cameraPosition, this.camera.cameraTarget, this.camera.up);
+            let viewMatrix = HNWUEngine.inverse(cameraMatrix);
+            let viewProjectionMatrix = HNWUEngine.multiply3d(projectionMatrix, viewMatrix);
             
             
             // Draw circle。
@@ -122,10 +122,10 @@ export default {
                 for (let xx = 0; xx < across; ++xx) {
                     let u = xx / (across - 1);
                     let x = (u - .5) * across * 150;
-                    let matrix = haruluya_webgl_utils.lookAt([x, 0, z], this.sectionParams.target, this.camera.up);
-                    const MVP = haruluya_webgl_utils.multiply3d(viewProjectionMatrix, matrix);
+                    let matrix = HNWUEngine.lookAt([x, 0, z], this.sectionParams.target, this.camera.up);
+                    const MVP = HNWUEngine.multiply3d(viewProjectionMatrix, matrix);
                     this.uniformsData.u_matrix = MVP;
-                    haruluya_webgl_utils.setUniforms(this.uniformSetters, this.uniformsData);
+                    HNWUEngine.setUniforms(this.uniformSetters, this.uniformsData);
                     gl.drawArrays(gl.TRIANGLES, 0, this.numElements);
                 }
             }
@@ -133,9 +133,9 @@ export default {
 
         setPosition(){
             let positions = new Float32Array(modelData.positions);
-            let matrix = haruluya_webgl_utils.multiply3d(haruluya_webgl_utils.scaling3d(6, 6, 6), haruluya_webgl_utils.yRotation(Math.PI));
+            let matrix = HNWUEngine.multiply3d(HNWUEngine.scaling3d(6, 6, 6), HNWUEngine.yRotation(Math.PI));
             for (let ii = 0; ii < positions.length; ii += 3) {
-                let vector = haruluya_webgl_utils.vectorMultiply([positions[ii + 0], positions[ii + 1], positions[ii + 2], 1], matrix);
+                let vector = HNWUEngine.vectorMultiply([positions[ii + 0], positions[ii + 1], positions[ii + 2], 1], matrix);
                 positions[ii + 0] = vector[0];
                 positions[ii + 1] = vector[1];
                 positions[ii + 2] = vector[2];

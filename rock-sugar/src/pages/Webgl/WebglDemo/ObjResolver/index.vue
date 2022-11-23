@@ -38,13 +38,13 @@ export default {
             desData,
             perspective:{
                 aspect:0,
-                fieldOfViewRadians:  haruluya_webgl_utils.degToRad(60),
+                fieldOfViewRadians:  HNWUEngine.degToRad(60),
                 zNear: 1,
                 zFar: 1000,
             },
             transform:{
                 translation:[0, 0, 0],
-                rotation:[haruluya_webgl_utils.degToRad(0), haruluya_webgl_utils.degToRad(0), haruluya_webgl_utils.degToRad(0)],
+                rotation:[HNWUEngine.degToRad(0), HNWUEngine.degToRad(0), HNWUEngine.degToRad(0)],
                 scale:[1,1,1]
             },
             camera:{
@@ -95,19 +95,19 @@ export default {
             gl.enable(gl.DEPTH_TEST);
             gl.enable(gl.CULL_FACE);
 
-            let projectionMatrix = haruluya_webgl_utils.perspective(
+            let projectionMatrix = HNWUEngine.perspective(
                 this.perspective.fieldOfViewRadians, 
                 this.perspective.aspect, 
                 this.perspective.zNear, 
                 this.perspective.zFar
                 );
-            let cameraMatrix = haruluya_webgl_utils.lookAt(this.camera.position, this.camera.target, this.camera.up);
-            let viewMatrix = haruluya_webgl_utils.inverse(cameraMatrix);
+            let cameraMatrix = HNWUEngine.lookAt(this.camera.position, this.camera.target, this.camera.up);
+            let viewMatrix = HNWUEngine.inverse(cameraMatrix);
 
-            let worldMatrix = haruluya_webgl_utils.getTransformMatrix(
-                    haruluya_webgl_utils.yRotation(0),this.transform);
+            let worldMatrix = HNWUEngine.getTransformMatrix(
+                    HNWUEngine.yRotation(0),this.transform);
             this.page.addUniform("u_view",viewMatrix);
-            this.page.addUniform("u_lightDirection",haruluya_webgl_utils.normalize([-1,3,5]));
+            this.page.addUniform("u_lightDirection",HNWUEngine.normalize([-1,3,5]));
             this.page.addUniform("u_projection",projectionMatrix);
 
             this.page.addUniform("u_diffuse",[1, 1, 1, 1]);

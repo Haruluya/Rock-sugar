@@ -54,17 +54,17 @@ export default {
         this.$nextTick(()=>{
             const widget = this.prop_ui_data;
             if (widget.type === "slider"){
-                haruluya_webgl_utils.setupSlider(
+                HNWUEngine.setupSlider(
                     this.$refs.widget, 
                     { value: widget.value, slide: widget.callback, max: widget.max, min: widget.min }
                 );
             }else if (widget.type === "color"){
-                haruluya_webgl_utils.setupColorInput(
+                HNWUEngine.setupColorInput(
                     this.$refs.widget,
                     {callback:widget.callback}
                 )
             }else if (widget.type === "slider-vector"){
-                haruluya_webgl_utils.setupSliderVector(
+                HNWUEngine.setupSliderVector(
                     this.$refs.widget,
                     {callback:widget.callback}
                 )

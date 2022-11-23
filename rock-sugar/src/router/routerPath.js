@@ -105,6 +105,14 @@ export const routes = [
         component: () => import('_pages/Webgl/WebglScene/Skybox'),
     },
     {
+        path: '/cg/webgl_scene/Skinning',
+        name: 'Skinning',
+        component: () => import('_pages/Webgl/WebglScene/Skinning'),
+    },
+
+
+
+    {
         path: '/cg/webgl_render',
         name: 'WebglRender',
         component: () => import('_pages/Webgl/WebglRender/Render'),

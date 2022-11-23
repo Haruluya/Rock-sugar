@@ -45,7 +45,7 @@ export default {
             sectionParams:{
                 transform:{
                     translation:[120, 180, 0],
-                    rotation:[haruluya_webgl_utils.degToRad(40), haruluya_webgl_utils.degToRad(25), haruluya_webgl_utils.degToRad(325)],
+                    rotation:[HNWUEngine.degToRad(40), HNWUEngine.degToRad(25), HNWUEngine.degToRad(325)],
                     scale : [0.8, 0.8, 1]
                 }
             },
@@ -67,8 +67,8 @@ export default {
             gl.enable(gl.CULL_FACE);
             // Turn on z-buffer.
             gl.enable(gl.DEPTH_TEST);
-            let matrix = haruluya_webgl_utils.projection3d(gl.canvas.clientWidth, gl.canvas.clientHeight, 400);
-            matrix = haruluya_webgl_utils.getTransformMatrix(matrix,this.sectionParams.transform);
+            let matrix = HNWUEngine.projection3d(gl.canvas.clientWidth, gl.canvas.clientHeight, 400);
+            matrix = HNWUEngine.getTransformMatrix(matrix,this.sectionParams.transform);
             this.$refs.page.addUniform("u_matrix",matrix);
             this.$refs.page.glDraw({mode:gl.TRIANGLES,first:0,count:36})
         },

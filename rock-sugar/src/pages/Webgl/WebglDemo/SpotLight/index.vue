@@ -44,13 +44,13 @@ export default {
             desData,
             perspective:{
                 aspect:0,
-                fieldOfViewRadians:  haruluya_webgl_utils.degToRad(60),
+                fieldOfViewRadians:  HNWUEngine.degToRad(60),
                 zNear: 1,
                 zFar: 2000,
             },
             transform:{
                 translation:[0, 0, 0],
-                rotation:[haruluya_webgl_utils.degToRad(190), haruluya_webgl_utils.degToRad(200), haruluya_webgl_utils.degToRad(360)],
+                rotation:[HNWUEngine.degToRad(190), HNWUEngine.degToRad(200), HNWUEngine.degToRad(360)],
                 scale : [1, 0.8, 1]
             },
             camera:{
@@ -88,9 +88,9 @@ export default {
                 this.sectionParams.lightPosition.z
             ]
 
-            var lmat = haruluya_webgl_utils.lookAt(lightPosition, this.camera.target, this.camera.up);
-            lmat = haruluya_webgl_utils.multiply3d(haruluya_webgl_utils.xRotation(this.sectionParams.lightRotation.x), lmat);
-            lmat = haruluya_webgl_utils.multiply3d(haruluya_webgl_utils.yRotation(this.sectionParams.lightRotation.y), lmat);
+            var lmat = HNWUEngine.lookAt(lightPosition, this.camera.target, this.camera.up);
+            lmat = HNWUEngine.multiply3d(HNWUEngine.xRotation(this.sectionParams.lightRotation.x), lmat);
+            lmat = HNWUEngine.multiply3d(HNWUEngine.yRotation(this.sectionParams.lightRotation.y), lmat);
             this.sectionParams.lightDirection = [-lmat[8], -lmat[9],-lmat[10]];
             
             this.$refs.page.setTransform(this.transform);
@@ -109,28 +109,28 @@ export default {
             gl.enable(gl.CULL_FACE);
             gl.enable(gl.DEPTH_TEST);
 
-            let cameraMatrix = haruluya_webgl_utils.lookAt(
+            let cameraMatrix = HNWUEngine.lookAt(
                 this.camera.position, 
                 this.camera.target, 
                 this.camera.up
                 );
-            let viewMatrix = haruluya_webgl_utils.inverse(cameraMatrix);
-            let projectionMatrix = haruluya_webgl_utils.perspective(
+            let viewMatrix = HNWUEngine.inverse(cameraMatrix);
+            let projectionMatrix = HNWUEngine.perspective(
                 this.perspective.fieldOfViewRadians, 
                 this.perspective.aspect, 
                 this.perspective.zNear, 
                 this.perspective.zFar
                 );
-            let viewProjectionMatrix = haruluya_webgl_utils.multiply3d(projectionMatrix, viewMatrix);
+            let viewProjectionMatrix = HNWUEngine.multiply3d(projectionMatrix, viewMatrix);
 
    
-            let worldMatrix = haruluya_webgl_utils.getTransformMatrix(
-                    haruluya_webgl_utils.yRotation(0),this.transform);
+            let worldMatrix = HNWUEngine.getTransformMatrix(
+                    HNWUEngine.yRotation(0),this.transform);
 
             // Multiply the matrices.
-            let worldViewProjectionMatrix = haruluya_webgl_utils.multiply3d(viewProjectionMatrix, worldMatrix);
-            let worldInverseMatrix = haruluya_webgl_utils.inverse(worldMatrix);
-            let worldInverseTransposeMatrix = haruluya_webgl_utils.transpose(worldInverseMatrix);
+            let worldViewProjectionMatrix = HNWUEngine.multiply3d(viewProjectionMatrix, worldMatrix);
+            let worldInverseMatrix = HNWUEngine.inverse(worldMatrix);
+            let worldInverseTransposeMatrix = HNWUEngine.transpose(worldInverseMatrix);
 
             this.$refs.page.addUniform("u_worldViewProjection",worldViewProjectionMatrix);
             this.$refs.page.addUniform("u_worldInverseTranspose",worldInverseTransposeMatrix);
@@ -139,29 +139,29 @@ export default {
             this.$refs.page.addUniform("u_viewWorldPosition",this.camera.position);
             this.$refs.page.addUniform("u_shininess",this.sectionParams.shininess);
             this.$refs.page.addUniform("u_lightDirection",this.sectionParams.lightDirection);
-            this.$refs.page.addUniform("u_innerLimit",Math.cos(haruluya_webgl_utils.degToRad(this.sectionParams.innerLimit)));
-            this.$refs.page.addUniform("u_outerLimit",Math.cos(haruluya_webgl_utils.degToRad(this.sectionParams.outerLimit)));
+            this.$refs.page.addUniform("u_innerLimit",Math.cos(HNWUEngine.degToRad(this.sectionParams.innerLimit)));
+            this.$refs.page.addUniform("u_outerLimit",Math.cos(HNWUEngine.degToRad(this.sectionParams.outerLimit)));
 
             //update lightDirection.
-            var lmat = haruluya_webgl_utils.lookAt(
+            var lmat = HNWUEngine.lookAt(
                 lightPosition, 
                 this.camera.target, 
                 this.camera.up
                 );
 
-            lmat = haruluya_webgl_utils.multiply3d(haruluya_webgl_utils.xRotation(this.sectionParams.lightRotation.x), lmat);
-            lmat = haruluya_webgl_utils.multiply3d(haruluya_webgl_utils.yRotation(this.sectionParams.lightRotation.y), lmat);
+            lmat = HNWUEngine.multiply3d(HNWUEngine.xRotation(this.sectionParams.lightRotation.x), lmat);
+            lmat = HNWUEngine.multiply3d(HNWUEngine.yRotation(this.sectionParams.lightRotation.y), lmat);
             this.sectionParams.lightDirection = [-lmat[8], -lmat[9],-lmat[10]];
 
             this.$refs.page.glDraw({mode:gl.TRIANGLES,first:0,count:16*6})
 
         },
         setPosition(){
-            let matrix = haruluya_webgl_utils.xRotation(Math.PI);
-            matrix = haruluya_webgl_utils.translate3d(matrix, -50, -75, -15);
+            let matrix = HNWUEngine.xRotation(Math.PI);
+            matrix = HNWUEngine.translate3d(matrix, -50, -75, -15);
 
             for (let ii = 0; ii < positions.length; ii += 3) {
-                let vector = haruluya_webgl_utils.transformPoint(matrix, [positions[ii + 0], positions[ii + 1], positions[ii + 2], 1]);
+                let vector = HNWUEngine.transformPoint(matrix, [positions[ii + 0], positions[ii + 1], positions[ii + 2], 1]);
                 positions[ii + 0] = vector[0];
                 positions[ii + 1] = vector[1];
                 positions[ii + 2] = vector[2];
