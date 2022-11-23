@@ -172,18 +172,15 @@ const drawGrid = (component) => {
 
 // draw line in grid by Bresenham.
 const drawPointInGrid = (component, gridx, gridy, color) => {
-
     const girdSize = component.sectionParams.girdSize;
     // cant overflow.
     if (gridx > parseInt(component.canvas.width / girdSize) - 2 ||
         gridy > parseInt(component.canvas.height) / girdSize - 2)
         return;
-
     const rectx = gridx * girdSize;
     const recty = gridy * girdSize;
     component.ctx.fillStyle = color;
     component.ctx.fillRect(rectx, recty, girdSize, girdSize);
-
 }
 
 const drawLine = (ctx, beginPoint, endPoint, color) => {

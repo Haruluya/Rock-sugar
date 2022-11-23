@@ -87,9 +87,6 @@ export default {
                 title: "grid", content: "The number of cells in the x direction: " + gridx + "\nThe number of cells in the y direction: " + gridy,
             }];
 
-            ctx.fillStyle = sectionParams.color;
-
-
             // EdgeTablePolygon.
             // check amount of point.
             const points = new Polygon(this.sectionParams.points);
