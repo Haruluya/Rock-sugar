@@ -936,6 +936,10 @@
     return dst;
   }
 
+  function vec3Multiply(v,k){
+    return [v[0]*k,v[1]*k,v[2]*k];
+  }
+
   // 创建lookat变换矩阵。 
   function lookAt(cameraPosition, target, up, dst) {
     dst = dst || new MatType(16);
@@ -1468,6 +1472,19 @@
     dst[1] = a[1] + b[1];
     dst[2] = a[2] + b[2];
     return dst;
+  }
+
+  function vec3add(a,b){
+    a[0] += b[0];
+    a[1] += b[1];
+    a[2] += b[2];
+  }
+
+  
+  function vec3sub(a,b){
+    a[0] -= b[0];
+    a[1] -= b[1];
+    a[2] -= b[2];
   }
 
   function length(v) {
@@ -2070,6 +2087,10 @@
     translate2d: translate2d,
     scale2d: scale2d,
     rotate2d: rotate2d,
+    cross:cross,
+    vec3add,
+    vec3sub,
+    vec3Multiply:vec3Multiply,
     setupSlider: setupSlider,
     createProgramFromScripts: createProgramFromScripts,
     createShaderFromScript: createShaderFromScript,

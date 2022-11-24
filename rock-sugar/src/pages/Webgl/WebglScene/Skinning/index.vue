@@ -85,7 +85,7 @@ export default {
             this.page = this.$refs.page;
             this.gl = this.page.getGL();
             this.gltfData = await this.loadGLTF(
-                './models/pythonRe/gltf/scene.gltf'
+                'https://webglfundamentals.org/webgl/resources/models/killer_whale/whale.CYCLES.gltf'
                 );
             //set aspect.
             this.perspective.aspect = this.gl.canvas.clientWidth / this.gl.canvas.clientHeight;

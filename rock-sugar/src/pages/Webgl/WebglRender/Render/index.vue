@@ -190,7 +190,7 @@ export default {
 
         },
         async getObjectData(){
-            let objLink = './models/car/obj/source/car/car.obj'
+            let objLink = './head.obj'
             // let objLink = './models/marci/marci.obj'
             const response =  await fetch(objLink);  
             const text = await response.text();

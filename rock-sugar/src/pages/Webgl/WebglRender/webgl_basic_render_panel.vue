@@ -1,10 +1,10 @@
 <template>
     <div class="pageContainer">
-        <div class="webglContainer" id="canvasSlot">
-            <nano_canvas ref="nanoCanvas"
-                @mousedown="viewer"
-                @mousewheel="viewer"
+        <div class="webglContainer" id="canvasSlot" >
+            <div ref="nanoCanvasContainer">
+                <nano_canvas ref="nanoCanvas"
                 />
+            </div>
         </div>
         <div class="desPanel">
             <nano_webgl_des_panel
@@ -65,6 +65,7 @@ const slotID = {
     CORE_SLOT_TOP_ID : 4
 }
 import AnimEvent from "_plugins/anim-event/anim-event.min.js"
+import FirstPersonCamera from '../HNWUEngine/components/FirstPersonCamera.js'
 import uiSetting from "./ui-setting"
 export default {
 
@@ -73,16 +74,11 @@ export default {
         return {
             gl:null,
             canvas:null,
-            //{gl-setter.
-
-            //     bufferInfo:null,
-            //     attribSetters:null,
-            //     uniformSetters:null,
-            // }
             bufferData:{},
             uniformsData:{},
             uiSetting,
             perspective:null,
+            cameraComponent:null,
             camera:null,
             transform:{
                 translation:[0,0, 0],
@@ -109,7 +105,8 @@ export default {
             //skybox.
             skyboxTexture:null,
 
-            componentList:{}
+            componentList:{},
+            deltaTime:0,
         }
     },
     mounted(){
@@ -160,7 +157,6 @@ export default {
             this.gl = gl;
             this.canvas = canvas;
             this.$emit("Init");
-
             Object.entries(this.componentList).forEach((value) => {
                 let bufferInfo = HNWUEngine.createBufferInfoFromArrays(this.gl, this.bufferData[value[0]]);
                 let attribSetters  = HNWUEngine.createAttributeSetters(this.gl, value[1].program);
@@ -172,6 +168,7 @@ export default {
             this.Render();
         },
         Render(){
+            let beginTime = Date.now();
             const gl = this.gl;
             HNWUEngine.resizeCanvasToDisplaySize(gl.canvas);
 
@@ -188,7 +185,8 @@ export default {
             if(this.debugLog.length === 0){
                 this.debugLog("None","No thing to debug.")
             }
-            
+            this.deltaTime = (Date.now() - beginTime)/1000;
+            return this.deltaTime;
         },
         Destroy() {
             uiSetting.destroy();
@@ -251,7 +249,9 @@ export default {
         set3DViewer(perspective,camera,transform){
             this.perspective = perspective;
             this.camera = camera;
-            this.transform = transform
+            this.transform = transform;
+            this.cameraComponent = new FirstPersonCamera(this.$refs.nanoCanvasContainer,this.camera,this.Render,this.deltaTime);
+            this.cameraComponent.load();
         },
         caculateMVPMatrix(perspective,camera,transform){
             let cameraMatrix = HNWUEngine.lookAt(camera.position, camera.target, camera.up);
@@ -391,31 +391,7 @@ export default {
             this.setSetters("skybox");
             this.glDraw({mode:gl.TRIANGLES,first:0,count:6*6})
         },
-        viewer(e){
-          if (e.type === "mousedown"){
-            this.mousePosition.x = e.clientX;
-           this.mousePosition.y = e.clientY;
-           document.onmousemove = AnimEvent.add((e)=>{
 
-                const offsetX = e.clientX - this.mousePosition.x;
-                const offsetY = e.clientY - this.mousePosition.y;
-                
-                this.transform.rotation[1] += offsetX/1000;
-                // this.transform.rotation[0] += offsetY/1000;
-                this.Render()
-
-            });
-            document.onmouseup = () => {
-                document.onmousemove = null;
-            };
-          }else if (e.type === "mousewheel"){
-            e.preventDefault();
-            for (let i = 0; i < this.transform.scale.length;i++){
-                this.transform.scale[i] -= e.deltaY > 0? 0.15 : -0.15;
-            }
-            this.Render()
-            }
-        },
 
     },
     unmounted(){
