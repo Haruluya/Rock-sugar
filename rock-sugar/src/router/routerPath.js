@@ -16,7 +16,7 @@ export const routes = [
     {
         path: '/cg',
         name: 'cg_nav',
-        component: () => import('../pages/CG/Nav'),
+        component: () => import('../pages/CG'),
         meta:{
         },
     },
@@ -111,17 +111,18 @@ export const routes = [
     },
 
 
+    {
+        path: '/nanoshadertoy/renderer',
+        name: 'NanoShadertoy',
+        component: () => import('_pages/NanoShadertoy/Renderer'),
+    },
 
     {
         path: '/cg/webgl_render',
         name: 'WebglRender',
         component: () => import('_pages/Webgl/WebglRender/Render'),
     },
-    {
-        path: '/CompTest',
-        name: 'CompTest',
-        component: () => import('_pages/Test/CompTest'),
-    },
+
     {
         path: '/cg/experiment/3DHouse',
         name: '3DHouse',

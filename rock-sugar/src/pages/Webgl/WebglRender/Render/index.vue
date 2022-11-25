@@ -98,7 +98,7 @@ export default {
 
             //offset.
             this.objOffset = this.page.setObjectToSceenCenter(data.geometries);
-            console.log(data,"datass")
+
             //get object info.
             this.objComponentsInfo = data.geometries.map(({material,data,object}) => {
                 const componentName = object+material;
@@ -149,6 +149,8 @@ export default {
             if(!this.objectData){
                 return;
             }
+            console.log(this.objectData,"objectData");
+
             const gl = this.gl;
 
             gl.enable(gl.DEPTH_TEST);
@@ -190,8 +192,8 @@ export default {
 
         },
         async getObjectData(){
-            let objLink = './head.obj'
-            // let objLink = './models/marci/marci.obj'
+            let objLink = './models/lightModel/lightModel.obj'
+
             const response =  await fetch(objLink);  
             const text = await response.text();
             const obj = NanoObjParse.objectParse(text);

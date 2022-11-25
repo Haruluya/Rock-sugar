@@ -63,6 +63,12 @@ const navData = [
             {name:"WebglBasicRenderer", link:"/cg/webgl_render"},
             ]
     },
+    {
+        title:"NanoShadertoy",
+        content:[
+            {name:"NanoShadertoy", link:"/nanoshadertoy/renderer"},
+            ]
+    },
 ]
 
 export default navData;

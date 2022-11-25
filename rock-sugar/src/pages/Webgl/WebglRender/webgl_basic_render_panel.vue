@@ -3,6 +3,8 @@
         <div class="webglContainer" id="canvasSlot" >
             <div ref="nanoCanvasContainer">
                 <nano_canvas ref="nanoCanvas"
+                @mousedown="viewer"
+                @mousewheel="viewer"
                 />
             </div>
         </div>
@@ -250,8 +252,34 @@ export default {
             this.perspective = perspective;
             this.camera = camera;
             this.transform = transform;
-            this.cameraComponent = new FirstPersonCamera(this.$refs.nanoCanvasContainer,this.camera,this.Render,this.deltaTime);
-            this.cameraComponent.load();
+            // this.cameraComponent = new FirstPersonCamera(this.$refs.nanoCanvasContainer,this.camera,this.Render,this.deltaTime);
+            // this.cameraComponent.load();
+            
+        },
+        viewer(e){
+            if (e.type === "mousedown"){
+            this.mousePosition.x = e.clientX;
+           this.mousePosition.y = e.clientY;
+           document.onmousemove = AnimEvent.add((e)=>{
+
+                const offsetX = e.clientX - this.mousePosition.x;
+                const offsetY = e.clientY - this.mousePosition.y;
+                
+                this.transform.rotation[1] += offsetX/1000;
+                // this.transform.rotation[0] += offsetY/1000;
+                this.Render()
+
+            });
+            document.onmouseup = () => {
+                document.onmousemove = null;
+            };
+          }else if (e.type === "mousewheel"){
+            e.preventDefault();
+            for (let i = 0; i < this.transform.scale.length;i++){
+                this.transform.scale[i] -= e.deltaY > 0? 0.15 : -0.15;
+            }
+            this.Render()
+            }
         },
         caculateMVPMatrix(perspective,camera,transform){
             let cameraMatrix = HNWUEngine.lookAt(camera.position, camera.target, camera.up);
