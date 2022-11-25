@@ -38,7 +38,7 @@ export default {
                 aspect:0,
                 fieldOfViewRadians:  HNWUEngine.degToRad(60),
                 zNear: 1,
-                zFar: 1000,
+                zFar: 10000,
             },
             transform:{
                 translation:[0, 0, 0],
@@ -47,7 +47,7 @@ export default {
             },
             camera:{
                 target:[0, 0, 0],
-                position:[0, 0, 3],
+                position:[0, 0, 1],
                 up:[0,1,0]
             },
             sectionParams:{

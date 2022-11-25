@@ -44,7 +44,7 @@ export default {
             desData,
             perspective:{
                 aspect:0,
-                fieldOfViewRadians:  HNWUEngine.degToRad(60),
+                fieldOfViewRadians: HNWUEngine.degToRad(60),
                 zNear: 1,
                 zFar: 2000,
             },
