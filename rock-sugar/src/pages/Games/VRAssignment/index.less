@@ -1,0 +1,138 @@
+
+
+
+.pageContainer{
+
+    margin: 0;
+    // background-image: url("https://images.contentstack.io/v3/assets/blt731acb42bb3d1659/bltf930a7a2b83fff60/5e17887df980a27e5b76ac2f/teamfighttactics.jpg");
+    background-position: -2vw 1vw;
+    background-size: cover;
+    padding-bottom: 20vw;
+}
+
+
+.webglContainer{
+    position: relative;
+    z-index: 1;
+    width: 75%;
+    height: 50vw;
+    padding-top: .1vw;
+    margin: 0 auto;
+}
+// .scaleScreen{
+//     z-index: 9999;
+//     .nanoCanvas{
+//         position: fixed;
+//         left: 10%;
+//         top:  0;
+//         width: 80vw;
+//         height: 90vh;
+//     }
+//      .nanoCanvas::before{
+//         content: '';
+//         position: fixed;
+//         z-index: inherit;
+//         background-color: rgba(0, 0, 0, 0.753);
+//         top: -100%;
+//         left: -100%;
+//         right: -100%;
+//         bottom: -100%;
+//     }
+    
+// }
+
+.desPanel{
+    width: 80vw;
+    height: 20vw;
+    position: relative;
+    margin: 0 auto;
+}
+
+
+.sidePanel{
+    .mainPanel{
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 2;
+        height: 25vw;
+        width: 18vw;
+    }
+    .debugPanel{
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 2;
+        height: 20vw;
+        width: 18vw;
+    }
+}
+
+.debugPanelTransition-enter-active{
+    transition: opacity 1s;
+}
+.debugPanelTransition-enter{
+    opacity: 0;
+}
+.debugPanelTransition-leave-active{
+transition: opacity 1s;
+}
+.debugPanelTransition-leave-to{
+opacity: 0;
+}
+
+
+
+@media @min992 {
+    .webglContainer {
+        width: 80%;
+        padding: 5vw;
+        padding-top: 15vw;
+        min-height: 350px;
+        height: 45vh;
+    }
+    .desPanel{
+        margin-top: 12vh;
+        height: 50vh;
+    }
+    .sidePanel{
+        display: none;
+    }
+}
+
+
+
+
+
+
+
+
+
+@keyframes canvasBorderShow {
+    from {
+        border-image-source: radial-gradient(0% 0%, transparent 0px, transparent 100%, cyan 100%);
+    }
+    to {
+        border-image-source: radial-gradient(70% 60%, transparent 0px, transparent 100%, cyan 100%);
+    }
+}
+
+@keyframes canvasClipShow{
+    from {
+        clip-path: polygon(50% 25%,75% 50%,50% 75%, 25% 50%);
+    }
+    to{
+        clip-path: polygon(120% -20%, 120% 120%, -20% 120%, -20% -20%);
+    }
+}
+
+@keyframes uiClipBorderShow{
+    from {
+        clip-path: inset(0 round 0 0%);
+    }
+    to {
+        clip-path: inset(0 round 0 50%);
+    }
+}
+
+

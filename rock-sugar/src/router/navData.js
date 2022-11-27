@@ -69,6 +69,12 @@ const navData = [
             {name:"NanoShadertoy", link:"/nanoshadertoy/renderer"},
             ]
     },
+    {
+        title:"Games",
+        content:[
+            {name:"VRAssignment", link:"/games/vrassignment"},
+            ]
+    },
 ]
 
 export default navData;

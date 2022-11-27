@@ -50,7 +50,7 @@ export default {
             },
             transform:{
                 translation:[0, 0, -0],
-                rotation:[HNWUEngine.degToRad(180), HNWUEngine.degToRad(200), HNWUEngine.degToRad(0)],
+                rotation:[HNWUEngine.degToRad(0), HNWUEngine.degToRad(0), HNWUEngine.degToRad(0)],
                 scale:[1,1,1]
             },
             camera:{
@@ -117,7 +117,7 @@ export default {
                     gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.sectionParams.texture);
                     gl.texImage2D(target, level, internalFormat, format, type, image);
                     gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
-                    this.page.Render();
+                    // this.page.Render();
                 });
             });
 

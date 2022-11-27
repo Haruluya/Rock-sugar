@@ -100,7 +100,7 @@
 </template>
 <script>
 
-const chroma = require('_utils/chroma.min');
+// const chroma = require('_utils/chroma.min');
 
 export default {
     name:"MultipleObject",

@@ -388,6 +388,8 @@ export default {
                 const offsetY = e.clientY - this.mousePosition.y;
                 
                 this.transform.rotation[1] += offsetX/1000;
+                this.camera.position[0] += offsetX/1000
+                this.camera.position[1] += offsetY/1000
                 // this.transform.rotation[0] += offsetY/1000;
                 this.Render()
 

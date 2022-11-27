@@ -192,7 +192,7 @@ export default {
 
         },
         async getObjectData(){
-            let objLink = './models/lightModel/lightModel.obj'
+            let objLink = './head.obj'
 
             const response =  await fetch(objLink);  
             const text = await response.text();

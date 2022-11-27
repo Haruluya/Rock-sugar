@@ -28,6 +28,11 @@ export const routes = [
         },
     },
     {
+        path: '/games/vrassignment',
+        name: 'VRAssignment',
+        component: () => import('../pages/Games/VRAssignment'),
+    },
+    {
         path: '/cg/webgl_demo/Triangle',
         name: 'Triangle',
         component: () => import('_pages/Webgl/WebglDemo/Triangle'),

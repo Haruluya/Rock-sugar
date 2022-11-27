@@ -70,12 +70,12 @@
     }
   }
 
-
+  let gl = null;
 
   // 获取webgl上下文。
   function initWebglContext(canvasId) {
     var canvas = document.querySelector("#" + canvasId);
-    var gl = canvas.getContext("webgl");
+    gl = canvas.getContext("webgl");
     if (!gl) {
       console.log("GET WBEGL CONTEXT FAILD!!!");
       return;
@@ -924,7 +924,7 @@
     ];
   }
 
-  // 向量点积。
+  // 矩阵乘
   function vectorMultiply(v, m) {
     var dst = [];
     for (var i = 0; i < 4; ++i) {
@@ -1033,7 +1033,7 @@
     for (const uniforms of values) {
       Object.keys(uniforms).forEach(function (name) {
         const setter = setters[name];
-        console.log(name, uniforms, setter, "per uniforms");
+        // console.log(name, uniforms, setter, "per uniforms");
         if (setter) {
           setter(uniforms[name]);
         }
@@ -1202,7 +1202,7 @@
           type: getGLTypeForTypedArray(gl, array),
           normalize: getNormalizationForTypedArray(array),
         };
-        console.log(attribs[attribName]);
+        // console.log(attribs[attribName]);
       }
     });
     return attribs;
@@ -1297,7 +1297,6 @@
       }
       if (type === gl.FLOAT_VEC3) {
         return function (v) {
-          console.log(v)
           gl.uniform3fv(location, v);
         };
       }
@@ -2081,6 +2080,28 @@
     return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2] 
   }
 
+  function create1PixelTexture(gl, pixel){
+    const texture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
+                    new Uint8Array(pixel));
+    return texture;
+}
+
+
+  function getDefaultMaterial(){
+    return {
+      diffuse: [1, 1, 1],
+      diffuseMap: create1PixelTexture(gl, [127, 127, 255, 0]),
+      normalMap:  create1PixelTexture(gl, [127, 127, 255, 0]),
+      ambient: [0, 0, 0],
+      specular: [0, 0, 0],
+      specularMap: create1PixelTexture(gl, [255, 255, 255, 255]),
+      shininess: 400,
+      opacity: 1,
+    }
+  }
+
 
   return {
     initWebglContext: initWebglContext,
@@ -2150,7 +2171,10 @@
     decompose,
     compose,
     determinate,
-    quatFromRotationMatrix
+    quatFromRotationMatrix,
+
+
+    getDefaultMaterial,
   }
 
 
