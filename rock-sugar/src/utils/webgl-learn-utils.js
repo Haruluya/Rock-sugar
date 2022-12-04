@@ -70,12 +70,25 @@
     }
   }
 
-  let gl = null;
 
   // 获取webgl上下文。
   function initWebglContext(canvasId) {
     var canvas = document.querySelector("#" + canvasId);
-    gl = canvas.getContext("webgl");
+    const gl = canvas.getContext("webgl");
+    if (!gl) {
+      console.log("GET WBEGL CONTEXT FAILD!!!");
+      return;
+    }
+
+    return {
+      gl,
+      canvas
+    };
+
+  }
+  function initWebgl2Context(canvasId) {
+    var canvas = document.querySelector("#" + canvasId);
+    gl = canvas.getContext("webgl2");
     if (!gl) {
       console.log("GET WBEGL CONTEXT FAILD!!!");
       return;
@@ -86,6 +99,7 @@
     };
 
   }
+  
 
 
   // 加载着色器。
@@ -2089,11 +2103,11 @@
 }
 
 
-  function getDefaultMaterial(){
+  function getDefaultMaterial(gl){
     return {
       diffuse: [1, 1, 1],
-      diffuseMap: create1PixelTexture(gl, [127, 127, 255, 0]),
-      normalMap:  create1PixelTexture(gl, [127, 127, 255, 0]),
+      diffuseMap: create1PixelTexture(gl, [255, 255, 255, 0]),
+      normalMap:  create1PixelTexture(gl, [255, 255, 255, 0]),
       ambient: [0, 0, 0],
       specular: [0, 0, 0],
       specularMap: create1PixelTexture(gl, [255, 255, 255, 255]),
@@ -2114,6 +2128,7 @@
     scale2d: scale2d,
     rotate2d: rotate2d,
     cross:cross,
+    orthographic,
     vec3add,
     vec3sub,
     vec3Dot,
@@ -2172,7 +2187,7 @@
     compose,
     determinate,
     quatFromRotationMatrix,
-
+    initWebgl2Context,
 
     getDefaultMaterial,
   }

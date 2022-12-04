@@ -38,7 +38,7 @@ void main () {
   vec3 effectiveSpecular = specular * specularMapColor.rgb;
 
   vec4 diffuseMapColor = texture2D(diffuseMap, v_texcoord);
-  vec3 effectiveDiffuse = diffuse * diffuseMapColor.rgb * v_color.rgb;
+  vec3 effectiveDiffuse =  diffuseMapColor.rgb * v_color.rgb;
   float effectiveOpacity = opacity * diffuseMapColor.a * v_color.a;
 
   gl_FragColor = vec4(
@@ -46,7 +46,7 @@ void main () {
       ambient * u_ambientLight +
       effectiveDiffuse * fakeLight +
       effectiveSpecular * pow(specularLight, shininess),
-      effectiveOpacity);
+      1);
 }
 
 `

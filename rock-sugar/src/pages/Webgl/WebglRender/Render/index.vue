@@ -65,8 +65,8 @@ export default {
         defaultMaterial(){
             return{
                 diffuse: [1, 1, 1],
-                diffuseMap: NanoObjParse.create1PixelTexture(this.gl, [127, 127, 255, 0]),
-                normalMap:  NanoObjParse.create1PixelTexture(this.gl, [127, 127, 255, 0]),
+                diffuseMap: NanoObjParse.create1PixelTexture(this.gl, [255, 255, 255, 0]),
+                normalMap:  NanoObjParse.create1PixelTexture(this.gl, [255, 255, 255, 0]),
                 ambient: [0, 0, 0],
                 specular: [0, 0, 0],
                 specularMap: NanoObjParse.create1PixelTexture(this.gl, [255, 255, 255, 255]),
@@ -155,7 +155,7 @@ export default {
 
             gl.enable(gl.DEPTH_TEST);
             gl.enable(gl.CULL_FACE);
-
+            gl.enable(gl.MULTISAMPLE);
             //matrix.
             let projectionMatrix = HNWUEngine.perspective(
                 this.perspective.fieldOfViewRadians, 
@@ -181,7 +181,6 @@ export default {
                     "u_viewWorldPosition":this.camera.position,
                 }
                 const uniforms = Object.assign(sharedUniforms,material);
-                console.log(uniforms,"uniforms")
                 Object.entries(uniforms).forEach(([key,value])=>{
                     this.page.addUniform(key,value,name);
                 })
@@ -192,7 +191,9 @@ export default {
 
         },
         async getObjectData(){
-            let objLink = './head.obj'
+
+
+            let objLink = './models/beginScene/nara/nara.obj'
 
             const response =  await fetch(objLink);  
             const text = await response.text();

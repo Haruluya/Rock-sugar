@@ -19,6 +19,7 @@ uniform sampler2D normalMap;
 uniform float opacity;
 uniform vec3 u_lightDirection;
 uniform vec3 u_ambientLight;
+uniform vec3 u_lightIntensity;
 
 void main () {
   vec3 normal = normalize(v_normal) * ( float( gl_FrontFacing ) * 2.0 - 1.0 );
@@ -32,7 +33,7 @@ void main () {
   vec3 surfaceToViewDirection = normalize(v_surfaceToView);
   vec3 halfVector = normalize(u_lightDirection + surfaceToViewDirection);
 
-  float fakeLight = dot(u_lightDirection, normal) * .5 + .5;
+  float fakeLight = dot(u_lightDirection, normal) * .5 + .8;
   float specularLight = clamp(dot(normal, halfVector), 0.0, 1.0);
   vec4 specularMapColor = texture2D(specularMap, v_texcoord);
   vec3 effectiveSpecular = specular * specularMapColor.rgb;
@@ -44,9 +45,9 @@ void main () {
   gl_FragColor = vec4(
       emissive +
       ambient * u_ambientLight +
-      effectiveDiffuse * fakeLight +
+      effectiveDiffuse * fakeLight *u_lightIntensity+
       effectiveSpecular * pow(specularLight, shininess),
-      effectiveOpacity);
+      1);
 }
 
 `

@@ -20,6 +20,12 @@ class Point {
     setY(y){
         this.y = y;
     }
+    sub(p){
+        return new Point(this.x - p.x(), this.y - p.y());
+    }
+    add(p){
+        return new Point(this.x + p.x(), this.y + p.y());
+    }
 }
 
 export default Point;

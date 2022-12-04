@@ -259,8 +259,8 @@ export default {
         viewer(e){
             if (e.type === "mousedown"){
             this.mousePosition.x = e.clientX;
-           this.mousePosition.y = e.clientY;
-           document.onmousemove = AnimEvent.add((e)=>{
+            this.mousePosition.y = e.clientY;
+            document.onmousemove = AnimEvent.add((e)=>{
 
                 const offsetX = e.clientX - this.mousePosition.x;
                 const offsetY = e.clientY - this.mousePosition.y;
@@ -273,12 +273,12 @@ export default {
             document.onmouseup = () => {
                 document.onmousemove = null;
             };
-          }else if (e.type === "mousewheel"){
-            e.preventDefault();
+            }else if (e.type === "mousewheel"){
+                e.preventDefault();
             for (let i = 0; i < this.transform.scale.length;i++){
                 this.transform.scale[i] -= e.deltaY > 0? 0.15 : -0.15;
             }
-            this.Render()
+                this.Render()
             }
         },
         caculateMVPMatrix(perspective,camera,transform){

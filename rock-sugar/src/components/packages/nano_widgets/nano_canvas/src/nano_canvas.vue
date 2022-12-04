@@ -1,7 +1,7 @@
 <template>
     <div class="compContainer" >
         <div class="canvesContainer">
-            <canvas id="canvas" ref="canvas" >
+            <canvas :id="prop_canvas_id" ref="canvas" >
                 <div id="vertex-shader">
                     {{prop_vertex_shader_source}}
                 </div>
@@ -16,6 +16,10 @@
 export default {
     name: "nano_canvas",
     props: {
+        prop_canvas_id:{
+            type:String,
+            default:"canvas",
+        },
         prop_vertex_shader_source:{
             type:String,
             default:"None",

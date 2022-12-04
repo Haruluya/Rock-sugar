@@ -3,7 +3,7 @@
 */
 import AnimEvent from "_plugins/anim-event/anim-event.min.js"
 import LeaderLine from "_plugins/leader-line/leader-line.min.js";
-
+import {Edge} from './Interfaces/index'
 // dragable.
 let dragPosition = {
     x: 0,
@@ -295,7 +295,86 @@ const drawLineInGrid = (component, beginPoint, endPoint, color) => {
     }
 }
 
+const drawRectInGrid = (component,rect,color) =>{
+    const {leftTop,rightTop,leftBottom,rightBottom} = rect.RectPoints();
+    {
+        drawLineInGrid(component, leftTop, rightTop , color);
+        drawLineInGrid(component, leftTop, leftBottom , color);
+        drawLineInGrid(component, rightBottom, leftBottom , color);
+        drawLineInGrid(component, rightBottom, rightTop , color);
+    }
+}
 
+const drawPolygonInGrid = (component,poly,color) =>{
+    if(poly.size()<3)
+    return;
+    //获取多边形最小包围盒
+    let minx, maxx, miny, maxy;
+    minx = poly.minPointX();
+    maxx = poly.maxPointX();
+    miny = poly.minPointY();
+    maxy = poly.maxPointY();
+
+    //设置一个标志矩阵
+    let m = maxy - miny;
+    let n = maxx - minx;
+    let MF = [];
+    let i,j;
+    for(i=0; i<m; i++)
+        for(j=0; j<n; j++)
+            MF[i*n+j] = false;
+
+    //对于多边形每一条边，从这条边向右直到包围盒右边界进行扫描
+    let p0, p1, temp;
+    let dx, tx;
+    let x;
+    let k;
+    let vertics = poly.size();
+
+    for(k=0; k<vertics; k++)
+    {
+        //获取一条边p0p1
+        if(k == vertics-1)
+        {
+            p0 = poly[k];
+            p1 = poly[0];
+        }
+        else
+        {
+            p0 = poly[k];
+            p1 = poly[k+1];
+        }
+
+        if(p0.y>p1.y)//将p0设为边的起点坐标，y坐标较小
+        {
+            temp = p0;
+            p0 = p1;
+            p1 = temp;
+        }
+
+        //对于一条边，从左至右对标志位求反
+        if(p0.y != p1.y)//非水平边
+        {
+            dx = (p1.x-p0.x)/(p1.y-p0.y);
+            //对于一条边，y每次递增1,x每次递增dx
+            x = p0.x;
+            tx = x;
+            for(i=p0.y; i<p1.y; i++)
+            {
+                x = Math.floor(tx);
+                for(j=x; j<maxx; j++)
+                    MF[(i-miny)*n+j-minx] = !MF[(i-miny)*n + j-minx];
+                tx = tx+dx;
+            }
+        }
+    }
+    //对整个包围盒扫描，为true，用前景色绘制
+    for(i=0; i<m; i++)
+        for(j=0; j<n; j++)
+            if(MF[i*n+j])
+                drawPointInGrid(component, j+minx, i+miny , color);
+
+}
 
 export default {
     panelDrag,
@@ -308,5 +387,7 @@ export default {
     drawGrid,
     drawPointInGrid,
     drawLine,
-    drawLineInGrid
+    drawLineInGrid,
+    drawRectInGrid,
+    drawPolygonInGrid
 }

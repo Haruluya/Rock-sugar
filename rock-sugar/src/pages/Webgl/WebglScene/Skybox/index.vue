@@ -14,12 +14,12 @@ import objFragmentShader from './resource/obj-fragment-shader.js'
 import objVertexShader from './resource/obj-vertex-shader.js'
 import skyboxFragmentShader from './resource/skybox-fragment-shader.js'
 import skyboxVertexShader from './resource/skybox-vertex-shader.js'
-import negx from './images/neg-x.jpg'
-import negy from './images/neg-y.jpg'
-import negz from './images/neg-z.jpg'
-import posx from './images/pos-x.jpg'
-import posy from './images/pos-y.jpg'
-import posz from './images/pos-z.jpg'
+import left from './images/left.jpg'
+import down from './images/down.jpg'
+import front from './images/front.jpg'
+import right from './images/right.jpg'
+import up from './images/up.jpg'
+import back from './images/back.jpg'
 
 
 import data from './resource/data.js'
@@ -178,27 +178,27 @@ export default {
             return[
                 {
                     target: gl.TEXTURE_CUBE_MAP_POSITIVE_X,
-                    url: negx,
+                    url: right,
                 },
                 {
                     target: gl.TEXTURE_CUBE_MAP_NEGATIVE_X,
-                    url: negy,
+                    url: left,
                 },
                 {
                     target: gl.TEXTURE_CUBE_MAP_POSITIVE_Y,
-                    url: negz,
+                    url: down,
                 },
                 {
                     target: gl.TEXTURE_CUBE_MAP_NEGATIVE_Y,
-                    url: posx,
+                    url: up,
                 },
                 {
                     target: gl.TEXTURE_CUBE_MAP_POSITIVE_Z,
-                    url: posy,
+                    url: back,
                 },
                 {
                     target: gl.TEXTURE_CUBE_MAP_NEGATIVE_Z,
-                    url: posz,
+                    url: front,
                 },
             ]
         }
