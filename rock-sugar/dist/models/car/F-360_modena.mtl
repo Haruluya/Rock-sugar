@@ -1,0 +1,119 @@
+# Blender MTL File: 'F-360_modena.blend'
+# Material Count: 8
+
+newmtl Body
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump .\F-360 Modena Textures\F-360_Modena_body_Body_Normal.png
+map_Kd .\F-360 Modena Textures\F-360_Modena_body_Body_BaseColor.png
+map_Ke .\F-360 Modena Textures\F-360_Modena_body_Body_Emissive.png
+map_Ns .\F-360 Modena Textures\F-360_Modena_body_Body_Roughness.png
+refl .\F-360 Modena Textures\F-360_Modena_body_Body_Metallic.png
+
+newmtl Details
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump .\F-360 Modena Textures\F-360_Modena_body_Details_Normal.png
+map_Kd .\F-360 Modena Textures\F-360_Modena_body_Details_BaseColor.png
+map_Ke .\F-360 Modena Textures\F-360_Modena_body_Details_Emissive.png
+map_Ns .\F-360 Modena Textures\F-360_Modena_body_Details_Roughness.png
+refl .\F-360 Modena Textures\F-360_Modena_body_Details_Metallic.png
+
+newmtl Glass
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.500000
+illum 9
+map_Bump .\F-360 Modena Textures\F-360_Modena_body_Glass_Normal.png
+map_Kd .\F-360 Modena Textures\F-360_Modena_body_Glass_BaseColor.png
+map_Ke .\F-360 Modena Textures\F-360_Modena_body_Glass_Emissive.png
+map_Ns .\F-360 Modena Textures\F-360_Modena_body_Glass_Roughness.png
+refl .\F-360 Modena Textures\F-360_Modena_body_Glass_Metallic.png
+
+newmtl Glass_2
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 9
+map_Bump .\F-360 Modena Textures\F-360_Modena_body_Glass_Normal.png
+map_Kd .\F-360 Modena Textures\F-360_Modena_body_Glass_BaseColor.png
+map_Ke .\F-360 Modena Textures\F-360_Modena_body_Glass_Emissive.png
+map_Ns .\F-360 Modena Textures\F-360_Modena_body_Glass_Roughness.png
+refl .\F-360 Modena Textures\F-360_Modena_body_Glass_Metallic.png
+
+newmtl Material.001
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump .\F-360 Modena Textures\Ferrari_Wheel_Low_DefaultMaterial_Normal.png
+map_Kd .\F-360 Modena Textures\Ferrari_Wheel_Low_DefaultMaterial_BaseColor.png
+map_Ke .\F-360 Modena Textures\Ferrari_Wheel_Low_DefaultMaterial_Emissive.png
+map_Ns .\F-360 Modena Textures\Ferrari_Wheel_Low_DefaultMaterial_Roughness.png
+refl .\F-360 Modena Textures\Ferrari_Wheel_Low_DefaultMaterial_Metallic.png
+
+newmtl Material.020
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.735776 0.755175
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump .\F-360 Modena Textures\Caliper_Break_Yellow_Normal.png
+map_Kd .\F-360 Modena Textures\Caliper_Break_Yellow_BaseColor.png
+map_Ke .\F-360 Modena Textures\Caliper_Break_Yellow_Emissive.png
+map_Ns .\F-360 Modena Textures\Caliper_Break_Yellow_Roughness.png
+refl .\F-360 Modena Textures\Caliper_Break_Yellow_Metallic.png
+
+newmtl Material.021
+Ns 647.293401
+Ka 0.413636 0.413636 0.413636
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Kd .\F-360 Modena Textures\Texture.jpg
+refl .\F-360 Modena Textures\Texture.jpg
+
+newmtl beems
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump .\F-360 Modena Textures\F-360_Modena_body_Glass_Normal.png
+map_Kd .\F-360 Modena Textures\F-360_Modena_body_Glass_BaseColor.png
+map_Ke .\F-360 Modena Textures\F-360_Modena_body_Glass_Emissive.png
+map_Ns .\F-360 Modena Textures\F-360_Modena_body_Glass_Roughness.png
+refl .\F-360 Modena Textures\F-360_Modena_body_Glass_Metallic.png
