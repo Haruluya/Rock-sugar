@@ -8,10 +8,10 @@ class Point {
         this.x = x;
         this.y = y;
     }
-    x(){
+    X(){
         return this.x;
     }
-    y(){
+    Y(){
         return this.y;
     }
     setX(x){
@@ -21,10 +21,16 @@ class Point {
         this.y = y;
     }
     sub(p){
-        return new Point(this.x - p.x(), this.y - p.y());
+        return new Point(this.x - p.X(), this.y - p.Y());
     }
     add(p){
-        return new Point(this.x + p.x(), this.y + p.y());
+        return new Point(this.x + p.X(), this.y + p.Y());
+    }
+    mutiply(p){
+        return new Point(this.x * p.X(),this.y * p.Y());
+    }
+    mut(t){
+        return new Point(this.x * t,this.y * t);
     }
 }
 

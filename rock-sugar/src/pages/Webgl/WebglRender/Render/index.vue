@@ -193,7 +193,7 @@ export default {
         async getObjectData(){
 
 
-            let objLink = './models/beginScene/nara/nara.obj'
+            let objLink = './models/marci/marci.obj'
 
             const response =  await fetch(objLink);  
             const text = await response.text();

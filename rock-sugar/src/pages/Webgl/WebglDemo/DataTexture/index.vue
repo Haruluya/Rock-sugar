@@ -107,7 +107,7 @@ export default {
             gl.enable(gl.DEPTH_TEST);
             
             //mvp matrix.
-            const mvp = this.page.caculateMVPMatrix(this.perspective,this.camera,this.transform);
+            const mvp = this.page.caculateMVPMatrix(this.camera,this.perspective,this.transform);
             this.page.addUniform("u_matrix",mvp);
 
             gl.uniform1i(gl.getUniformLocation(program, "u_texture"), 0);

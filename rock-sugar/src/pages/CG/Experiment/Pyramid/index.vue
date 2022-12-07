@@ -8,7 +8,6 @@
         ref="page"
         @Init="Init"
         @Render="Render"
-        @prop_ui_setter="uiSetter"
     />
 </template>
 <script>
@@ -16,7 +15,7 @@
 import vertexShaderSource from './resource/vertex-shader.js'
 import fragmentShaderSource from './resource/fragment-shader.js'
 import NanoObjParse from "../../../Webgl/HNWUEngine/ModelParse.js"
-
+import uiSetting from '../ui-setting'
 
 const desData = {
     category: "Pyramid",
@@ -61,7 +60,8 @@ export default {
                 up:[0,1,0]
             },
             sectionParams:{
-                lightDirection:[-1,3,5]
+                lightDirection:{x:-1,y:3,z:5},
+                texture:null,
             },
             page:null,
             uiSetter:[],
@@ -83,7 +83,17 @@ export default {
                 shininess: 400,
                 opacity: 1,
             }
-        }
+        },
+        //uiSetter.
+        uiSetter() {
+            let sectionParams = this.sectionParams;
+            let setter = [
+                { type: "slider-vector", id: "lightDirection" , value: sectionParams.lightDirection, min: { x: 0, y: 0,z:0 }, max: { x: 100, y: 100 ,z:100}, 
+                    callback: uiSetting.globalUiCallbacks.updatePoint(this, "lightDirection") },
+            ];
+
+            return setter;
+        },
     },
     mounted(){
         this.getObjectData();
@@ -102,9 +112,6 @@ export default {
 
             //set tranform for 3dviewer.
             this.$refs.page.set3DViewer(this.perspective,this.camera,this.transform);
-
-
-            
 
             const data = this.objectData.obj;
 
@@ -155,6 +162,34 @@ export default {
                 }
             });
 
+           {
+            const gl = this.gl;
+            this.sectionParams.texture = gl.createTexture();
+            gl.bindTexture(gl.TEXTURE_2D, this.sectionParams.texture);
+
+            // fill texture with 3x2 pixels
+            const level = 0;
+            const internalFormat = gl.LUMINANCE;
+            const width = 3;
+            const height = 2;
+            const border = 0;
+            const format = gl.LUMINANCE;
+            const type = gl.UNSIGNED_BYTE;
+            const data = new Uint8Array([
+                126,  153, 126,
+                0, 0,   0,
+            ]);
+            const alignment = 1;
+            gl.pixelStorei(gl.UNPACK_ALIGNMENT, alignment);
+            gl.texImage2D(gl.TEXTURE_2D, level, internalFormat, width, height, border,
+                            format, type, data);
+
+            // set the filtering so we don't need mips and it's not filtered
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+           }
         },
         Render(){
             if(!this.objectData){
@@ -180,13 +215,18 @@ export default {
                     HNWUEngine.yRotation(0),this.transform);
             worldMatrix = HNWUEngine.translate3d(worldMatrix,...this.objOffset);
 
+
             //render components.
             this.objComponentsInfo.forEach(({name,component,material})=>{
                 this.page.useProgram(component.program);
+                if(name != "defaultphong1SG"){
+                    material.diffuseMap = this.sectionParams.texture;
+                }
+                const lightDirection = [this.sectionParams.lightDirection.x,this.sectionParams.lightDirection.y,this.sectionParams.lightDirection.z]
                 const sharedUniforms = {
                     "u_world": worldMatrix,
                     "u_view": viewMatrix,
-                    "u_lightDirection": HNWUEngine.normalize(this.sectionParams.lightDirection),
+                    "u_lightDirection": HNWUEngine.normalize(lightDirection),
                     "u_projection": projectionMatrix,
                     "u_viewWorldPosition":this.camera.position,
                 }
@@ -222,11 +262,6 @@ export default {
                 .filter(([key]) => key.endsWith('Map'))
                 .forEach(([key, filename]) => {
                     let texture = textures[filename];
-                    if (!texture) {
-                        const textureHref = new URL(filename, baseLink).href;
-                        texture = NanoObjParse.createTexture(this.gl, textureHref);
-                        textures[filename] = texture;
-                    }
                     material[key] = texture;
                 });
             }

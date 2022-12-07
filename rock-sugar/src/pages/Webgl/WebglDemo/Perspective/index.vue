@@ -23,13 +23,9 @@ const desData = {
     title:"透视投影",
     content:"Failure is like perspective, throughout a person's life."
 }
-
 const positions = data.position;
 const colors = data.color;
-
-
  
-
 export default {
     name:'ImageProcess',
     data() {
@@ -53,13 +49,11 @@ export default {
             uiSetter:[]
         }
     },
-
     methods: {
         Init(){
             this.gl = this.$refs.page.getGL();
             this.canvas = this.$refs.page.getCanvas();
             this.program = this.$refs.page.getProgram();
-
             this.$refs.page.setTransform(this.sectionParams.transform);
             this.$refs.page.addBuffer("position",{data:positions});
             this.$refs.page.addBuffer("color",{data:colors});

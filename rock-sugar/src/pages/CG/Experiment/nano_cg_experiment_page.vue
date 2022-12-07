@@ -1,7 +1,10 @@
 <template>
     <div class="pageContainer">
         <div class="webglContainer" id="canvasSlot">
-            <nano_canvas ref="nanoCanvas"/>
+            <nano_canvas ref="nanoCanvas"
+            @mousedown="viewer"
+            @mousewheel="viewer"
+            />
         </div>
         <div class="desPanel">
             <nano_webgl_des_panel
@@ -49,6 +52,7 @@
     @author:haruluya.
     @des:This component is used to make the source code more concise.
 */
+import AnimEvent from "_plugins/anim-event/anim-event.min.js"
 
 const slotID = {
     MAIN_PANEL_SLOT_ID : 1,
@@ -70,9 +74,16 @@ export default {
                 mainPanel:{ x: 1050, y: 150 },
                 debugPanel:{x:1200, y:400}
             },
+            mousePosition:{
+                x:0,
+                y:0
+            },
             showDebug:false,
             debugContent:null,
             slotID,
+            screenTransform:null,
+            frameRender:null,
+            girdSize:1,
             }
 
     },
@@ -144,6 +155,44 @@ export default {
                     }
                 },
             };
+        },
+        setViewer(screenTransform,girdSize,render){
+            this.screenTransform = screenTransform;
+            this.frameRender = render;
+            this.girdSize = girdSize;
+            uiSetting.setScreenTransform(screenTransform);
+        },
+        viewer(e){
+            if(!this.screenTransform) return;
+            let screenTransform = this.screenTransform;
+            let render = this.frameRender; 
+            let girdSize = this.girdSize;
+            uiSetting.setScreenTransform(screenTransform);
+            if (e.type === "mousedown"){
+                this.mousePosition.x = e.clientX;
+                this.mousePosition.y = e.clientY;
+                document.onmousemove = AnimEvent.add((e)=>{
+
+                    const offsetX = e.clientX - this.mousePosition.x;
+                    const offsetY = e.clientY - this.mousePosition.y;
+                    this.mousePosition.x = e.clientX;
+                    this.mousePosition.y = e.clientY;
+                    screenTransform.x += Math.floor(offsetX / girdSize);
+                    screenTransform.y += Math.floor(offsetY / girdSize);
+                    render()
+
+                });
+                document.onmouseup = () => {
+                    document.onmousemove = null;
+                };
+            }else if (e.type === "mousewheel"){
+                e.preventDefault();
+                this.girdSize += e.deltaY > 0 ? -1 : 1;
+                if(this.girdSize  <= 0) {
+                    this.girdSize = 1
+                }
+                render()
+            }
         }
     },
     unmounted(){

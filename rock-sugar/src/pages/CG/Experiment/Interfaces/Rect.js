@@ -50,7 +50,6 @@ export default class Rect{
         const top = rect.top - this.top > 0 ? rect.top :this.top;
         const bottom = rect.bottom - this.bottom > 0 ?this.bottom :rect.bottom;
         
-        console.log(left,right,top,bottom)
         if(left > right || top > bottom){
             return null;
         }

@@ -35,7 +35,7 @@ export default {
                 beginPoint: { x: 130, y: 130 },
                 endPoint: { x: 300, y: 300 },
                 color: '#0bc6e3',
-                debugContent: null
+                debugContent: null,
             }
         };
     },

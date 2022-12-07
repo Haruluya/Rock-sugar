@@ -183,11 +183,7 @@ export const routes = [
         name: 'EdgeTablePolygonFlag',
         component: () => import('_pages/CG/Experiment/EdgeTablePolygonFlag'),
     },
-    {
-        path: '/cg/experiment/Interaction',
-        name: 'Interaction',
-        component: () => import('_pages/CG/Experiment/Interaction'),
-    },
+
     {
         path: '/cg/experiment/LightModel',
         name: 'LightModel',

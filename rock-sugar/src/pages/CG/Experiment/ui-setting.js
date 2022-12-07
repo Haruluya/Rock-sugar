@@ -3,7 +3,11 @@
 */
 import AnimEvent from "_plugins/anim-event/anim-event.min.js"
 import LeaderLine from "_plugins/leader-line/leader-line.min.js";
-import {Edge} from './Interfaces/index'
+import {Edge, Point} from './Interfaces/index'
+
+
+
+
 // dragable.
 let dragPosition = {
     x: 0,
@@ -142,6 +146,15 @@ const destroy = () => {
             element.remove();
         }
     });
+    screenTransform = {x:0,y:0,scale:100};
+}
+
+
+
+let screenTransform = {x:0,y:0,scale:100}
+
+const setScreenTransform = (transform)=>{
+    screenTransform = transform;
 }
 
 // draw grid as canvas`s background.
@@ -172,6 +185,10 @@ const drawGrid = (component) => {
 
 // draw line in grid by Bresenham.
 const drawPointInGrid = (component, gridx, gridy, color) => {
+    gridx += screenTransform.x;
+    gridy += screenTransform.y;
+    gridx *= screenTransform.scale /100;
+    gridy *= screenTransform.scale /100;
     const girdSize = component.sectionParams.girdSize;
     // cant overflow.
     if (gridx > parseInt(component.canvas.width / girdSize) - 2 ||
@@ -376,12 +393,57 @@ const drawPolygonInGrid = (component,poly,color) =>{
 
 }
 
+const drawEllipseInGrid = (component,px,py,a,b,color)=>{
+    const radiusA = a;
+    const radiusB = b;
+    const circleCenter = new Point(px,py);
+    if(radiusA==0 || radiusB==0)
+        return;
+    let d;
+    let x,y;
+    x = 0; y = radiusB;
+    d = 4*radiusB*radiusB - 4*radiusA*radiusA*radiusB + radiusA*radiusA;
+    while((radiusA*radiusA*(2*y-1))>=2*(radiusB*radiusB*(x+1)))
+    {
+        drawPointInGrid(component,x + circleCenter.x,  y + circleCenter.y,color);
+        drawPointInGrid(component,-x+ circleCenter.x,  y + circleCenter.y,color);
+        drawPointInGrid(component,x + circleCenter.x,  -y+ circleCenter.y,color);
+        drawPointInGrid(component,-x+ circleCenter.x,  -y+ circleCenter.y,color);
+
+        if(d<0)
+            d=d+4*radiusB*radiusB*(2*x+3);
+        else{
+            d=d+4*radiusB*radiusB*(2*x+3)-8*radiusA*radiusA*(y-1);
+            y--;
+        }
+        x++;
+    }
+    x = radiusA; y = 0;
+    d = 4*radiusA*radiusA - 4*radiusA*radiusB*radiusB + radiusB*radiusB;
+    while((radiusB*radiusB*(2*x-1))>2*(radiusA*radiusA*(y-1)))
+    {
+        drawPointInGrid(component,x + circleCenter.x,  y + circleCenter.y,color);
+        drawPointInGrid(component,-x+ circleCenter.x,  y + circleCenter.y,color);
+        drawPointInGrid(component,x + circleCenter.x,  -y+ circleCenter.y,color);
+        drawPointInGrid(component,-x+ circleCenter.x,  -y+ circleCenter.y,color);
+
+        if(d<0)
+            d=d+4*radiusA*radiusA*(2*y+3);
+        else{
+            d=d+4*radiusA*radiusA*(2*y+3)-8*radiusB*radiusB*(x-1);
+            x--;
+        }
+        y++;
+    }
+}
+
 export default {
     panelDrag,
     setDefaultUI,
     setDebugPanelCon,
     nodeLines,
     globalUiCallbacks,
+    setScreenTransform,
     updateSlot,
     destroy,
     drawGrid,
@@ -389,5 +451,6 @@ export default {
     drawLine,
     drawLineInGrid,
     drawRectInGrid,
-    drawPolygonInGrid
+    drawPolygonInGrid,
+    drawEllipseInGrid
 }

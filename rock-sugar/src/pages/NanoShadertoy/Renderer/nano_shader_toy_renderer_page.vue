@@ -287,7 +287,7 @@ export default {
         },
         
         setMousePosition(e) {
-            const rect = this.$refs.nanoCanvas.$refs.canvas.getBoundingClientRect();
+            const rect = this.canvas.getBoundingClientRect();
             if (document.pointerLockElement === this.canvas ||
                 document.mozPointerLockElement === this.canvas) {
                     this.mousePosition.x += e.movementX;

@@ -100,7 +100,7 @@ export default {
             gl.enable(gl.DEPTH_TEST);
            
             //matrix.
-            const mvp = this.page.caculateMVPMatirx(this.camera,this.perspective,this.transform);
+            const mvp = this.page.caculateMVPMatrix(this.camera,this.perspective,this.transform);
             this.page.addUniform("u_worldViewProjection",mvp);
             this.page.addUniform("u_texture",this.sectionParams.texture)
 

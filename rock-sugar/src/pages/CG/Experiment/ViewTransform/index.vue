@@ -5,7 +5,7 @@
 <script>
 
 import uiSetting from "../ui-setting"
-import { Point,Polygon,Rect,Line, InPoint} from "../Interfaces"
+import {Rect} from "../Interfaces"
 
 const desData = {
     category: "Experiment",
@@ -40,6 +40,7 @@ export default {
                 showOriginRects:true,
                 debugContent: null,
                 girdSize: 3,
+                screenTransform:{x:0,y:0,scale:100}
             }
         };
     },
@@ -82,6 +83,7 @@ export default {
 
             this.canvas = this.$refs.page.getCanvas();
             this.ctx = canvas.getContext('2d');
+            this.$refs.page.setViewer(this.sectionParams.screenTransform,this.sectionParams.girdSize,this.Render);
 
             this.Render();
         },
@@ -95,6 +97,7 @@ export default {
 
             ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             uiSetting.drawGrid(this);
+            this.sectionParams.girdSize = this.$refs.page.girdSize;
 
             this.sectionParams.debugContent = [{
                 title: "grid", content: "The number of cells in the x direction: " + gridx + "\nThe number of cells in the y direction: " + gridy,
