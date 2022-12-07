@@ -41,7 +41,7 @@ git clone https://github.com/Haruluya/Rock-sugar.git
 
 ![image-20221103201305567](./Document/Images/image-20221103201305567.png)
 
-**EX**
+**EXperiment**
 
 ![image-20221103201207040](./Document/Images/image-20221103201207040.png)
 
