@@ -83,7 +83,7 @@ export default {
             slotID,
             screenTransform:null,
             frameRender:null,
-            girdSize:1,
+            girdSize:0,
             }
 
     },
@@ -156,42 +156,43 @@ export default {
                 },
             };
         },
-        setViewer(screenTransform,girdSize,render){
+        setViewer(screenTransform,render){
             this.screenTransform = screenTransform;
             this.frameRender = render;
-            this.girdSize = girdSize;
             uiSetting.setScreenTransform(screenTransform);
         },
         viewer(e){
+
             if(!this.screenTransform) return;
             let screenTransform = this.screenTransform;
             let render = this.frameRender; 
-            let girdSize = this.girdSize;
             uiSetting.setScreenTransform(screenTransform);
+
             if (e.type === "mousedown"){
                 this.mousePosition.x = e.clientX;
                 this.mousePosition.y = e.clientY;
                 document.onmousemove = AnimEvent.add((e)=>{
 
-                    const offsetX = e.clientX - this.mousePosition.x;
-                    const offsetY = e.clientY - this.mousePosition.y;
+                    let offsetX = e.clientX - this.mousePosition.x;
+                    let offsetY = e.clientY - this.mousePosition.y;
                     this.mousePosition.x = e.clientX;
                     this.mousePosition.y = e.clientY;
-                    screenTransform.x += Math.floor(offsetX / girdSize);
-                    screenTransform.y += Math.floor(offsetY / girdSize);
+                    offsetX = offsetX/ this.prop_section_params.girdSize;
+                    offsetY = offsetY / this.prop_section_params.girdSize;
+                    screenTransform.x += (offsetX < 1 && offsetX >0) ? 1: Math.floor(offsetX);
+                    screenTransform.y += (offsetY < 1 && offsetY >0) ? 1: Math.floor(offsetY);
                     render()
 
                 });
                 document.onmouseup = () => {
                     document.onmousemove = null;
                 };
+
             }else if (e.type === "mousewheel"){
                 e.preventDefault();
-                this.girdSize += e.deltaY > 0 ? -1 : 1;
-                if(this.girdSize  <= 0) {
-                    this.girdSize = 1
-                }
+                this.girdSize = e.deltaY > 0 ? -1 : 1;
                 render()
+                this.girdSize = 0;
             }
         }
     },

@@ -78,6 +78,7 @@ export default {
     },
     mounted(){
         this.getObjectData();
+        setTimeout(()=>{this.$refs.page.Render();},1000)
     },
     methods: {
         Init(){

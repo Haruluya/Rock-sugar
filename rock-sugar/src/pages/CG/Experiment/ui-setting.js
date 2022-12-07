@@ -109,14 +109,17 @@ const globalUiCallbacks = {
         let sectionParams = component.sectionParams;
         let Render = component.Render;
         return function (event,ui) {
+
             sectionParams[pointName] = ui.value;
             Render();
         }
     },
     updateValue: (component, valueName) => {
+        if(!component) return;  
         let sectionParams = component.sectionParams;
         let Render = component.Render;
         return function (event,ui) {
+
             sectionParams[valueName] = ui.value;
             Render();
         }

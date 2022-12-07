@@ -37,7 +37,7 @@ export default {
                 circleCenter:{x:30,y:18},
                 radius:10,
                 color:'#0bc6e3',
-                girdSize:10,
+                girdSize:8,
                 debugContent:null,
                 screenTransform:{x:0,y:0,scale:100}
             }
@@ -66,7 +66,7 @@ export default {
 
             this.canvas = this.$refs.page.getCanvas();
             this.ctx = canvas.getContext('2d');
-            this.$refs.page.setViewer(this.sectionParams.screenTransform,this.sectionParams.girdSize,this.Render);
+            this.$refs.page.setViewer(this.sectionParams.screenTransform,this.Render);
 
             this.Render();
         },
@@ -79,9 +79,13 @@ export default {
             const gridy = parseInt(this.canvas.height / this.sectionParams.girdSize) - 1;
 
             ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-            uiSetting.drawGrid(this);
-            this.sectionParams.girdSize = this.$refs.page.girdSize;
 
+            this.sectionParams.girdSize += this.$refs.page.girdSize;
+            uiSetting.drawGrid(this);
+            
+            if(this.sectionParams.girdSize  <= 0) {
+                    this.sectionParams.girdSize = 1
+            }
             this.sectionParams.debugContent = [{
                 title:"grid",content:"The number of cells in the x direction: " + gridx + "\nThe number of cells in the y direction: " + gridy,
             }];

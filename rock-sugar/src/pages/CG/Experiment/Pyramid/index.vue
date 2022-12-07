@@ -50,9 +50,9 @@ export default {
                 zFar: 10000,
             },
             transform:{
-                translation:[0, 0, 0],
-                rotation:[HNWUEngine.degToRad(0), HNWUEngine.degToRad(0), HNWUEngine.degToRad(0)],
-                scale:[1,1,1]
+                translation:[0, 0, 15],
+                rotation:[HNWUEngine.degToRad(0), HNWUEngine.degToRad(270), HNWUEngine.degToRad(0)],
+                scale:[.7,.7,.7]
             },
             camera:{
                 target:[0, 0, 0],
@@ -114,7 +114,7 @@ export default {
             this.$refs.page.set3DViewer(this.perspective,this.camera,this.transform);
 
             const data = this.objectData.obj;
-
+            
             //offset.
             this.objOffset = this.page.setObjectToSceenCenter(data.geometries);
 
@@ -214,7 +214,6 @@ export default {
             let worldMatrix = HNWUEngine.getTransformMatrix(
                     HNWUEngine.yRotation(0),this.transform);
             worldMatrix = HNWUEngine.translate3d(worldMatrix,...this.objOffset);
-
 
             //render components.
             this.objComponentsInfo.forEach(({name,component,material})=>{

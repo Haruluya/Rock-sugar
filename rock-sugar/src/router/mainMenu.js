@@ -5,23 +5,23 @@ const mainMenu = [
     },
     {
         name:"CG",
-        link:"/cg"
+        link:"/cg/experiment/DrawLine"
     },
     {
         name:"NanoCore",
-        link:"nanocore"
+        link:"/games/vrassignment"
     },
     {
         name:"Games",
-        link:"/games"
+        link:"/games/vrassignment"
     },
     {
         name:"NanoEngine",
-        link:"/nanoengine"
+        link:"/games/vrassignment"
     },
     {
         name:"Haruluya",
-        link:"/haruluya"
+        link:"/games/vrassignment"
     }
 ]
 

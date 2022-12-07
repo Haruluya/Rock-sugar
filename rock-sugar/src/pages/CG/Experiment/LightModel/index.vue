@@ -16,13 +16,13 @@
 import vertexShaderSource from './resource/vertex-shader.js'
 import fragmentShaderSource from './resource/fragment-shader.js'
 import NanoObjParse from "../../../Webgl/HNWUEngine/ModelParse.js"
-
+import uiSetting from '../ui-setting'
 
 const desData = {
     category: "Experiment",
     name: "LightModel",
     buttonContent: "查看源码",
-    title: "灯光模型",
+    title: "光照模型实例",
     content: "LightModel."
 }
 
@@ -48,12 +48,12 @@ export default {
                 aspect:0,
                 fieldOfViewRadians:  HNWUEngine.degToRad(60),
                 zNear: 1,
-                zFar: 10000,
+                zFar: 1000,
             },
             transform:{
                 translation:[0, 0, 0],
-                rotation:[HNWUEngine.degToRad(0), HNWUEngine.degToRad(0), HNWUEngine.degToRad(0)],
-                scale:[1,1,1]
+                rotation:[HNWUEngine.degToRad(80), HNWUEngine.degToRad(130), HNWUEngine.degToRad(0)],
+                scale:[1.8,1.8,1.8]
             },
             camera:{
                 target:[0, 0, 0],
@@ -61,7 +61,13 @@ export default {
                 up:[0,1,0]
             },
             sectionParams:{
-                lightDirection:[-1,3,5]
+                lightDirection:{x:-1,y:3,z:5},
+                lightColor:{x:255,y:255,z:255},
+                diffuse: {x:203,y:143,z:24},
+                ambient: {x:0,y:0,z:0},
+                specular: {x:0,y:0,z:0},
+                shininess: 30,
+                opacity: 100,
             },
             page:null,
             uiSetter:[],
@@ -72,17 +78,27 @@ export default {
         }
     },
     computed:{
-        defaultMaterial(){
-            return{
-                diffuse: [1, 1, 1],
-                diffuseMap: NanoObjParse.create1PixelTexture(this.gl, [255, 255, 255, 0]),
-                normalMap:  NanoObjParse.create1PixelTexture(this.gl, [255, 255, 255, 0]),
-                ambient: [0, 0, 0],
-                specular: [0, 0, 0],
-                specularMap: NanoObjParse.create1PixelTexture(this.gl, [255, 255, 255, 255]),
-                shininess: 400,
-                opacity: 1,
-            }
+        uiSetter(){
+            let sectionParams = this.sectionParams;
+            let setter = [
+                {type:"slider", id:"shininess", value: sectionParams.shininess, min:-50, max:50, 
+                    callback:uiSetting.globalUiCallbacks.updateValue(this,"shininess")
+                },
+                {type:"slider", id:"opacity", value: sectionParams.opacity, min:0, max:100, 
+                    callback:uiSetting.globalUiCallbacks.updateValue(this,"opacity")
+                },
+                { type: "slider-vector", id: "lightDirection" , value: sectionParams.lightDirection, min: { x: -100, y: -100,z:-100 }, max: { x: 100, y: 100,z:100}, callback: 
+                    uiSetting.globalUiCallbacks.updatePoint(this, "lightDirection") },
+                { type: "slider-vector", id: "lightColor" , value: sectionParams.lightColor, min: { x: 0, y: 0,z:0 }, max: { x: 255, y: 255,z:255}, callback: 
+                    uiSetting.globalUiCallbacks.updatePoint(this, "lightColor") },    
+                { type: "slider-vector", id: "diffuse" , value: sectionParams.diffuse, min: { x: 0, y: 0,z:0 }, max: { x: 255, y: 255,z:255}, callback: 
+                uiSetting.globalUiCallbacks.updatePoint(this, "diffuse") },    
+                { type: "slider-vector", id: "ambient" , value: sectionParams.ambient, min: { x: 0, y: 0,z:0 }, max: { x: 255, y: 255,z:255}, callback: 
+                uiSetting.globalUiCallbacks.updatePoint(this, "ambient") },    
+                { type: "slider-vector", id: "specular" , value: sectionParams.specular, min: { x: 0, y: 0,z:0 }, max: { x: 255, y: 255,z:255}, callback: 
+                uiSetting.globalUiCallbacks.updatePoint(this, "specular") },    
+            ];
+            return setter;
         }
     },
     mounted(){
@@ -102,9 +118,6 @@ export default {
 
             //set tranform for 3dviewer.
             this.$refs.page.set3DViewer(this.perspective,this.camera,this.transform);
-
-
-            
 
             const data = this.objectData.obj;
 
@@ -148,10 +161,6 @@ export default {
                 return {
                     name:componentName,
                     component:this.page.getComponents()[componentName],
-                    material:{
-                        ...this.defaultMaterial,
-                        ...this.objectData.materials[material]
-                    }
                 }
             });
 
@@ -164,7 +173,7 @@ export default {
             const gl = this.gl;
 
             gl.enable(gl.DEPTH_TEST);
-            gl.enable(gl.CULL_FACE);
+            // gl.enable(gl.CULL_FACE);
             gl.enable(gl.MULTISAMPLE);
             //matrix.
             let projectionMatrix = HNWUEngine.perspective(
@@ -183,14 +192,40 @@ export default {
             //render components.
             this.objComponentsInfo.forEach(({name,component,material})=>{
                 this.page.useProgram(component.program);
-                const sharedUniforms = {
+                const uniforms = {
                     "u_world": worldMatrix,
                     "u_view": viewMatrix,
-                    "u_lightDirection": HNWUEngine.normalize(this.sectionParams.lightDirection),
+                    "u_lightDirection": HNWUEngine.normalize([
+                        this.sectionParams.lightDirection.x,
+                        this.sectionParams.lightDirection.y,
+                        this.sectionParams.lightDirection.z
+                    ]),
+                    "u_ambientLight":[7,-3,5],
                     "u_projection": projectionMatrix,
                     "u_viewWorldPosition":this.camera.position,
+                    "u_lightColor":[
+                        this.sectionParams.lightColor.x /255,
+                        this.sectionParams.lightColor.y/255,
+                        this.sectionParams.lightColor.z/255
+                    ],
+                    "diffuse": [
+                            this.sectionParams.diffuse.x/255,
+                            this.sectionParams.diffuse.y/255,
+                            this.sectionParams.diffuse.z/255,
+                        ],
+                    "ambient": [
+                        this.sectionParams.ambient.x/255,
+                        this.sectionParams.ambient.y/255,
+                        this.sectionParams.ambient.z/255,
+                    ],
+                    "specular": [
+                        this.sectionParams.specular.x/255,
+                        this.sectionParams.specular.y/255,
+                        this.sectionParams.specular.z/255,
+                    ],
+                    "shininess": this.sectionParams.shininess,
+                    "opacity": this.sectionParams.opacity / 100,
                 }
-                const uniforms = Object.assign(sharedUniforms,material);
                 Object.entries(uniforms).forEach(([key,value])=>{
                     this.page.addUniform(key,value,name);
                 })

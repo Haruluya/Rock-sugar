@@ -14,7 +14,7 @@
                 </div>
              </div>
               <ul>
-                <li v-for="(item,index) in prop_menu_data " :key="index">
+                <li v-for="(item,index) in prop_menu_data " :key="index" >
                     <router-link :to="item.link" :class="{'current': current === index}" @click="current = index"><span>{{item.name}}</span></router-link>
                 </li>
              </ul>
