@@ -162,7 +162,6 @@ export default {
             uiSetting.setScreenTransform(screenTransform);
         },
         viewer(e){
-
             if(!this.screenTransform) return;
             let screenTransform = this.screenTransform;
             let render = this.frameRender; 
@@ -191,7 +190,7 @@ export default {
             }else if (e.type === "mousewheel"){
                 e.preventDefault();
                 this.girdSize = e.deltaY > 0 ? -1 : 1;
-                render()
+                 render()
                 this.girdSize = 0;
             }
         }

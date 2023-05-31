@@ -65,6 +65,9 @@ export default {
     },
     methods: {
         Init(){
+            
+
+
             if(!this.objectData){
                 return;
             }

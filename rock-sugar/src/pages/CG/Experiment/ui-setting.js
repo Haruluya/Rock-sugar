@@ -164,7 +164,8 @@ const setScreenTransform = (transform)=>{
 const drawGrid = (component) => {
     const CanvasWidth = component.canvas.width;
     const CanvasHeight = component.canvas.height;
-    const girdSize = component.sectionParams.girdSize;
+    //fix div 0 bug.
+    const girdSize = component.sectionParams.girdSize < 1 ? 1 :component.sectionParams.girdSize;
     const ctx = component.ctx;
     var xLineTotals = Math.floor(CanvasHeight / girdSize);
     var yLineTotals = Math.floor(CanvasWidth / girdSize);

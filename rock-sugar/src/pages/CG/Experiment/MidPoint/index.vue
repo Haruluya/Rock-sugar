@@ -80,7 +80,7 @@ export default {
             const gridy = parseInt(this.canvas.height / this.sectionParams.girdSize) - 1;
 
             ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
+            
             this.sectionParams.girdSize += this.$refs.page.girdSize;
             uiSetting.drawGrid(this);
             

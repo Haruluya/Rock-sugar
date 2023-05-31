@@ -35,7 +35,6 @@ export default {
                 tem : new Point(0,0), //移动控制点时用的临时点
                 bezier : [], //贝塞尔曲线
                 isMoving : false,
-                // QTimer timer; //定时器
                 order : 0, //移动的是第几个控制点
                 t : (INTERAL) /2 , //插值公式的t*INTERAL
                 debugContent: null,

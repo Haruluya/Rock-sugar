@@ -12,10 +12,10 @@ import { Edge, Polygon } from "../Interfaces"
 
 const desData = {
     category: "Experiment",
-    name: "EdgeTablePolygon",
+    name: "EdgeTablePolygonFlag",
     buttonContent: "查看源码",
-    title: "多边形有序边表",
-    content: "Edge table polygon."
+    title: "边标志填充算法",
+    content: "Edge table polygon Flag."
 }
 
 
