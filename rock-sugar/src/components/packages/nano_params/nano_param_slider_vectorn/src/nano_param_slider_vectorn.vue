@@ -81,7 +81,7 @@ export default {
 
                 this.value[item.name] += 
                         Math.floor(offsetX * (item.max - item.min) / 100);
-                this.value[item.name] = this.clamp(this.value[item.name],item.min, item.max);
+                this.value[item.name] = parseInt(this.clamp(this.value[item.name],item.min, item.max));
 
                 this.$refs.container.dispatchEvent(this.sliderVectorChangeEvent);
 

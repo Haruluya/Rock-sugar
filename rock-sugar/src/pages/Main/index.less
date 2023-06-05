@@ -84,6 +84,7 @@
     }
 }
 
+
 .webglLink{
     background-color: white;
     margin-top: 8vw;
@@ -169,9 +170,14 @@
             clip-path: polygon(70% -100%, 70% 200%, 30% 200%, 30% -100%);
             animation: webglLinkBorderRotateAfter 4s infinite;
         }
+        img{
+            max-width: 100%;
+            max-height: 100%; 
+            display: block; 
+            margin-top: 15%;
+        }
     }
 }
-
 .gameEngine{
     background-color: white;
 
@@ -198,6 +204,12 @@
         width: 100%;
         background-color: white;
         clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+        img{
+            max-width: 100%;
+            max-height: 100%; 
+            transform: translateY(20%) translateX(-10%);
+            display: block; 
+        }
     }
 
     .videoContainer .videoBorder{

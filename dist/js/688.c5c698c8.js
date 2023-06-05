@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkrock_sugar"]=self["webpackChunkrock_sugar"]||[]).push([[688],{1688:function(r,e,n){n.r(e),n.d(e,{default:function(){return i}});var t=n(3396);function o(r,e,n,o,a,u){return(0,t.wg)(),(0,t.iD)("div")}var a={created(){this.redirectToNanoEngine()},methods:{redirectToNanoEngine(){window.location.href="https://github.com/Haruluya/NanoCore"}}},u=n(89);const c=(0,u.Z)(a,[["render",o]]);var i=c}}]);
+//# sourceMappingURL=688.c5c698c8.js.map

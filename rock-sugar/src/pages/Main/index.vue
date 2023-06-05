@@ -25,6 +25,7 @@
                 />
             </div>
         </div>
+
         <div class="webglLink">
             <div class="desContainer">
                 
@@ -58,7 +59,7 @@
                 </div>
 
                 <div class="show">
-
+                    <img :src="ImgResource.badeer"/>
                 </div>
    
             </div>
@@ -69,6 +70,7 @@
                 <div class="videoBorder">
                 </div>
                 <div class="videoContent">
+                    <img :src="ImgResource.heer"/>
                 </div>
             </div>
             <div class="desContainer">
@@ -89,6 +91,7 @@
                         prop_color="#d0a85c"
                         prop_size_width=2
                         prop_size_height=0.6
+                        @handleClick="toGameEngine"
                         >
                     </nano_button>
                 </div>
@@ -166,10 +169,6 @@
             </div>
 
         </div>
-
-
-
-
     </div>
 </template>
 <script>
@@ -277,7 +276,10 @@ export default {
             window.location.href = item.link;
         },
         toWebgl() {
-            this.$router.push("/webgl_demo/Triangle");
+            this.$router.push("/cg/webgl_demo/Triangle");
+        },
+        toGameEngine(){
+            window.location.href = "https://github.com/Haruluya/NanoCore"
         },
         leftClick(){
             this.charCurrentIndex--;

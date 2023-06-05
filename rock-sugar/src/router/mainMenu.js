@@ -9,7 +9,7 @@ const mainMenu = [
     },
     {
         name:"NanoCore",
-        link:"/games/vrassignment"
+        link:"/NanoCore"
     },
     {
         name:"Games",
@@ -17,11 +17,11 @@ const mainMenu = [
     },
     {
         name:"NanoEngine",
-        link:"/games/vrassignment"
+        link:"/NanoEngine"
     },
     {
         name:"Haruluya",
-        link:"/games/vrassignment"
+        link:"/Haruluya"
     }
 ]
 

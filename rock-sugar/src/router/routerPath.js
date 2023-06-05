@@ -224,4 +224,19 @@ export const routes = [
         name: 'WeilerAthenton',
         component: () => import('_pages/CG/Experiment/WeilerAthenton'),
     },
+    {
+        path: '/NanoCore',
+        name: 'NanoCore',
+        component: () => import('_pages/NanoCore'),
+    },
+    {
+        path: '/NanoEngine',
+        name: 'NanoEngine',
+        component: () => import('_pages/NanoEngine'),
+    },
+    {
+        path: '/Haruluya',
+        name: 'Haruluya',
+        component: () => import('_pages/Haruluya'),
+    },
 ]
