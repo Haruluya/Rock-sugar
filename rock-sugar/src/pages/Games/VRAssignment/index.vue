@@ -81,7 +81,7 @@ export default {
     },
 
     mounted(){           
-        this.getObjectData(['./models/vrAssignmentBeginScene/scene.obj'])
+        this.getObjectData(['../../../models/vrAssignmentBeginScene/scene.obj'])
     },
     computed:{
         sceneCallbacks(){
@@ -116,7 +116,7 @@ export default {
                     this.vehicleController = new VehicleController(this.canvas,this.page.getCameraData());
                     this.$refs.page.currentVehicleMode = 0;
                     sceneTransformFile = "./sceneTransform2.json"
-                    this.getObjectData(['./models/runScene/car.obj','./models/runScene/scene2_road.obj']);
+                    this.getObjectData(['../../../models/runScene/car.obj','../../../models/runScene/scene2_road.obj']);
                 },
                 endRacing:()=>{
                     this.$refs.page.showLoadingPage();
@@ -131,7 +131,7 @@ export default {
                     this.vehicleController = null;
                     this.$refs.page.currentVehicleMode = -1;
                     sceneTransformFile = "./sceneTransform1.json"
-                    this.getObjectData(['./models/vrAssignmentBeginScene/scene.obj'])
+                    this.getObjectData(['../../../models/vrAssignmentBeginScene/scene.obj'])
                 }
             }
         }
