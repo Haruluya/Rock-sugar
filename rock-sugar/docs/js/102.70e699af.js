@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkrock_sugar"]=self["webpackChunkrock_sugar"]||[]).push([[102],{2102:function(r,e,n){n.r(e),n.d(e,{default:function(){return i}});var o=n(3396);function t(r,e,n,t,c,a){return(0,o.wg)(),(0,o.iD)("div")}var c={created(){this.redirectToNanoCore()},methods:{redirectToNanoCore(){window.location.href="https://nc.xd.com/yx/"}}},a=n(89);const u=(0,a.Z)(c,[["render",t]]);var i=u}}]);
+//# sourceMappingURL=102.70e699af.js.map
